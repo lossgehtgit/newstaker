@@ -1,0 +1,78 @@
+{
+ "checkedAt": "2026-08-03T21:35:35+00:00",
+ "etfs": [
+  {
+   "changePct": 89.4,
+   "currency": "EUR",
+   "name": "Xtrackers MSCI World Momentum UCITS ETF 1C",
+   "price": 82.44,
+   "symbol": "XDEM.DE"
+  },
+  {
+   "changePct": 88.0,
+   "currency": "USD",
+   "name": "iShares VII PLC - iShares NASDAQ 100 UCITS ETF",
+   "price": 1644.8,
+   "symbol": "CSNDX.SW"
+  },
+  {
+   "changePct": 73.7,
+   "currency": "USD",
+   "name": "iShares VII PLC - iShares Core S&P 500 UCITS ETF",
+   "price": 815.92,
+   "symbol": "CSPX.L"
+  },
+  {
+   "changePct": 73.7,
+   "currency": "USD",
+   "name": "Vanguard S&P 500 UCITS ETF USD Accumulation",
+   "price": 146.34,
+   "symbol": "VUAA.L"
+  },
+  {
+   "changePct": 65.4,
+   "currency": "EUR",
+   "name": "iShares Core S&P 500 UCITS ETF USD (Acc)",
+   "price": 709.52,
+   "symbol": "SXR8.DE"
+  }
+ ],
+ "lookbackYears": 3,
+ "stocks": [
+  {
+   "changePct": 590.4,
+   "currency": "USD",
+   "name": "Palantir Technologies Inc.",
+   "price": 125.65,
+   "symbol": "PLTR"
+  },
+  {
+   "changePct": 438.3,
+   "currency": "USD",
+   "name": "CrowdStrike Holdings, Inc.",
+   "price": 202.54,
+   "symbol": "CRWD"
+  },
+  {
+   "changePct": 306.7,
+   "currency": "USD",
+   "name": "Cloudflare, Inc.",
+   "price": 282.74,
+   "symbol": "NET"
+  },
+  {
+   "changePct": 154.4,
+   "currency": "USD",
+   "name": "Datadog, Inc.",
+   "price": 273.6,
+   "symbol": "DDOG"
+  },
+  {
+   "changePct": 103.5,
+   "currency": "USD",
+   "name": "Amazon.com, Inc.",
+   "price": 284.02,
+   "symbol": "AMZN"
+  }
+ ]
+}

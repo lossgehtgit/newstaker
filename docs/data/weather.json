@@ -1,0 +1,70 @@
+{
+ "München": {
+  "cities": [
+   "München",
+   "Reutlingen"
+  ],
+  "city": "München",
+  "cityLabel": "MÜNCHEN",
+  "days": [
+   {
+    "date": "2026-08-03",
+    "day": "HEUTE",
+    "hi": 35,
+    "icon": "☁︎",
+    "label": "bewölkt",
+    "lo": 18
+   },
+   {
+    "date": "2026-08-04",
+    "day": "DI",
+    "hi": 35,
+    "icon": "☁︎",
+    "label": "bewölkt",
+    "lo": 23
+   },
+   {
+    "date": "2026-08-05",
+    "day": "MI",
+    "hi": 32,
+    "icon": "⚡︎",
+    "label": "Gewitter",
+    "lo": 22
+   }
+  ]
+ },
+ "Reutlingen": {
+  "cities": [
+   "München",
+   "Reutlingen"
+  ],
+  "city": "Reutlingen",
+  "cityLabel": "REUTLINGEN",
+  "days": [
+   {
+    "date": "2026-08-03",
+    "day": "HEUTE",
+    "hi": 35,
+    "icon": "⚡︎",
+    "label": "Gewitter",
+    "lo": 20
+   },
+   {
+    "date": "2026-08-04",
+    "day": "DI",
+    "hi": 36,
+    "icon": "⚡︎",
+    "label": "Gewitter",
+    "lo": 23
+   },
+   {
+    "date": "2026-08-05",
+    "day": "MI",
+    "hi": 32,
+    "icon": "☂︎",
+    "label": "Schauer",
+    "lo": 21
+   }
+  ]
+ }
+}

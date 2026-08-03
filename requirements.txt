@@ -1,0 +1,3 @@
+# Fuer den GitHub-Actions-Runner (und optional lokal statt Systempython).
+# Der Rest (sqlite3, xml.etree, http.server, ...) ist Python-Standardbibliothek.
+requests>=2.31,<3
