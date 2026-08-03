@@ -1,0 +1,604 @@
+/* News-Taker - Entwurf 1a (Raster) mit den von Liv gewuenschten Elementen
+   aus Entwurf 1b: Wetterkarte, Themen-Pills, Cluster-Uebersicht.
+   Keine Nummerierung vor den Meldungen, dafuer ein Bild bei jeder Headline.
+
+   Alle Masse, Farben und Schriftgroessen stammen aus News-Board.dc.html. */
+
+:root {
+  --accent: #2f5d3a;
+  --accent-tint: #f2f6f2;
+  --negative: #b3261e;
+
+  --ink: #111111;
+  --ink-soft: #57544e;
+  --ink-teaser: #5f5c56;
+  --ink-meta: #8a877f;
+  --ink-faint: #9a978f;
+  --ink-fainter: #a8a49c;
+  --ink-read: #b3afa7;
+  --ink-idle: #c9c5bd;
+
+  --rule-strong: #1a1a1a;
+  --rule: #e6e4df;
+  --rule-soft: #eceae5;
+  --rule-pill: #e0ddd7;
+
+  --page: #f0eee9;
+  --card: #ffffff;
+
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --sans: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* Muss vor den Layoutregeln stehen: ein display:flex weiter unten wuerde das
+   hidden-Attribut sonst aushebeln. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Auf dem Telefon soll nur die Meldungsliste scrollen, nicht die Seite -
+     sonst wandert der Kopf beim Wischen weg. */
+  overflow: hidden;
+  background: var(--page);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------------ Karte
+   Auf dem Telefon fuellt das Board den Bildschirm, auf dem Schreibtisch
+   erscheint es als 390er Karte - wie im Entwurf. */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 390px;
+  height: 100dvh;
+  margin: 0 auto;
+  background: var(--card);
+  overflow: hidden;
+}
+
+/* Auf dem Schreibtisch die 390er Karte aus dem Entwurf - aber nur, wenn das
+   Fenster hoch genug ist, damit sie samt Rand vollstaendig hineinpasst. */
+@media (min-width: 480px) and (min-height: 880px) {
+  body { padding: 28px 0; overflow: auto; }
+  .card {
+    height: 800px;
+    border: 1px solid rgba(0, 0, 0, .10);
+    border-radius: 34px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .10);
+  }
+}
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.scroll::-webkit-scrollbar { display: none; }
+
+/* -------------------------------------------------------------- Statuszeile */
+
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 18px 0;
+  padding-top: max(14px, env(safe-area-inset-top));
+  font: 500 10px/1 var(--mono);
+  letter-spacing: .06em;
+  color: var(--ink-faint);
+}
+
+/* --------------------------------------------------------------------- Kopf */
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.kicker-accent {
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: .14em;
+  color: var(--accent);
+}
+
+.head-title {
+  margin: 7px 0 0;
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -.028em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.head-date {
+  margin-top: 7px;
+  font: 400 10px/1 var(--mono);
+  color: var(--ink-meta);
+}
+
+/* Wetterkarte - uebernommen aus Entwurf 1b */
+
+.weather {
+  flex: none;
+  min-height: 44px;
+  padding: 9px 11px;
+  text-align: left;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--accent-tint);
+}
+
+.weather-city {
+  margin-bottom: 6px;
+  font-size: 9.5px;
+  line-height: 1;
+  letter-spacing: .04em;
+  color: #6f6b64;
+}
+
+.weather-days { display: flex; gap: 9px; }
+
+.weather-day { min-width: 26px; text-align: center; }
+.weather-day .d { font-size: 8.5px; line-height: 1; color: var(--ink-meta); }
+.weather-day .i {
+  margin: 4px 0 3px;
+  font-family: var(--mono);
+  font-variant-emoji: text;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--ink);
+}
+.weather-day .t { font-size: 10.5px; font-weight: 600; line-height: 1; color: var(--ink); }
+.weather-day .t span { color: var(--ink-fainter); font-weight: 500; }
+
+/* ------------------------------------------------------- Marktuebersicht oben
+   Zwei Boxen: ETFs und Einzelaktien. Reine Kennzahlen aus echten Kursdaten -
+   Tagespreis und Veraenderung ueber 3 Jahre, deterministisch berechnet, keine
+   Bewertung. --negative ist die einzige neue Farbe hier: einer der
+   Akzent-Optionen aus dem urspruenglichen Entwurfs-Farbwahler (#b3261e), jetzt
+   fuer negative Kursveraenderungen zweckentfremdet. */
+
+.markets {
+  padding: 13px 0 15px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.markets-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 18px 10px;
+  font: 500 9.5px/1 var(--mono);
+  letter-spacing: .14em;
+  color: var(--ink-meta);
+}
+
+#marketsage { letter-spacing: .05em; text-transform: none; color: var(--ink-fainter); }
+
+.markets-grid {
+  display: flex;
+  padding: 0 18px;
+  gap: 16px;
+}
+
+.markets-col { flex: 1; min-width: 0; }
+
+.markets-col-title {
+  font: 600 9px/1 var(--mono);
+  letter-spacing: .1em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.markets-list { display: flex; flex-direction: column; gap: 9px; }
+
+.mk-row { display: block; }
+
+.mk-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mk-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.mk-price {
+  font: 400 10px/1.3 var(--mono);
+  color: var(--ink-meta);
+  white-space: nowrap;
+}
+
+.mk-chg {
+  font: 700 11px/1.3 var(--mono);
+  white-space: nowrap;
+}
+.mk-chg.is-pos { color: var(--accent); }
+.mk-chg.is-neg { color: var(--negative, #b3261e); }
+
+/* ------------------------------------------------- Themen-Pills (aus 1b) */
+
+.pills {
+  display: flex;
+  gap: 7px;
+  padding: 13px 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.pills::-webkit-scrollbar { display: none; }
+
+.pill {
+  flex: none;
+  min-height: 34px;
+  padding: 8px 15px;
+  white-space: nowrap;
+  border: 1px solid var(--rule-pill);
+  border-radius: 100px;
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pill.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.pill .n {
+  margin-left: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  opacity: .65;
+}
+
+/* ------------------------------------------------------------------ Feed */
+
+.feed { padding: 0 18px 28px; }
+
+/* Aufmacher - Raster aus 1a, ohne Nummer, mit Bild */
+
+.lead {
+  padding: 17px 0 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.lead-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--rule-soft);
+  margin-bottom: 13px;
+}
+
+.lead-kicker {
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: .11em;
+  color: var(--ink-meta);
+}
+
+.lead-title {
+  margin-top: 8px;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -.022em;
+  line-height: 1.14;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.lead-teaser {
+  margin-top: 7px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-teaser);
+  text-wrap: pretty;
+}
+
+.lead-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.lead-meta {
+  flex: 1;
+  font: 400 9.5px/1.35 var(--mono);
+  letter-spacing: .03em;
+  color: var(--ink-faint);
+}
+
+/* Kurzmeldungen - Raster aus 1a, ohne Nummer, mit 86px-Thumbnail (Geometrie
+   aus den Sekundaermeldungen von 1b) */
+
+.brief-head {
+  padding: 22px 0 4px;
+  font: 500 9.5px/1 var(--mono);
+  letter-spacing: .14em;
+  color: var(--ink-meta);
+}
+
+/* Bild links, Text rechts. Die Aktionsknoepfe sitzen - anders als im
+   urspruenglichen Raster von 1a - in der Metazeile statt in eigenen Spalten:
+   sonst bliebe neben dem Bild zu wenig Breite fuer die Schlagzeile. */
+.brief {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.brief-img {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--rule-soft);
+}
+
+.brief-body { flex: 1; min-width: 0; }
+
+.brief-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.brief-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.012em;
+  line-height: 1.28;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.brief-meta {
+  flex: 1;
+  min-width: 0;
+  font: 400 9px/1.4 var(--mono);
+  letter-spacing: .09em;
+  color: var(--ink-fainter);
+}
+
+.brief-teaser {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-teaser);
+  text-wrap: pretty;
+}
+
+.brief-more {
+  margin-top: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: 500 10px/1 var(--mono);
+  letter-spacing: .06em;
+  color: var(--accent);
+}
+
+/* Zustand gelesen */
+.is-read .lead-title,
+.is-read .brief-title { color: var(--ink-read); }
+.is-read .lead-img,
+.is-read .brief-img { opacity: .55; }
+
+/* Aktionsknoepfe - 44px Trefferflaeche wie im Entwurf */
+
+.act {
+  width: 44px;
+  height: 44px;
+  margin: -7px -8px;
+  border: 0;
+  background: none;
+  font-variant-emoji: text;
+  font-size: 14px;
+  color: var(--ink-idle);
+  line-height: 1;
+}
+
+.act-check { font: 500 10px/1 var(--mono); }
+.act.is-on { color: var(--accent); }
+
+.brief .act {
+  width: 36px;
+  height: 40px;
+  margin: -9px -4px;
+  font-size: 13px;
+}
+.brief .act-check { font: 500 10px/1 var(--mono); }
+
+/* Quellenzeile eines Clusters */
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.source-chip {
+  padding: 3px 7px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  background: var(--card);
+  font: 500 9px/1.35 var(--mono);
+  letter-spacing: .04em;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.source-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+.cluster-note {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  font: 600 9px/1.4 var(--mono);
+  letter-spacing: .03em;
+}
+
+/* ------------------------------------------------------------------ leer */
+
+.empty { padding: 48px 18px; text-align: center; color: var(--ink-meta); }
+.empty p { margin: 0 0 14px; font-size: 13.5px; }
+.empty button {
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid var(--rule-pill);
+  border-radius: 100px;
+  background: var(--card);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* -------------------------------------------------------------- Fusszeile */
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 18px 15px;
+  padding-bottom: max(15px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--rule-strong);
+  font: 400 9.5px/1 var(--mono);
+  letter-spacing: .05em;
+  color: var(--ink-meta);
+}
+
+.foot-count { flex: 1; text-align: center; }
+
+.foot-btn {
+  padding: 8px 0;
+  margin: -8px 0;
+  min-height: 32px;
+  border: 0;
+  background: none;
+  font: 500 9.5px/1 var(--mono);
+  letter-spacing: .05em;
+  color: var(--ink-meta);
+  white-space: nowrap;
+}
+
+.foot-btn-accent { color: var(--accent); }
+
+/* ------------------------------------------------------------- Suchansicht */
+
+.search {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 18px 10px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.search-bar input {
+  flex: 1;
+  min-height: 40px;
+  padding: 10px 13px;
+  border: 1px solid var(--rule-pill);
+  border-radius: 10px;
+  background: var(--card);
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink);
+}
+.search-bar input:focus { outline: none; border-color: var(--accent); }
+
+.search-bar button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  color: var(--ink-meta);
+}
+
+.search-tabs {
+  display: flex;
+  gap: 7px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.search-tab {
+  min-height: 34px;
+  padding: 8px 15px;
+  border: 1px solid var(--rule-pill);
+  border-radius: 100px;
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.search-tab.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.search-results { padding: 0 18px 28px; }
+
+.search-hint {
+  padding: 40px 4px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-meta);
+}

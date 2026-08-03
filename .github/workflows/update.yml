@@ -1,0 +1,68 @@
+# Holt alle 30 Minuten frische Feeds und veroeffentlicht das Ergebnis unter
+# docs/ - unabhaengig davon, ob Livs Mac laeuft oder schlaeft. GitHub Pages
+# liefert docs/ von main aus; dieser Workflow ist der einzige Schreibzugriff
+# darauf.
+#
+# Achtung, ein bekannter Vorbehalt bei geplanten GitHub-Workflows: bleibt das
+# Repo 60 Tage ohne jede Aktivitaet, deaktiviert GitHub den Zeitplan
+# automatisch. Ein beliebiger Commit oder ein manueller Lauf (Tab "Actions" ->
+# "Run workflow") reaktiviert ihn wieder.
+name: News abrufen und veroeffentlichen
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "newstaker/**"
+      - "docs/index.html"
+      - "docs/app.css"
+      - "docs/app.js"
+      - "run.py"
+      - "requirements.txt"
+      - ".github/workflows/update.yml"
+
+# Nur ein Lauf gleichzeitig, damit sich zwei Cron-Ausloesungen nicht beim
+# Zurueckschreiben in die Quere kommen.
+concurrency:
+  group: news-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Abhaengigkeiten installieren
+        run: pip install -r requirements.txt
+
+      - name: Datenbank anlegen
+        run: python3 run.py init
+
+      - name: Feeds abrufen und statischen Export schreiben
+        run: python3 run.py export -v
+
+      - name: Ergebnis committen und pushen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --staged --quiet; then
+            echo "Keine Aenderungen - nichts zu committen."
+          else
+            git commit -m "News aktualisiert: $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          fi

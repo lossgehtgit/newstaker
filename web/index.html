@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>News-Taker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<div class="card" id="card">
+
+  <!-- Statuszeile ------------------------------------------------------ -->
+  <div class="statusbar">
+    <span id="clock">–</span>
+    <span id="fetchline">LADE …</span>
+  </div>
+
+  <!-- Kopf mit Wetterkarte (Wetter aus Entwurf B) ----------------------- -->
+  <header class="head">
+    <div class="head-left">
+      <div class="kicker-accent">TAGESLAGE</div>
+      <h1 class="head-title">Heute</h1>
+      <div class="head-date" id="headdate">–</div>
+    </div>
+    <button class="weather" id="weather" type="button" aria-label="Stadt wechseln">
+      <div class="weather-city" id="weathercity">–</div>
+      <div class="weather-days" id="weatherdays"></div>
+    </button>
+  </header>
+
+  <!-- Marktuebersicht: ETFs und Wachstumsaktien, Tagespreis + 3J-Veraenderung.
+       Reine Kennzahlen aus echten Kursdaten, keine Bewertung, keine Prognose. -->
+  <section class="markets" id="markets" hidden>
+    <div class="markets-head">
+      <span>MÄRKTE</span>
+      <span id="marketsage"></span>
+    </div>
+    <div class="markets-grid">
+      <div class="markets-col">
+        <div class="markets-col-title">ETFS</div>
+        <div class="markets-list" id="markets-etf"></div>
+      </div>
+      <div class="markets-col">
+        <div class="markets-col-title">EINZELAKTIEN</div>
+        <div class="markets-list" id="markets-stock"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Themen-Pills (aus Entwurf B) -------------------------------------- -->
+  <nav class="pills" id="pills"></nav>
+
+  <!-- Meldungen --------------------------------------------------------- -->
+  <main class="scroll" id="scroll">
+    <div class="feed" id="feed"></div>
+    <div class="empty" id="empty" hidden>
+      <p>Keine Meldungen für diese Auswahl.</p>
+      <button type="button" id="emptyreset">Filter zurücksetzen</button>
+    </div>
+  </main>
+
+  <!-- Fusszeile --------------------------------------------------------- -->
+  <footer class="foot">
+    <button type="button" id="searchopen" class="foot-btn">SUCHE</button>
+    <span class="foot-count" id="readline">–</span>
+    <button type="button" id="hideread" class="foot-btn foot-btn-accent">GELESENE AUSBLENDEN</button>
+  </footer>
+
+  <!-- Suchansicht ------------------------------------------------------- -->
+  <section class="search" id="search" hidden>
+    <div class="search-bar">
+      <input type="search" id="searchinput" placeholder="Titel und Teaser durchsuchen"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <button type="button" id="searchclose" aria-label="Suche schliessen">✕</button>
+    </div>
+    <div class="search-tabs">
+      <button type="button" class="search-tab is-active" id="tab-all">Alle Meldungen</button>
+      <button type="button" class="search-tab" id="tab-saved">☆ Gemerkte</button>
+    </div>
+    <div class="scroll search-results" id="searchresults"></div>
+  </section>
+
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
