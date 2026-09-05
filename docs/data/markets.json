@@ -1,78 +1,78 @@
 {
- "checkedAt": "2026-08-03T21:35:35+00:00",
+ "checkedAt": "2026-09-05T15:06:40+00:00",
  "etfs": [
   {
-   "changePct": 89.4,
-   "currency": "EUR",
-   "name": "Xtrackers MSCI World Momentum UCITS ETF 1C",
-   "price": 82.44,
-   "symbol": "XDEM.DE"
-  },
-  {
-   "changePct": 88.0,
+   "changePct": 92.3,
    "currency": "USD",
-   "name": "iShares VII PLC - iShares NASDAQ 100 UCITS ETF",
-   "price": 1644.8,
+   "name": "iShares NASDAQ 100 UCITS ETF USD (Acc)",
+   "price": 1693.2,
    "symbol": "CSNDX.SW"
   },
   {
-   "changePct": 73.7,
+   "changePct": 86.4,
+   "currency": "EUR",
+   "name": "Xtrackers MSCI World Momentum UCITS ETF 1C",
+   "price": 84.05,
+   "symbol": "XDEM.DE"
+  },
+  {
+   "changePct": 77.3,
    "currency": "USD",
-   "name": "iShares VII PLC - iShares Core S&P 500 UCITS ETF",
-   "price": 815.92,
+   "name": "iShares Core S&P 500 UCITS ETF USD (Acc)",
+   "price": 831.04,
    "symbol": "CSPX.L"
   },
   {
-   "changePct": 73.7,
+   "changePct": 77.2,
    "currency": "USD",
    "name": "Vanguard S&P 500 UCITS ETF USD Accumulation",
-   "price": 146.34,
+   "price": 149.02,
    "symbol": "VUAA.L"
   },
   {
-   "changePct": 65.4,
+   "changePct": 71.3,
    "currency": "EUR",
-   "name": "iShares Core S&P 500 UCITS ETF USD (Acc)",
-   "price": 709.52,
-   "symbol": "SXR8.DE"
+   "name": "Xtrackers MSCI Emerging Markets UCITS ETF 1C",
+   "price": 81.99,
+   "symbol": "XMME.DE"
   }
  ],
  "lookbackYears": 3,
  "stocks": [
   {
-   "changePct": 590.4,
+   "changePct": 1046.2,
    "currency": "USD",
    "name": "Palantir Technologies Inc.",
-   "price": 125.65,
+   "price": 174.33,
    "symbol": "PLTR"
   },
   {
-   "changePct": 438.3,
+   "changePct": 415.3,
    "currency": "USD",
    "name": "CrowdStrike Holdings, Inc.",
-   "price": 202.54,
+   "price": 213.1,
    "symbol": "CRWD"
   },
   {
-   "changePct": 306.7,
+   "changePct": 327.1,
    "currency": "USD",
    "name": "Cloudflare, Inc.",
-   "price": 282.74,
+   "price": 278.92,
    "symbol": "NET"
   },
   {
-   "changePct": 154.4,
+   "changePct": 138.2,
    "currency": "USD",
-   "name": "Datadog, Inc.",
-   "price": 273.6,
-   "symbol": "DDOG"
+   "name": "Coinbase Global, Inc.",
+   "price": 184.64,
+   "symbol": "COIN"
   },
   {
-   "changePct": 103.5,
+   "changePct": 120.5,
    "currency": "USD",
-   "name": "Amazon.com, Inc.",
-   "price": 284.02,
-   "symbol": "AMZN"
+   "name": "Shopify Inc.",
+   "price": 145.09,
+   "symbol": "SHOP"
   }
  ]
 }
