@@ -107,3 +107,29 @@ im Header kann am Desktop jederzeit zwischen Magazin- und Smartphone-Ansicht gew
 `web/index.html`, `web/app.css`, `web/app.js`, `docs/index.html`, `docs/app.css`, `docs/app.js`,
 `wiki/overview.md`, `wiki/log.md`.
 
+## [2026-09-05] docs — PR #5 gemergt, Deploy angestossen, Session-Stand gesichert
+PR #5 (Marktleiste-Collapse, DE-Quellen-Bestaetigung, Kurs-Sparklines,
+Wetter-Tagesverlauf — siehe Log-Eintrag oben) nach Draft->Ready und
+Diff-Check gemergt (Squash, `main`@6ea9a19). 0 PR-Checks vorhanden
+(erwartet, siehe CLAUDE.md: `update.yml` laeuft nicht auf `pull_request`).
+`update.yml` per `workflow_dispatch` manuell angestossen, um `docs/` sofort
+zu aktualisieren statt auf den naechsten 30-Min-Cron zu warten.
+
+Beobachtung: der dadurch ausgeloeste Lauf (#7) hat Feeds/Export erfolgreich
+gebaut (722 Meldungen), der `git push` von `docs/` scheiterte aber mit
+`! [rejected] main -> main (fetch first)` - zeitgleich landete ein weiterer,
+unabhaengiger Push auf `main` (`feat: Desktop-optimiertes Mehrspalten-
+Dashboard und View-Toggle`, ebenfalls von `lossgehtgit`), der seinerseits
+einen neuen `update.yml`-Lauf (#9) ausgeloest hat. Das ist eine bekannte
+Race zwischen Cron/Dispatch/Push-Trigger (siehe `.github/workflows/
+update.yml`: `push` auf `main` startet den Job parallel zu einem laufenden
+Dispatch) - kein Bug in diesem PR, der naechste erfolgreiche Lauf enthaelt
+den Stand ohnehin. Mein manueller Dispatch (#8) wurde deshalb vom Runner
+selbst als `cancelled` markiert. Nicht weiter verfolgt, da unbedenklich.
+
+Aufraeumen laut Git-Workflow-Regel 4 (Remote-Branch nach Merge loeschen)
+noch offen: `git push origin --delete claude/news-tracker-improvements-fkflpa`
+scheiterte in dieser Session mit HTTP 403 (kein Schreibzugriff auf den Git-
+Remote direkt, nur ueber die GitHub-API/MCP-Tools, die aber kein
+Branch-Delete anbieten) - Branch muss manuell im Repo geloescht werden oder
+in einer Session mit Git-Push-Recht.
