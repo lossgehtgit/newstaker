@@ -327,3 +327,19 @@ GitHub Actions hat direkt nach dem Push automatisch zu laufen begonnen; ein
 "pages build and deployment"-Lauf war zum Zeitpunkt dieses Berichts bereits
 erfolgreich durchgelaufen, die Live-Seite unter
 `https://livanderson-sketch.github.io/newstaker/` antwortet mit HTTP 200.
+
+## 13. Nachtrag: GitHub-Konto umbenannt
+
+Der GitHub-Nutzername wurde nach Abschnitt 12 von `livanderson-sketch` zu
+**`lossgehtgit`** geändert (bestätigt: dieselbe Repo-ID `1358301792`,
+derselbe Inhalt — eine Umbenennung, keine Übertragung an ein fremdes Konto;
+`livanderson-sketch` existiert als Nutzername nicht mehr, GitHub leitet
+Repo-Aufrufe automatisch auf den neuen Namen um, Pages-URLs jedoch nicht).
+Alle Verweise auf `livanderson-sketch` weiter oben in diesem Dokument sind
+deshalb **historisch korrekt** (so hieß das Konto zum jeweiligen Zeitpunkt),
+aber nicht mehr aktuell erreichbar. Die geltenden, aktuellen Adressen:
+
+- Repo: `https://github.com/lossgehtgit/newstaker`
+- Live-Seite: `https://lossgehtgit.github.io/newstaker/`
+
+Lokaler Git-Remote wurde entsprechend auf `lossgehtgit` umgestellt.
