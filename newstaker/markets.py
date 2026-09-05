@@ -98,6 +98,18 @@ def refresh(conn, *, force: bool = False, verbose: bool = False) -> dict:
 
     etfs = _refresh_group(config.CANDIDATE_ETFS, verbose=verbose)
     stocks = _refresh_group(config.CANDIDATE_STOCKS, verbose=verbose)
+
+    # Faellt Yahoo komplett aus (Sperre, Formataenderung, Netzwerkfehler),
+    # liefern beide Gruppen eine leere Liste. Ein unbedingtes save_markets()
+    # wuerde dann per DELETE+INSERT den zuletzt erfolgreichen Marktstand
+    # ersatzlos loeschen, obwohl keine neuen Daten da sind - genau das
+    # Gegenteil vom im Modul-Docstring versprochenen Verhalten ("bleibt
+    # einfach der letzte erfolgreiche Stand stehen"). Gefunden durch einen
+    # unabhaengigen Audit. Bei Totalausfall bleibt der alte Stand deshalb
+    # unangetastet.
+    if not etfs and not stocks:
+        return {"refreshed": False, "etfs": 0, "stocks": 0, "failed": True}
+
     store.save_markets(conn, etfs, stocks)
     return {"refreshed": True, "etfs": len(etfs), "stocks": len(stocks)}
 

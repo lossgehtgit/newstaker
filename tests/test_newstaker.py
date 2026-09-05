@@ -13,6 +13,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -544,6 +545,52 @@ class TestPipelineInMemory(unittest.TestCase):
         self.assertEqual(erst, zweit, "gleicher Stand muss dasselbe Board ergeben")
         self.assertEqual(zweit, dritt)
 
+    def test_cli_rebuild_ist_reproduzierbar(self):
+        """Regressionstest fuer zwei von einem unabhaengigen Audit gefundene
+        Bugs, die zusammen den echten CLI-Befehl 'python3 run.py rebuild'
+        nicht-deterministisch machten:
+
+        1. cmd_rebuild() rief build_board() urspruenglich ganz ohne now= auf.
+        2. Selbst mit durchgereichtem now= verankerten rebuild_clusters() und
+           images.backfill() ihr Zeitfenster (store.items_in_window() /
+           items_missing_image()) weiterhin an einem eigenen, unabhaengigen
+           datetime.now() - vier echte CLI-Laeufe ergaben deshalb trotzdem
+           vier verschiedene Fingerabdruecke, sogar Sekunden auseinander.
+
+        Die Bibliothekstests hier pruefen nur pipeline.build_board() direkt
+        mit fest uebergebenem now= und haetten keinen der beiden Bugs
+        gefunden - dieser Test ruft stattdessen die echte CLI-Funktion auf
+        und laesst echte Zeit zwischen den beiden Laeufen verstreichen, genau
+        wie beim Audit."""
+        import argparse
+        import contextlib
+        import io
+        import time
+
+        import run as run_module
+
+        self._einlesen()
+        # last_fetch_at muss gesetzt sein, sonst faellt cmd_rebuild() auf die
+        # reale Uhrzeit zurueck (Verhalten einer frisch angelegten Datenbank,
+        # nicht das hier zu pruefende "erneut rebuilden nach einem Fetch").
+        store.set_meta(self.conn, "last_fetch_at", store.now_iso())
+        self.conn.commit()
+
+        fingerprints = []
+        for i in range(2):
+            if i:
+                time.sleep(1.2)  # echte Zeit verstreichen lassen, wie beim Audit
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                run_module.cmd_rebuild(argparse.Namespace())
+            line = next(l for l in buf.getvalue().splitlines() if l.startswith("Board-Fingerabdruck:"))
+            fingerprints.append(line.split(": ", 1)[1])
+
+        self.assertEqual(
+            fingerprints[0], fingerprints[1],
+            "'python3 run.py rebuild' muss auch mit echtem Zeitabstand denselben Fingerabdruck liefern",
+        )
+
     def test_board_reproduzierbar_je_thema(self):
         self._einlesen()
         self.conn.commit()
@@ -574,6 +621,28 @@ class TestPipelineInMemory(unittest.TestCase):
         self.conn.commit()
         nachher = pipeline.build_board(self.conn, hide_read=True)
         self.assertEqual(len(nachher["leads"]) + len(nachher["briefs"]), anzahl - 1)
+
+    def test_markets_totalausfall_erhaelt_alten_stand(self):
+        """Regressionstest fuer einen von einem unabhaengigen Audit gefundenen
+        Bug: schlagen ALLE Kandidaten fehl (z.B. Yahoo komplett down),
+        loeschte refresh() bisher per DELETE+INSERT([],[]) den zuletzt
+        erfolgreichen Marktstand ersatzlos, obwohl keine neuen Daten da
+        waren - im Widerspruch zum eigenen Modul-Docstring ('bleibt einfach
+        der letzte erfolgreiche Stand stehen')."""
+        store.save_markets(
+            self.conn,
+            [{"symbol": "TEST", "name": "Test-ETF", "price": 1.0, "currency": "USD", "changePct": 5.0}],
+            [],
+        )
+        self.conn.commit()
+
+        with mock.patch.object(markets, "_fetch_chart", return_value=None):
+            result = markets.refresh(self.conn, force=True)
+
+        self.assertEqual(result, {"refreshed": False, "etfs": 0, "stocks": 0, "failed": True})
+        etfs, stocks, _ = store.load_markets(self.conn)
+        self.assertEqual(len(etfs), 1, "alter Marktstand darf bei Totalausfall nicht verschwinden")
+        self.assertEqual(etfs[0]["symbol"], "TEST")
 
 
 class TestConfig(unittest.TestCase):

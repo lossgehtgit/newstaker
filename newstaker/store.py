@@ -336,8 +336,16 @@ def set_image(conn: sqlite3.Connection, item_id: str, url: str, kind: str) -> No
     conn.execute("UPDATE item SET image_url=?, image_kind=? WHERE id=?", (url, kind, item_id))
 
 
-def items_in_window(conn: sqlite3.Connection, hours: int) -> list[sqlite3.Row]:
-    cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat(timespec="seconds")
+def items_in_window(
+    conn: sqlite3.Connection, hours: int, *, now: datetime | None = None
+) -> list[sqlite3.Row]:
+    """`now` durchreichbar: ohne das verschiebt sich das Zeitfenster bei jedem
+    Aufruf um ein paar Sekunden, wodurch Meldungen an der Fensterkante zwischen
+    zwei rebuild()-Laeufen rein- oder rausfallen koennen - das aendert die
+    Cluster-Mitgliedschaft und damit den Board-Fingerabdruck, obwohl dieselben
+    Rohdaten verarbeitet werden. Gefunden durch einen unabhaengigen Audit."""
+    now = now or datetime.now(timezone.utc)
+    cutoff = (now - timedelta(hours=hours)).isoformat(timespec="seconds")
     return conn.execute(
         """SELECT i.*, s.name AS source_name, s.tier AS source_tier
            FROM item i JOIN source s ON s.key = i.source_key
@@ -349,8 +357,14 @@ def items_in_window(conn: sqlite3.Connection, hours: int) -> list[sqlite3.Row]:
     ).fetchall()
 
 
-def items_missing_image(conn: sqlite3.Connection, hours: int) -> list[sqlite3.Row]:
-    cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat(timespec="seconds")
+def items_missing_image(
+    conn: sqlite3.Connection, hours: int, *, now: datetime | None = None
+) -> list[sqlite3.Row]:
+    """`now` durchreichbar - gleicher Grund wie bei items_in_window(): sonst
+    koennte ein rebuild() zwischen zwei Laeufen unterschiedliche Meldungen mit
+    einer Kachel versehen, nur weil die reale Uhrzeit weitergelaufen ist."""
+    now = now or datetime.now(timezone.utc)
+    cutoff = (now - timedelta(hours=hours)).isoformat(timespec="seconds")
     return conn.execute(
         """SELECT i.* FROM item i
            WHERE i.published_at >= ? AND (i.image_url = '' OR i.image_kind = 'tile')

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from datetime import datetime, timezone
 
 from newstaker import config, export, pipeline, server, store
 
@@ -57,8 +58,26 @@ def cmd_fetch(args: argparse.Namespace) -> int:
 def cmd_rebuild(args: argparse.Namespace) -> int:
     conn = store.connect()
     store.init(conn)
-    result = pipeline.rebuild(conn)
-    board = pipeline.build_board(conn)
+    # "rebuild" reprozessiert ausschliesslich bereits gespeicherte Rohdaten
+    # (kein neuer Fetch) - der sinnvolle Bezugspunkt fuer die Aktualitaets-
+    # Komponente des Rankings ist deshalb der Zeitpunkt des letzten
+    # tatsaechlichen Abrufs, nicht der Moment, in dem dieser Befehl gerade
+    # getippt wird. Ein blosses `datetime.now()` je Aufruf reicht NICHT: ein
+    # unabhaengiger Audit fand, dass schon 17 Sekunden Abstand zwischen zwei
+    # Laeufen die Sortierreihenfolge kippen (Recency-Score nahe beieinander
+    # liegender Meldungen), obwohl now= innerhalb jedes einzelnen Aufrufs
+    # bereits konsistent durchgereicht wurde - vier echte CLI-Laeufe
+    # hintereinander ergaben trotzdem vier verschiedene Fingerabdruecke.
+    # Verankert an last_fetch_at bleibt der Bezugspunkt stabil, solange
+    # zwischen zwei rebuild-Aufrufen kein neuer fetch/refresh lief - genau
+    # das Szenario, das die README-Zusicherung ("zweimal denselben
+    # Fingerabdruck") tatsaechlich meint. Fehlt last_fetch_at (frisch
+    # angelegte Datenbank, noch nie abgerufen), bleibt nur die reale Uhrzeit
+    # als Rueckfallwert.
+    last_fetch = store.get_meta(conn, "last_fetch_at")
+    now = datetime.fromisoformat(last_fetch) if last_fetch else datetime.now(timezone.utc)
+    result = pipeline.rebuild(conn, now=now)
+    board = pipeline.build_board(conn, now=now)
     print(f"Neu eingelesen: {result['ingest']['feeds']} Feeds, {result['ingest']['items']} Meldungen")
     print(f"Cluster: {result['clusters']['clusters']} "
           f"({result['clusters']['multi_source']} mit mehreren Quellen)")

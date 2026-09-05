@@ -169,13 +169,17 @@ def reingest_from_raw(conn) -> dict:
 # --------------------------------------------------------------- Clustern
 
 
-def rebuild_clusters(conn) -> dict:
-    rows = store.items_in_window(conn, config.CLUSTER_WINDOW_HOURS)
+def rebuild_clusters(conn, *, now: datetime | None = None) -> dict:
+    """`now` durchreichbar, damit sowohl das Zeitfenster (welche Meldungen
+    ueberhaupt geclustert werden) als auch die gespeicherten Cluster-Scores
+    zwischen zwei rebuild()-Laeufen reproduzierbar bleiben (siehe build_board).
+    """
+    now = now or datetime.now(timezone.utc)
+    rows = store.items_in_window(conn, config.CLUSTER_WINDOW_HOURS, now=now)
     docs = cluster.docs_from_rows(rows)
     clusters = cluster.build(docs)
 
     by_id = {row["id"]: row for row in rows}
-    now = datetime.now(timezone.utc)
 
     for cl in clusters:
         lead = by_id[cl["lead_item_id"]]
@@ -214,13 +218,32 @@ def refresh(conn, *, verbose: bool = False, force: bool = False, image_budget: i
     return {"feeds": feeds, "images": img, "clusters": clusters, "weather": wx, "markets": mk}
 
 
-def rebuild(conn) -> dict:
-    """Neuaufbau ohne Netz: Rohantworten erneut einlesen, dann clustern."""
+def rebuild(conn, *, now: datetime | None = None) -> dict:
+    """Neuaufbau ohne Netz: Rohantworten erneut einlesen, dann clustern.
+
+    `now` durchreichbar: das ist der CLI-Pfad hinter "run.py rebuild", der
+    laut README zweimal denselben Board-Fingerabdruck liefern soll. Ohne
+    festgehaltenes `now` floss bei jedem Aufruf ein frischer Wanduhr-
+    Zeitstempel in die Aktualitaets-Komponente des Rankings ein, was die
+    Sortierreihenfolge (und damit den Fingerabdruck) unbemerkt verschob -
+    gefunden durch einen unabhaengigen Audit, der den echten CLI-Befehl
+    dreimal hintereinander lief und drei verschiedene Fingerabdruecke bei
+    identischen Rohdaten erhielt. Ruft man rebuild() zweimal mit dem
+    gleichen `now`, ist das Ergebnis wieder wortwoertlich identisch.
+
+    Ein zweiter, subtilerer Fund derselben Kategorie: sowohl das Cluster-
+    Zeitfenster (rebuild_clusters -> store.items_in_window) als auch die
+    Auswahl der Meldungen ohne Bild (images.backfill -> store.items_missing_
+    image) berechneten urspruenglich JEWEILS ihren eigenen, unabhaengigen
+    Zeitstempel - `now` muss deshalb an beide weitergereicht werden, nicht nur
+    an rebuild_clusters()' Scoring.
+    """
+    now = now or datetime.now(timezone.utc)
     ing = reingest_from_raw(conn)
     # Stufe 3 der Bildlogik ohne Netzzugriff (budget=0 unterbindet og:image).
-    img = images.backfill(conn, hours=config.BOARD_MAX_AGE_HOURS, budget=0)
+    img = images.backfill(conn, hours=config.BOARD_MAX_AGE_HOURS, budget=0, now=now)
     conn.commit()
-    clusters = rebuild_clusters(conn)
+    clusters = rebuild_clusters(conn, now=now)
     return {"ingest": ing, "images": img, "clusters": clusters}
 
 

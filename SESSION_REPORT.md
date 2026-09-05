@@ -234,7 +234,76 @@ akzeptiertes Restrisiko ist.
   Repo-Inaktivität — ein beliebiger Commit oder ein manueller Lauf über den
   Actions-Tab reaktiviert den Zeitplan.
 
-Ein unabhängiger Audit-Durchlauf (sechs parallele Prüfungen: Backend-
-Determinismus, Frontend-Parität, CI/CD-Bereitschaft, Markt-Feature-Sicherheit,
-Secrets-Scan, Doku-Genauigkeit) lief begleitend zu diesem Bericht — Ergebnis
-wird nachgereicht, sobald er durch ist.
+## 11. Unabhängiger Audit — Ergebnis
+
+Sechs parallele Prüfungen (Backend-Determinismus, Frontend-Parität,
+CI/CD-Bereitschaft, Markt-Feature-Sicherheit, Secrets-Scan, Doku-Genauigkeit),
+jede mit echten Kommandos gegen den tatsächlichen Code, nicht nur durch
+Lesen. Ergebnis: zwei echte, bestätigte Bugs gefunden — beide inzwischen
+behoben, getestet und live gegen die Produktionsdatenbank erneut verifiziert.
+
+**Bug 1 (hoch): `run.py rebuild` hielt das Determinismus-Versprechen nicht
+ein.** Drei reale CLI-Läufe hintereinander ergaben drei verschiedene
+Board-Fingerabdrücke trotz identischer Rohdaten. Ursache lag an drei
+Stellen zugleich: `cmd_rebuild()` rief `build_board()` ohne `now=` auf, und
+selbst mit durchgereichtem `now=` verankerten `rebuild_clusters()` und
+`images.backfill()` ihr jeweiliges Zeitfenster (`store.items_in_window()`,
+`store.items_missing_image()`) weiterhin an einem eigenen, unabhängigen
+`datetime.now()`. Schon 17 Sekunden Abstand zwischen zwei Läufen kippten die
+Sortierreihenfolge (Recency-Score knapp beieinanderliegender Meldungen).
+
+Der eigentliche Design-Fehler: `rebuild` reprozessiert ausschließlich
+bereits gespeicherte Rohdaten (kein neuer Fetch) — der richtige
+Bezugspunkt für "wie aktuell ist diese Meldung" ist deshalb der Zeitpunkt
+des letzten tatsächlichen Abrufs (`last_fetch_at`), nicht der Moment, in
+dem der Befehl zufällig getippt wird. Nach der Korrektur: vier echte
+CLI-Läufe mit bis zu zehn Sekunden Pause dazwischen liefern denselben
+Fingerabdruck. Mit einem Regressionstest verankert, der echte Zeit
+zwischen zwei Aufrufen verstreichen lässt
+(`test_cli_rebuild_ist_reproduzierbar`).
+
+**Bug 2 (mittel): Marktübersicht löschte bei Totalausfall der Datenquelle
+den letzten guten Stand.** `markets.refresh()` rief bei komplettem
+Fehlschlag aller Kandidaten (z. B. Yahoo-Finance-API blockiert/down)
+`store.save_markets(conn, [], [])` auf — ein unbedingtes DELETE+INSERT, das
+den zuletzt erfolgreichen Marktstand ersatzlos löschte, obwohl keine neuen
+Daten da waren. Widersprach der eigenen Dokumentation im Modul
+("bleibt einfach der letzte erfolgreiche Stand stehen"). Behoben: bei
+Totalausfall bleibt der alte Stand jetzt unangetastet, mit
+Regressionstest (`test_markets_totalausfall_erhaelt_alten_stand`).
+
+**Zusätzlich gehärtet (niedrig, kein bestätigter Fehler, aber
+Verteidigung in der Tiefe):** IDF-Gewichtssummen im Clustering iterierten
+über `frozenset`, dessen Reihenfolge theoretisch vom randomisierten
+`PYTHONHASHSEED` abhängt. Empirisch an sechs verschiedenen Seeds gegen den
+echten 2265-Meldungen-Datenbestand getestet — bit-identisches Ergebnis in
+allen Fällen — aber jetzt zusätzlich mit `sorted()` abgesichert, passend zur
+übrigen Sortierdisziplin in `cluster.py`.
+
+**Als Fehlalarm geprüft und verworfen:** der Secrets-Scan fand ausschließlich
+Wörter wie „secretary"/„tokenomics" aus echten Nachrichtentexten sowie
+Code-Kommentare, die ausdrücklich bestätigen, dass **kein** API-Key nötig
+ist — kein einziger echter Zugangsdaten-Fund in der gesamten Git-Historie.
+
+**Menschliche Entscheidung, nicht automatisch korrigiert:**
+`scripts/com.newstaker.fetch.plist` enthält absolute Pfade mit Livs echtem
+macOS-Benutzernamen — kein Passwort, aber jetzt in einem öffentlichen Repo
+sichtbar. launchd kennt kein `PATH` und keine Tilde-Expansion, ein absoluter
+Pfad ist dafür technisch notwendig; ob das so bleiben soll oder die Datei aus
+dem öffentlichen Repo ausgeschlossen wird, ist Livs Entscheidung.
+
+**Dokumentationslücken behoben:** Der Dateibaum im README-Abschnitt „Aufbau"
+listete `newstaker/pipeline.py` (das zentrale Orchestrierungsmodul) und den
+Ordner `scripts/` nicht — beide ergänzt.
+
+Alle Fixes sind von 63 Tests abgedeckt (vorher 61 — zwei neue
+Regressionstests für die beiden gefundenen Bugs), alle grün.
+
+## 12. Veröffentlichung
+
+Repo gepusht nach `https://github.com/livanderson-sketch/newstaker`
+(öffentlich, bestätigt über die GitHub-API — alle 297 Dateien angekommen).
+GitHub Actions hat direkt nach dem Push automatisch zu laufen begonnen; ein
+"pages build and deployment"-Lauf war zum Zeitpunkt dieses Berichts bereits
+erfolgreich durchgelaufen, die Live-Seite unter
+`https://livanderson-sketch.github.io/newstaker/` antwortet mit HTTP 200.

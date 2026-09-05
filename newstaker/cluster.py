@@ -76,6 +76,20 @@ def _idf_table(docs: list[Doc]) -> dict[str, float]:
     return {token: math.log((n + 1) / (count + 1)) + 1.0 for token, count in df.items()}
 
 
+def _idf_sum(tokens, idf: dict[str, float]) -> float:
+    """Summe der IDF-Gewichte in fester Reihenfolge.
+
+    frozenset-Iteration folgt Pythons String-Hash und ist damit theoretisch
+    vom (standardmaessig randomisierten) PYTHONHASHSEED abhaengig. Float-
+    Addition ist nicht assoziativ, also koennte eine andere Reihenfolge in
+    Grenzfaellen die letzten Bits der Summe und damit einen >=-Schwellen-
+    vergleich kippen. Ein unabhaengiger Audit fand das Risiko real, aber
+    (noch) nicht beobachtbar - sorted() haertet es dennoch ab, passend zur
+    uebrigen Sortierdisziplin in dieser Datei.
+    """
+    return sum(idf.get(t, 1.0) for t in sorted(tokens))
+
+
 def similarity(a: frozenset[str], b: frozenset[str], idf: dict[str, float]) -> float:
     """IDF-gewichtete Jaccard-Aehnlichkeit."""
     if not a or not b:
@@ -84,8 +98,8 @@ def similarity(a: frozenset[str], b: frozenset[str], idf: dict[str, float]) -> f
     if not inter:
         return 0.0
     union = a | b
-    top = sum(idf.get(t, 1.0) for t in inter)
-    bottom = sum(idf.get(t, 1.0) for t in union)
+    top = _idf_sum(inter, idf)
+    bottom = _idf_sum(union, idf)
     return top / bottom if bottom else 0.0
 
 
@@ -104,11 +118,8 @@ def containment(a: frozenset[str], b: frozenset[str], idf: dict[str, float]) -> 
     inter = a & b
     if not inter:
         return 0.0
-    top = sum(idf.get(t, 1.0) for t in inter)
-    smaller = min(
-        sum(idf.get(t, 1.0) for t in a),
-        sum(idf.get(t, 1.0) for t in b),
-    )
+    top = _idf_sum(inter, idf)
+    smaller = min(_idf_sum(a, idf), _idf_sum(b, idf))
     return top / smaller if smaller else 0.0
 
 
