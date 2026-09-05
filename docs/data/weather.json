@@ -29,7 +29,7 @@
     "hi": 28,
     "icon": "☁︎",
     "label": "bewölkt",
-    "lo": 13
+    "lo": 14
    }
   ]
  },
@@ -52,17 +52,17 @@
    {
     "date": "2026-09-06",
     "day": "SO",
-    "hi": 25,
+    "hi": 26,
     "icon": "☁︎",
     "label": "bewölkt",
-    "lo": 10
+    "lo": 11
    },
    {
     "date": "2026-09-07",
     "day": "MO",
-    "hi": 28,
-    "icon": "☂︎",
-    "label": "Regen",
+    "hi": 29,
+    "icon": "☁︎",
+    "label": "bewölkt",
     "lo": 16
    }
   ]

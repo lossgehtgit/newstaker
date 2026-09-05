@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="AL JAZEERA">
   <defs>
-    <pattern id="h" width="24" height="24" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-      <rect width="24" height="24" fill="#f2f0ea"/>
-      <rect width="12" height="24" fill="#e8e5dd"/>
+    <pattern id="h" width="22" height="22" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="22" height="22" fill="#f5f3ef"/>
+      <rect width="11" height="22" fill="#ebe8e0"/>
     </pattern>
   </defs>
   <rect width="640" height="400" fill="url(#h)"/>
