@@ -285,16 +285,32 @@ Wörter wie „secretary"/„tokenomics" aus echten Nachrichtentexten sowie
 Code-Kommentare, die ausdrücklich bestätigen, dass **kein** API-Key nötig
 ist — kein einziger echter Zugangsdaten-Fund in der gesamten Git-Historie.
 
-**Menschliche Entscheidung — inzwischen umgesetzt:** `scripts/com.newstaker.
-fetch.plist` enthielt absolute Pfade mit Livs echtem macOS-Benutzernamen,
-sichtbar in einem öffentlichen Repo. Auf Livs Wunsch behoben: die konkrete
-Datei wurde aus der Git-Verfolgung entfernt (bleibt lokal unverändert
-bestehen, ihre bereits installierte LaunchAgent-Kopie unter
-`~/Library/LaunchAgents/` ist davon nicht betroffen) und durch
-`scripts/com.newstaker.fetch.plist.template` mit Platzhaltern
-(`__PYTHON_BIN__`/`__PROJECT_DIR__`) ersetzt. README zeigt jetzt einen
-`sed`-Einzeiler, der die Vorlage lokal mit den eigenen Pfaden befüllt — vorab
-verifiziert, dass er byte-identisch die zuvor funktionierende Datei erzeugt.
+**Menschliche Entscheidung — inzwischen umgesetzt, in zwei Schritten:**
+`scripts/com.newstaker.fetch.plist` enthielt absolute Pfade mit Livs echtem
+macOS-Benutzernamen, sichtbar in einem öffentlichen Repo.
+
+1. Datei aus der Git-Verfolgung entfernt (lokal unverändert, die bereits
+   installierte LaunchAgent-Kopie unter `~/Library/LaunchAgents/` ist davon
+   nicht betroffen) und durch `scripts/com.newstaker.fetch.plist.template`
+   mit Platzhaltern (`__PYTHON_BIN__`/`__PROJECT_DIR__`) ersetzt. README zeigt
+   einen `sed`-Einzeiler, der die Vorlage lokal befüllt — vorab verifiziert:
+   erzeugt byte-identisch die zuvor funktionierende Datei.
+2. Auf Livs ausdrücklichen Wunsch zusätzlich die komplette Git-Historie
+   umgeschrieben (`git filter-repo --path scripts/com.newstaker.fetch.plist
+   --invert-paths`, getestet in einem separaten Klon vor dem Force-Push:
+   63 Tests grün, Dateizahl unverändert, kein Treffer für den Klarnamen mehr
+   in der gesamten Historie). Force-gepusht, lokales Repo per
+   `git reset --hard origin/main` synchronisiert.
+
+**Ehrliche Einschränkung, nicht verschwiegen:** Ein Force-Push verschiebt nur
+den Branch-Zeiger — die alten Commit-Objekte bleiben als „dangling commits"
+auf GitHubs Servern liegen und sind über die direkte SHA (`d38a86e`) weiter
+abrufbar, bis GitHub sie automatisch aufräumt (kein fester Zeitplan; der
+einzige sofortige Weg wäre eine Anfrage an GitHub Support, die nur der
+Kontoinhaber stellen kann). Liv hat sich bewusst gegen diesen zusätzlichen
+Schritt entschieden — ein macOS-Benutzername plus lokaler Ordnerpfad ist kein
+Passwort, das Restrisiko ist gering. Aktueller Branch, normale
+GitHub-Ansicht und jeder Neu-Klon sind sauber.
 
 **Dokumentationslücken behoben:** Der Dateibaum im README-Abschnitt „Aufbau"
 listete `newstaker/pipeline.py` (das zentrale Orchestrierungsmodul) und den
