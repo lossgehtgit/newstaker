@@ -11,7 +11,7 @@ SQLite, Datei `var/news.db` (nicht im Repo, `.gitignore`), WAL-Modus,
 Fremdschlüssel aktiv. Schema lebt komplett als String in
 `newstaker/store.py::SCHEMA`, kein ORM, keine Migrationsdateien — kleine,
 manuelle `_migrate()`-Funktion für nachträglich hinzugekommene Spalten
-(aktuell: `item.feed_rank`).
+(aktuell: `item.feed_rank`, `market.spark`).
 
 ## Tabellen
 
@@ -25,7 +25,8 @@ manuelle `_migrate()`-Funktion für nachträglich hinzugekommene Spalten
 | `feed_state` | Letzter bekannter ETag/Last-Modified/Hash je Feed, für conditional GET |
 | `og_cache` | Ergebnis der `og:image`-Stufe je URL, damit eine blockierte Seite nie zweimal angefasst wird |
 | `weather` | PK `(city, day)`, TTL-gesteuert über `weather_age_minutes()` |
-| `market` | ETF/Aktien-Kennzahlen, **voller Ersatz** bei jedem erfolgreichen Refresh (siehe Falle unten) |
+| `weather_hour` | PK `(city, hour)`, nur der heutige Tag (voller Ersatz je Refresh) — Grundlage für den scrollbaren Tagesverlauf im Frontend |
+| `market` | ETF/Aktien-Kennzahlen, **voller Ersatz** bei jedem erfolgreichen Refresh (siehe Falle unten). Spalte `spark` (JSON-Liste, `config.MARKETS_SPARK_POINTS` Stützstellen) speist die Mini-Kursgrafik im Frontend, siehe `markets._downsample()` |
 | `meta` | Key-Value, u. a. `last_fetch_at` (JSON-kodierter Wert) |
 | `item_fts` | FTS5 virtual table für Volltextsuche, siehe unten |
 
