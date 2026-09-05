@@ -245,18 +245,33 @@ die Dividendenprüfung und das Ranking laufen automatisch über jede neue Liste.
 python3 -m unittest discover -s tests -v
 ```
 
-61 Tests, ohne Netzzugriff. Abgedeckt sind unter anderem: Reproduzierbarkeit
+63 Tests, ohne Netzzugriff. Abgedeckt sind unter anderem: Reproduzierbarkeit
 des Boards, die geprüften Cluster-Positivfälle, der Negativfall „zwei
 unabhängige Trump-Meldungen dürfen nicht verschmelzen", die Bildgarantie,
-Vollständigkeit des WMO-Wettercode-Mappings, die Umlaut-Suche sowie die
-Dividenden-/Historie-Filter der Marktübersicht.
+Vollständigkeit des WMO-Wettercode-Mappings, die Umlaut-Suche, die
+Dividenden-/Historie-Filter der Marktübersicht, sowie zwei von einem
+unabhängigen Audit gefundene Determinismus-Bugs (siehe unten).
 
-Zur Reproduzierbarkeit: Die Aktualitätskomponente des Rankings hängt an der
-Uhrzeit — das ist beabsichtigt, frische Meldungen sollen steigen. Sie ist damit
-die einzige Größe, die sich bei gleichem Datenbestand zwischen zwei Aufrufen
-ändern kann, und lässt sich für Prüfungen festhalten
-(`build_board(conn, now=...)`). Bei festgehaltener Uhrzeit liefern `fetch` und
-beliebig viele `rebuild`-Durchläufe denselben Fingerabdruck — für jedes Thema.
+**Zur Reproduzierbarkeit:** Die Aktualitätskomponente des Rankings hängt an
+der Uhrzeit — das ist beabsichtigt, frische Meldungen sollen steigen. `run.py
+rebuild` reprozessiert ausschließlich bereits gespeicherte Rohdaten (kein
+neuer Fetch) und verankert diese Uhrzeit deshalb am Zeitpunkt des letzten
+tatsächlichen Abrufs (`last_fetch_at`), nicht am Moment, in dem der Befehl
+zufällig getippt wird — sonst kippt allein durch ein paar Sekunden Abstand
+zwischen zwei Aufrufen die Sortierreihenfolge knapp beieinanderliegender
+Meldungen. Damit gilt das Versprechen unbedingt: `python3 run.py rebuild`
+liefert bei beliebig vielen Durchläufen denselben Fingerabdruck, egal wie
+viel reale Zeit dazwischen liegt — verifiziert mit echten CLI-Aufrufen und
+zehn Sekunden Pause dazwischen, nicht nur in der Testumgebung.
+
+Dieser genaue Mechanismus wurde nachträglich korrigiert: ein unabhängiger
+Audit fand, dass die ursprüngliche Implementierung bei jedem Aufruf die
+reale Wanduhrzeit heranzog (in drei verschiedenen Funktionen: dem
+CLI-Befehl selbst, dem Cluster-Zeitfenster und der Bild-Backfill-Auswahl) —
+drei reale Läufe ergaben drei verschiedene Fingerabdrücke trotz identischer
+Rohdaten. Behoben und mit einem Regressionstest verankert, der echte Zeit
+zwischen zwei CLI-Aufrufen verstreichen lässt
+(`test_cli_rebuild_ist_reproduzierbar`).
 
 ---
 
@@ -275,11 +290,13 @@ newstaker/
   weather.py          Open-Meteo, WMO-Code → Symbol
   markets.py          ETFs/Aktien: Yahoo-Chart-API, automatische Dividendenprüfung, Ranking
   store.py            SQLite-Schema, FTS5, Status
+  pipeline.py         Verdrahtet alles zu refresh() | rebuild() | build_board()
   server.py           JSON-API + statische Auslieferung (lokale Live-Version)
   export.py           Statischer Export nach docs/ (Cloud-Version)
 web/                  Frontend, Live-Version (kein Buildstep)
 docs/                 Frontend, statische Cloud-Version + generierte Daten (data/, tiles/)
 .github/workflows/    update.yml — der 30-Minuten-Cron-Abruf
+scripts/              com.newstaker.fetch.plist — lokaler launchd-Auto-Abruf
 var/                  Datenbank und Protokolle (nicht im Repo)
 ```
 

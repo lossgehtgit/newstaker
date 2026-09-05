@@ -17,6 +17,7 @@ Meldung bekommt immer dieselbe Kachel.
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from urllib.parse import quote
 
 from . import config, fetch, store
@@ -92,15 +93,22 @@ def _escape(text: str) -> str:
     )
 
 
-def backfill(conn, *, hours: int, budget: int = 40, verbose: bool = False) -> dict[str, int]:
+def backfill(
+    conn, *, hours: int, budget: int = 40, verbose: bool = False, now: datetime | None = None
+) -> dict[str, int]:
     """Stufe 2 und 3 fuer alle Meldungen ohne echtes Bild.
 
     `budget` begrenzt die Zahl der Artikelseiten-Aufrufe pro Durchlauf, damit
     ein Abruf nicht minutenlang laeuft. Der Rest bekommt sofort die Kachel und
     wird beim naechsten Lauf erneut betrachtet.
+
+    `now` durchreichbar an store.items_missing_image(), damit ein netzloser
+    rebuild() nicht je nach Sekundenbruchteil der realen Uhrzeit einer anderen
+    Menge Meldungen eine Kachel zuweist (das wuerde den Board-Fingerabdruck
+    veraendern, obwohl dieselben Rohdaten verarbeitet werden).
     """
     stats = {"og_hit": 0, "og_miss": 0, "og_cached": 0, "tile": 0, "skipped": 0}
-    rows = store.items_missing_image(conn, hours)
+    rows = store.items_missing_image(conn, hours, now=now)
     spent = 0
 
     for row in rows:
