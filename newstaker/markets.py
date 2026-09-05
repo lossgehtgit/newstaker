@@ -1,9 +1,9 @@
 """Marktuebersicht: Tagespreis und 3-Jahres-Veraenderung, deterministisch.
 
-Ersetzt die "Themen des Tages"-Cluster-Uebersicht oben im Board. [Nutzerin] baut
-langfristig Vermoegen mit nicht-dividendenzahlenden ETFs und Wachstumsaktien
-auf; gezeigt werden reine, berechnete Kennzahlen aus echten Kursdaten - keine
-Prognose, keine KI-Einschaetzung, keine Anlageempfehlung.
+Ersetzt die "Themen des Tages"-Cluster-Uebersicht oben im Board. Gezeigt
+werden Titel ohne Dividendenausschuettung mit Wachstumsfokus - reine,
+berechnete Kennzahlen aus echten Kursdaten, keine Prognose, keine
+KI-Einschaetzung, keine Anlageempfehlung.
 
 Datenquelle ist die inoffizielle Yahoo-Finance-Chart-API (kein API-Key,
 funktioniert ohne Anmeldung). Das ist keine dokumentierte, garantierte
@@ -58,7 +58,7 @@ def _metrics_from_chart(symbol: str, chart: dict) -> dict | None:
 
     dividend_events = chart.get("events", {}).get("dividends", {})
     if dividend_events:
-        return None  # zahlt Dividende -> passt nicht zu [Nutzerin] Anlagestil
+        return None  # zahlt Dividende -> passt nicht zum Dividenden-Filter
 
     meta = chart.get("meta", {})
     change_pct = (closes[-1] / closes[0] - 1) * 100

@@ -1,5 +1,5 @@
 # Holt alle 30 Minuten frische Feeds und veroeffentlicht das Ergebnis unter
-# docs/ - unabhaengig davon, ob [Nutzerin] Mac laeuft oder schlaeft. GitHub Pages
+# docs/ - unabhaengig davon, ob der eigene Mac laeuft oder schlaeft. GitHub Pages
 # liefert docs/ von main aus; dieser Workflow ist der einzige Schreibzugriff
 # darauf.
 #

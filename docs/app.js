@@ -11,8 +11,8 @@
    Gelesen/Gemerkt liegt in localStorage statt in einer Datenbank. Das heisst:
    der Status ist pro Geraet, Mac und iPhone sehen nicht mehr denselben Stand.
    Der Preis dafuer ist, dass das Board auch dann aktuell ist, wenn kein
-   Rechner von [Nutzerin] laeuft - nur der GitHub-Actions-Runner muss wach sein, und
-   das ist er immer. */
+   eigener Rechner laeuft - nur der GitHub-Actions-Runner muss wach sein,
+   und das ist er immer. */
 
 'use strict';
 

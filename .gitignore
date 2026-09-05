@@ -6,3 +6,7 @@ __pycache__/
 # Enthaelt lokale absolute Pfade inkl. echtem Benutzernamen - bewusst nicht
 # oeffentlich. scripts/com.newstaker.fetch.plist.template bleibt getrackt.
 scripts/com.newstaker.fetch.plist
+
+# Sitzungsprotokoll mit Personenbezug - bleibt lokal, wird auf Wunsch aus
+# der Historie entfernt; Inhalt lebt in der Wiki-Seite "Sitzungsverlauf" weiter.
+SESSION_REPORT.md

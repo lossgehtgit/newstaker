@@ -38,7 +38,7 @@ TOPIC_LABELS = {
 
 # ---------------------------------------------------------------- Quellen
 #
-# tier: 1 = Kernquelle (von [Nutzerin] explizit gefordert bzw. gleichwertig),
+# tier: 1 = Kernquelle (explizit gefordert bzw. gleichwertig),
 #       2 = starke Ergänzung, 3 = Spezial-/Fachquelle.
 # Das Tier geht als Gewicht ins Ranking ein, nicht als Filter.
 #
@@ -51,7 +51,7 @@ TOPIC_LABELS = {
 # Kategorien des Feeds nachjustiert (siehe normalize.topic_for_item).
 
 SOURCES = [
-    # ---- Kernquellen Deutschland (von [Nutzerin] gefordert) ----
+    # ---- Kernquellen Deutschland (explizit gefordert) ----
     {
         "key": "handelsblatt",
         "name": "Handelsblatt",
@@ -311,7 +311,7 @@ RANK_WEIGHTS = {
     "topic": 0.4,       # Themen-Boost
 }
 RECENCY_HALFLIFE_HOURS = 6.0
-# [Nutzerin] erklaerter Fokus: Welt, Wirtschaft, Wissenschaft.
+# Erklaerter Fokus: Welt, Wirtschaft, Wissenschaft.
 TOPIC_BOOST = {
     "welt": 1.0,
     "wirtschaft": 1.0,
@@ -353,10 +353,10 @@ TIMEZONE = "Europe/Berlin"
 
 # ---------------------------------------------------------------- Maerkte
 #
-# Ersetzt die "Themen des Tages"-Uebersicht oben im Board ([Nutzerin] fand sie
-# unverstaendlich und nicht hilfreich). [Nutzerin] baut langfristig Vermoegen mit
-# nicht-dividendenzahlenden ETFs und Wachstumsaktien auf - gezeigt werden
-# reine Kennzahlen (Tagespreis, Veraenderung ueber 3 Jahre), keine
+# Ersetzt die urspruengliche "Themen des Tages"-Uebersicht oben im Board
+# (als unverstaendlich und wenig hilfreich empfunden). Gezeigt werden Titel
+# ohne Dividendenausschuettung mit Wachstumsfokus - reine berechnete
+# Kennzahlen (Tagespreis, Veraenderung ueber 3 Jahre), keine
 # KI-Einschaetzung und keine Anlageempfehlung. "Regelbasierte Rangliste"
 # heisst: aus der Kandidatenliste unten werden automatisch nur die Titel
 # angezeigt, die tatsaechlich keine Dividende ausgeschuettet haben (per

@@ -89,8 +89,8 @@ def export_board(conn, *, now: datetime) -> dict:
 def export_search_index(conn, *, hours: int = 24 * 7) -> list[dict]:
     """Archiv fuer die Volltextsuche - reicht weiter zurueck als das Board.
 
-    [Nutzerin] soll auch eine Meldung von vorgestern wiederfinden, auch wenn sie
-    nicht mehr auf der Startseite steht.
+    Auch eine Meldung von vorgestern soll wiederauffindbar bleiben, auch
+    wenn sie nicht mehr auf der Startseite steht.
     """
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat(timespec="seconds")
     rows = conn.execute(

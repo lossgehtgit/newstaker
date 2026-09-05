@@ -478,7 +478,7 @@ class TestPipelineInMemory(unittest.TestCase):
         self.assertEqual(store.state_counts(self.conn)[1], 0)
 
     def test_jede_meldung_bekommt_ein_bild(self):
-        """[Nutzerin] Vorgabe: Bild bei jeder Headline - garantiert durch Stufe 3."""
+        """Vorgabe: Bild bei jeder Headline - garantiert durch Stufe 3."""
         self._einlesen()
         # Bilder entfernen, damit nur die Kachel-Stufe greifen kann.
         self.conn.execute("UPDATE item SET image_url='', image_kind=''")

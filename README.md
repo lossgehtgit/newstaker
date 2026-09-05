@@ -13,8 +13,7 @@ den gewünschten Elementen aus **1b**: Wetterkarte und Themen-Pills. Ohne
 Nummerierung vor den Meldungen, dafür mit Bild bei jeder Schlagzeile. Oben im
 Board steht statt einer Cluster-Übersicht eine **Marktübersicht** (ETFs und
 Einzelaktien, siehe unten) — die ursprüngliche Themen-des-Tages-Ansicht wurde
-auf [Nutzerin] Wunsch ersetzt, weil sie ihr beim ersten Blick aufs Board nicht
-geholfen hat.
+ersetzt, weil sie beim ersten Blick aufs Board nicht geholfen hat.
 
 ---
 
@@ -219,8 +218,8 @@ Cluster nebeneinander.
 Zwei Boxen oben im Board: **ETFs** und **Einzelaktien**, je Titel Tagespreis
 und Kursveränderung über `MARKETS_LOOKBACK_YEARS` (3 Jahre). Das ist bewusst
 **keine Anlageempfehlung und keine Prognose** — nur berechnete Kennzahlen aus
-echten Kursdaten, passend zu [Nutzerin] Anlagestil (langfristiger Vermögensaufbau
-über nicht-dividendenzahlende Titel).
+echten Kursdaten für Titel ohne Dividendenausschüttung, passend zu
+langfristigem Vermögensaufbau mit Wachstumsfokus.
 
 **„Regelbasiert" heißt konkret:** `config.CANDIDATE_ETFS`/`CANDIDATE_STOCKS`
 sind eine feste Kandidatenliste. Bei jedem Abruf prüft `markets.py` für jeden

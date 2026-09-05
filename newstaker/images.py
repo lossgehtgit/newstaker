@@ -1,6 +1,6 @@
 """Bildbeschaffung in drei Stufen.
 
-[Nutzerin] will bei jeder Schlagzeile ein Bild. Nicht jede Quelle liefert eines, und
+Gewuenscht ist ein Bild bei jeder Schlagzeile. Nicht jede Quelle liefert eines, und
 manche Artikelseiten sperren den Zugriff (gemessen: WSJ 401, Economist 403,
 Science 403). Deshalb drei Stufen, von denen die letzte immer greift:
 
