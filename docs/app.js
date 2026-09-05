@@ -144,6 +144,18 @@ function renderWeather() {
     box.appendChild(temp);
     rail.appendChild(box);
   });
+
+  const hourRail = $('weatherhours');
+  hourRail.replaceChildren();
+  (wx.hours || []).forEach((hour) => {
+    const box = el('div', 'weather-hour' + (hour.isNow ? ' is-now' : ''));
+    box.appendChild(el('div', 'h', hour.isNow ? 'JETZT' : hour.hour));
+    const icon = el('div', 'i', hour.icon);
+    icon.title = hour.label;
+    box.appendChild(icon);
+    box.appendChild(el('div', 't', `${hour.temp}°`));
+    hourRail.appendChild(box);
+  });
 }
 
 /* --------------------------------------------------- Filtern (wie im Server)
@@ -163,6 +175,30 @@ function applyFilters() {
    Kursdaten (Tagespreis, Veraenderung ueber mehrere Jahre) - keine Bewertung,
    keine Anlageempfehlung, siehe newstaker/markets.py. */
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function sparkSvg(values, isPositive) {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', 'mk-spark ' + (isPositive ? 'is-pos' : 'is-neg'));
+  if (!values || values.length < 2) return svg;
+  svg.setAttribute('viewBox', '0 0 100 30');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min || 1;
+  const points = values
+    .map((v, i) => {
+      const x = (i / (values.length - 1)) * 100;
+      const y = 28 - ((v - min) / span) * 26;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+  const line = document.createElementNS(SVG_NS, 'polyline');
+  line.setAttribute('points', points);
+  svg.appendChild(line);
+  return svg;
+}
+
 function renderMarketColumn(elementId, rows) {
   const box = $(elementId);
   box.replaceChildren();
@@ -175,6 +211,7 @@ function renderMarketColumn(elementId, rows) {
     const chg = el('span', 'mk-chg ' + (row.changePct >= 0 ? 'is-pos' : 'is-neg'), `${sign}${row.changePct}%`);
     meta.appendChild(chg);
     line.appendChild(meta);
+    line.appendChild(sparkSvg(row.spark, row.changePct >= 0));
     box.appendChild(line);
   });
 }
@@ -493,7 +530,7 @@ function closeSearch() {
 /* --------------------------------------------------------------- Bedienung */
 
 function wire() {
-  $('weather').addEventListener('click', () => {
+  $('weathercity').addEventListener('click', () => {
     if (!state.weatherCities) return;
     const idx = state.weatherCities.indexOf(state.weatherCity);
     state.weatherCity = state.weatherCities[(idx + 1) % state.weatherCities.length];
@@ -514,6 +551,12 @@ function wire() {
 
   $('searchopen').addEventListener('click', openSearch);
   $('searchclose').addEventListener('click', closeSearch);
+
+  // Marktleiste faehrt beim Runterscrollen der Meldungen ein, damit nur noch
+  // die News zu sehen sind - wieder sichtbar sobald man nach oben scrollt.
+  $('scroll').addEventListener('scroll', () => {
+    $('markets').classList.toggle('is-collapsed', $('scroll').scrollTop > 24);
+  }, { passive: true });
 
   $('searchinput').addEventListener('input', () => {
     clearTimeout(searchTimer);

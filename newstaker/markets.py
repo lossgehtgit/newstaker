@@ -69,7 +69,17 @@ def _metrics_from_chart(symbol: str, chart: dict) -> dict | None:
         "price": round(meta.get("regularMarketPrice", closes[-1]), 2),
         "currency": meta.get("currency", ""),
         "changePct": round(change_pct, 1),
+        "spark": _downsample(closes, config.MARKETS_SPARK_POINTS),
     }
+
+
+def _downsample(values: list[float], points: int) -> list[float]:
+    """Reduziert eine taegliche Kursreihe auf `points` gleichmaessig verteilte
+    Stuetzstellen fuer die Mini-Grafik - Anfang und Ende bleiben immer erhalten."""
+    if len(values) <= points:
+        return [round(v, 2) for v in values]
+    step = (len(values) - 1) / (points - 1)
+    return [round(values[round(i * step)], 2) for i in range(points)]
 
 
 def _refresh_group(symbols: list[str], *, verbose: bool = False) -> list[dict]:

@@ -71,3 +71,26 @@ und ohne Review-Kommentare per `merge`-Commit in `main` gemergt
 dieser Session (git push --delete) — laut Proxy-Diagnose ein bewusster
 Policy-Block, kein Retry-Fall. Branch liegt bis zur manuellen Löschung durch
 den Repo-Owner auf GitHub weiter herum.
+
+## [2026-09-05] feature — Marktleiste faehrt beim Scrollen ein, DE-Quellen bestaetigt, Kurs-Sparklines, Wetter-Tagesverlauf
+Vier Frontend-Wuensche umgesetzt: (1) `#markets` bekommt `.is-collapsed`
+(app.css) und wird per Scroll-Listener auf `#scroll` in beiden `app.js`
+ein-/ausgeblendet, sobald `scrollTop > 24`. (2) Tagesschau/Handelsblatt/FAZ
+waren bereits als Tier-1/2-DE-Quellen in `config.SOURCES` vorhanden, keine
+Codeaenderung noetig - Gesamtzahl aktuell 21 Quellen/47 Feeds (`run.py init`
+zeigt es an). (3) `markets.py::_downsample()` speichert eine abgetastete
+3-Jahres-Kursreihe (`config.MARKETS_SPARK_POINTS=24`) in neuer Spalte
+`market.spark` (Migration in `store._migrate`), beide `app.js` rendern daraus
+eine reine SVG-Polyline (`.mk-spark`, kein Chart-Framework). (4) `weather.py`
+holt zusaetzlich `hourly`-Daten im selben Open-Meteo-Request, haelt nur den
+heutigen Tag in neuer Tabelle `weather_hour`, `board_payload()` liefert
+`hours` mit `isNow`-Flag; `#weather` ist jetzt ein `<div>` mit eigenem
+`#weathercity`-Button (Stadtwechsel) und horizontal scrollbarem
+`#weatherhours`-Streifen darunter (verschachtelte interaktive Elemente in
+einem `<button>` waeren ungueltig gewesen).
+Betroffen: `web/app.css` (= `docs/app.css`, Kopie), `web/app.js`,
+`docs/app.js`, `web/index.html`, `docs/index.html`, `newstaker/config.py`,
+`newstaker/markets.py`, `newstaker/weather.py`, `newstaker/store.py`.
+Alle 63 Tests weiterhin gruen. Kein Browser-Screenshot moeglich (Sandbox ohne
+Playwright/Netz zu Open-Meteo/Yahoo) - Verifikation ueber lokalen `server.py`-
+Smoketest mit synthetischen DB-Daten (curl auf `/api/weather`, `/api/markets`).

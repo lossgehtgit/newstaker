@@ -124,6 +124,17 @@ CREATE TABLE IF NOT EXISTS weather (
     PRIMARY KEY (city, day)
 );
 
+-- Stundenwerte, ausschliesslich fuer den heutigen Tag (siehe weather.py) -
+-- die Detailansicht "Tagesverlauf zum Durchscrollen" braucht keine Historie.
+CREATE TABLE IF NOT EXISTS weather_hour (
+    city       TEXT NOT NULL,
+    hour       TEXT NOT NULL,   -- ISO-Zeit, z. B. "2026-09-05T14:00"
+    code       INTEGER NOT NULL,
+    temp       REAL NOT NULL,
+    fetched_at TEXT NOT NULL,
+    PRIMARY KEY (city, hour)
+);
+
 CREATE TABLE IF NOT EXISTS market (
     symbol      TEXT PRIMARY KEY,
     kind        TEXT NOT NULL,   -- 'etf' | 'stock'
@@ -131,6 +142,7 @@ CREATE TABLE IF NOT EXISTS market (
     price       REAL NOT NULL,
     currency    TEXT NOT NULL,
     change_pct  REAL NOT NULL,   -- Veraenderung ueber config.MARKETS_LOOKBACK_YEARS
+    spark       TEXT NOT NULL DEFAULT '[]',  -- JSON-Liste, abgetastete Kursreihe fuer die Mini-Grafik
     fetched_at  TEXT NOT NULL
 );
 
@@ -175,6 +187,10 @@ def _migrate(conn: sqlite3.Connection) -> None:
     have = {row["name"] for row in conn.execute("PRAGMA table_info(item)")}
     if have and "feed_rank" not in have:
         conn.execute("ALTER TABLE item ADD COLUMN feed_rank INTEGER NOT NULL DEFAULT 9999")
+
+    have_market = {row["name"] for row in conn.execute("PRAGMA table_info(market)")}
+    if have_market and "spark" not in have_market:
+        conn.execute("ALTER TABLE market ADD COLUMN spark TEXT NOT NULL DEFAULT '[]'")
 
 
 def init(conn: sqlite3.Connection) -> None:
@@ -489,6 +505,22 @@ def weather_age_minutes(conn: sqlite3.Connection, city: str) -> float | None:
     return (datetime.now(timezone.utc) - fetched).total_seconds() / 60.0
 
 
+def save_weather_hours(conn: sqlite3.Connection, city: str, hours: list[dict[str, Any]]) -> None:
+    """Ersetzt die Stundenwerte einer Stadt (nur der heutige Tag wird gehalten)."""
+    fetched = now_iso()
+    conn.execute("DELETE FROM weather_hour WHERE city=?", (city,))
+    conn.executemany(
+        "INSERT INTO weather_hour(city, hour, code, temp, fetched_at) VALUES(?,?,?,?,?)",
+        [(city, h["hour"], h["code"], h["temp"], fetched) for h in hours],
+    )
+
+
+def load_weather_hours(conn: sqlite3.Connection, city: str) -> list[sqlite3.Row]:
+    return conn.execute(
+        "SELECT * FROM weather_hour WHERE city=? ORDER BY hour", (city,)
+    ).fetchall()
+
+
 # ------------------------------------------------------------------ Maerkte
 
 
@@ -503,10 +535,13 @@ def save_markets(conn: sqlite3.Connection, etfs: list[dict[str, Any]], stocks: l
     conn.execute("DELETE FROM market")
     rows = [(m, "etf") for m in etfs] + [(m, "stock") for m in stocks]
     conn.executemany(
-        """INSERT INTO market(symbol, kind, name, price, currency, change_pct, fetched_at)
-           VALUES(?,?,?,?,?,?,?)""",
+        """INSERT INTO market(symbol, kind, name, price, currency, change_pct, spark, fetched_at)
+           VALUES(?,?,?,?,?,?,?,?)""",
         [
-            (m["symbol"], kind, m["name"], m["price"], m["currency"], m["changePct"], fetched)
+            (
+                m["symbol"], kind, m["name"], m["price"], m["currency"], m["changePct"],
+                json.dumps(m.get("spark", [])), fetched,
+            )
             for m, kind in rows
         ],
     )
@@ -525,6 +560,7 @@ def load_markets(conn: sqlite3.Connection) -> tuple[list[dict[str, Any]], list[d
             "price": row["price"],
             "currency": row["currency"],
             "changePct": row["change_pct"],
+            "spark": json.loads(row["spark"]) if row["spark"] else [],
         }
 
     etfs = [to_dict(r) for r in rows if r["kind"] == "etf"]

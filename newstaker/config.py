@@ -373,6 +373,7 @@ TIMEZONE = "Europe/Berlin"
 MARKETS_LOOKBACK_YEARS = 3
 MARKETS_TOP_N = 5
 MARKETS_TTL_MINUTES = 12 * 60  # Kursverlauf ueber 3 Jahre aendert sich nicht im 30-Min-Takt
+MARKETS_SPARK_POINTS = 24  # Stuetzstellen der Mini-Grafik je Titel (siehe markets._downsample)
 YAHOO_CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
 
 CANDIDATE_ETFS = [

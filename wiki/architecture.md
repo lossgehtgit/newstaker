@@ -41,6 +41,17 @@ store.py (raw_fetch, item, feed_state)                                          
    der letzte gute Stand stehen (siehe `store.save_markets`, absichtlich kein
    Löschen bei leerem Ergebnis — Regressionstest
    `test_markets_totalausfall_erhaelt_alten_stand`).
+   - `weather.py` holt in *demselben* Open-Meteo-Request zusätzlich zur
+     Tagesübersicht ein `hourly`-Feld (`temperature_2m,weather_code`,
+     `forecast_days=1`) und behält davon nur die Stunden des heutigen Tages
+     (`store.weather_hour`, PK `(city, hour)`, voller Ersatz je Refresh wie
+     bei `weather`). `board_payload()` liefert das zusätzlich als `hours`
+     (mit `isNow`-Flag fürs Hervorheben der aktuellen Stunde).
+   - `markets.py` speichert seit dem Sparkline-Feature zusätzlich eine
+     downgesampelte Kursreihe je Titel (`_downsample()`, `config.
+     MARKETS_SPARK_POINTS` Stützstellen, Anfang/Ende bleiben erhalten) als
+     JSON in `market.spark` (Migration in `store._migrate`). `board_payload()`
+     gibt sie unverändert als `spark`-Liste je Eintrag weiter.
 8. **Board bauen** (`pipeline.build_board()`) — SQL-Join über `item`, `source`,
    `state`, `cluster`; wählt je Cluster einen Aufmacher (bestes Tier, dann
    frühestes Datum, dann `id`), berechnet Live-Score, sortiert, filtert

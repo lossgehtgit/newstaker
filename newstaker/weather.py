@@ -67,8 +67,11 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
             "latitude": ",".join(str(config.CITIES[c]["lat"]) for c in names),
             "longitude": ",".join(str(config.CITIES[c]["lon"]) for c in names),
             "daily": "weather_code,temperature_2m_max,temperature_2m_min",
+            # Nur fuer den Tagesverlauf des heutigen Tages (siehe board_payload) -
+            # forecast_days=1 genuegt, mehr Historie wird hier nicht gebraucht.
+            "hourly": "temperature_2m,weather_code",
+            "forecast_days": max(config.WEATHER_DAYS, 1),
             "timezone": config.TIMEZONE,
-            "forecast_days": config.WEATHER_DAYS,
         },
     )
     if payload is None:
@@ -77,6 +80,7 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
     # Bei mehreren Koordinaten antwortet Open-Meteo mit einer Liste, bei einer
     # einzelnen mit einem Objekt.
     blocks = payload if isinstance(payload, list) else [payload]
+    today = datetime.now().date().isoformat()
     written = 0
     for city, block in zip(names, blocks):
         daily = block.get("daily") or {}
@@ -91,6 +95,18 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
         if rows:
             store.save_weather(conn, city, rows)
             written += 1
+
+        hourly = block.get("hourly") or {}
+        hours = hourly.get("time") or []
+        hour_codes = hourly.get("weather_code") or []
+        temps = hourly.get("temperature_2m") or []
+        hour_rows = [
+            {"hour": h, "code": int(c), "temp": float(t)}
+            for h, c, t in zip(hours, hour_codes, temps)
+            if h.startswith(today)
+        ]
+        if hour_rows:
+            store.save_weather_hours(conn, city, hour_rows)
     return {"cities": written}
 
 
@@ -113,9 +129,24 @@ def board_payload(conn, city: str) -> dict:
                 "lo": round(row["lo"]),
             }
         )
+    hour_rows = store.load_weather_hours(conn, city)
+    now_hour = datetime.now().strftime("%Y-%m-%dT%H:00")
+    hours = []
+    for row in hour_rows:
+        icon, label = describe(row["code"])
+        hours.append(
+            {
+                "hour": row["hour"][11:16],
+                "icon": icon,
+                "label": label,
+                "temp": round(row["temp"]),
+                "isNow": row["hour"] == now_hour,
+            }
+        )
     return {
         "city": city,
         "cityLabel": city.upper(),
         "cities": list(config.CITIES),
         "days": days,
+        "hours": hours,
     }

@@ -150,11 +150,17 @@ button {
 }
 
 .weather-city {
+  display: block;
   margin-bottom: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
   font-size: 9.5px;
   line-height: 1;
   letter-spacing: .04em;
   color: #6f6b64;
+  text-align: left;
 }
 
 .weather-days { display: flex; gap: 9px; }
@@ -172,6 +178,35 @@ button {
 .weather-day .t { font-size: 10.5px; font-weight: 600; line-height: 1; color: var(--ink); }
 .weather-day .t span { color: var(--ink-fainter); font-weight: 500; }
 
+/* Tagesverlauf von heute, horizontal durchscrollbar - eigener Bereich
+   unterhalb der Tagesuebersicht, damit das Scrollen nicht mit dem
+   Stadt-Wechsel-Button kollidiert. */
+.weather-hours {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--rule);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.weather-hours::-webkit-scrollbar { display: none; }
+.weather-hours:empty { display: none; }
+
+.weather-hour { flex: none; min-width: 24px; text-align: center; }
+.weather-hour .h { font-size: 8px; line-height: 1; color: var(--ink-meta); }
+.weather-hour .i {
+  margin: 3px 0 2px;
+  font-family: var(--mono);
+  font-variant-emoji: text;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--ink);
+}
+.weather-hour .t { font-size: 9.5px; font-weight: 600; line-height: 1; color: var(--ink); }
+.weather-hour.is-now .h { color: var(--accent); font-weight: 700; }
+
 /* ------------------------------------------------------- Marktuebersicht oben
    Zwei Boxen: ETFs und Einzelaktien. Reine Kennzahlen aus echten Kursdaten -
    Tagespreis und Veraenderung ueber 3 Jahre, deterministisch berechnet, keine
@@ -182,6 +217,20 @@ button {
 .markets {
   padding: 13px 0 15px;
   border-bottom: 1px solid var(--rule-soft);
+  max-height: 260px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height .22s ease, opacity .16s ease, padding .22s ease, border-color .22s ease;
+}
+
+/* Beim Runterscrollen der Meldungsliste faehrt die Marktleiste ein, damit nur
+   noch die News zu sehen sind - siehe scroll-Listener in app.js. */
+.markets.is-collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom-color: transparent;
 }
 
 .markets-head {
@@ -245,6 +294,18 @@ button {
 }
 .mk-chg.is-pos { color: var(--accent); }
 .mk-chg.is-neg { color: var(--negative, #b3261e); }
+
+/* Mini-Kursverlauf ueber MARKETS_LOOKBACK_YEARS, reine SVG-Polyline, kein
+   Chart-Framework noetig - siehe newstaker/markets.py (spark-Feld). */
+.mk-spark {
+  display: block;
+  width: 100%;
+  height: 22px;
+  margin-top: 4px;
+}
+.mk-spark polyline { fill: none; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+.mk-spark.is-pos polyline { stroke: var(--accent); }
+.mk-spark.is-neg polyline { stroke: var(--negative, #b3261e); }
 
 /* ------------------------------------------------- Themen-Pills (aus 1b) */
 
