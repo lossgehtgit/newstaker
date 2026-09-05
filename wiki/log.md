@@ -94,3 +94,16 @@ Betroffen: `web/app.css` (= `docs/app.css`, Kopie), `web/app.js`,
 Alle 63 Tests weiterhin gruen. Kein Browser-Screenshot moeglich (Sandbox ohne
 Playwright/Netz zu Open-Meteo/Yahoo) - Verifikation ueber lokalen `server.py`-
 Smoketest mit synthetischen DB-Daten (curl auf `/api/weather`, `/api/markets`).
+
+## [2026-09-05] feature — Desktop-optimiertes Mehrspalten-Layout und View-Toggle
+
+Das Frontend von News-Taker war bislang fest auf eine 390px breite Mobilkarte beschränkt.
+Einführung eines responsiven Magazin-Dashboards für Desktop-Bildschirme (ab 960px):
+Zweispaltiges Layout mit News-Feed links und sticky Seitenleiste (Märkte & Filter) rechts,
+mehrspaltigem Aufmacher-Raster (großer Hero-Aufmacher + Nebengeschichten), zweispaltigem
+Kurzmeldungs-Raster sowie modalem Suchdialog. Über einen neuen Umschalter (View-Toggle)
+im Header kann am Desktop jederzeit zwischen Magazin- und Smartphone-Ansicht gewechselt werden
+(gespeichert in `localStorage`). Identisch in `web/` und `docs/` umgesetzt. Betroffene Dateien:
+`web/index.html`, `web/app.css`, `web/app.js`, `docs/index.html`, `docs/app.css`, `docs/app.js`,
+`wiki/overview.md`, `wiki/log.md`.
+

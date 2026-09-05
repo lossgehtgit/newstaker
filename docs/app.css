@@ -57,8 +57,8 @@ button {
 }
 
 /* ------------------------------------------------------------------ Karte
-   Auf dem Telefon fuellt das Board den Bildschirm, auf dem Schreibtisch
-   erscheint es als 390er Karte - wie im Entwurf. */
+   Auf dem Telefon und im Mobil-Modus fuellt das Board 390px. Auf dem
+   Desktop entfaltet es sich als responsives Magazin-Dashboard. */
 
 .card {
   position: relative;
@@ -72,16 +72,89 @@ button {
   overflow: hidden;
 }
 
-/* Auf dem Schreibtisch die 390er Karte aus dem Entwurf - aber nur, wenn das
-   Fenster hoch genug ist, damit sie samt Rand vollstaendig hineinpasst. */
-@media (min-width: 480px) and (min-height: 880px) {
-  body { padding: 28px 0; overflow: auto; }
-  .card {
-    height: 800px;
-    border: 1px solid rgba(0, 0, 0, .10);
-    border-radius: 34px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, .10);
-  }
+/* Mobile-Ansicht auf Desktop erzwingen oder kleines Desktop-Fenster */
+body.view-mode-mobile {
+  padding: 28px 0 !important;
+  overflow: auto !important;
+}
+body.view-mode-mobile .card {
+  height: 800px !important;
+  max-width: 390px !important;
+  border: 1px solid rgba(0, 0, 0, .10) !important;
+  border-radius: 34px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .10) !important;
+  overflow: hidden !important;
+}
+body.view-mode-mobile .desktop-only {
+  display: none !important;
+}
+
+/* Layout-Container */
+.board-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sidebar {
+  display: contents;
+}
+
+.desktop-only {
+  display: none;
+}
+
+.leads-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.briefs-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-sep {
+  color: var(--ink-fainter);
+}
+
+.view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  font: 500 9.5px/1 var(--mono);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.view-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 639px) {
+  .status-view { display: none; }
+}
+
+.search-backdrop { display: none; }
+.search-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
 .scroll {
@@ -215,6 +288,7 @@ button {
    fuer negative Kursveraenderungen zweckentfremdet. */
 
 .markets {
+  order: -1;
   padding: 13px 0 15px;
   border-bottom: 1px solid var(--rule-soft);
   max-height: 260px;
@@ -662,4 +736,348 @@ button {
   font-size: 13px;
   line-height: 1.5;
   color: var(--ink-meta);
+}
+
+/* ------------------------------------------------------------- Desktop-Layout
+   Ab 960px Breite: Magazin-Raster mit 2 Spalten (News-Feed links,
+   Märkte & Filter rechts), Mehrspalten-Aufmacher und 2-Spalten-Kurzmeldungen. */
+
+@media (min-width: 640px) and (max-width: 959px) {
+  body:not(.view-mode-mobile) {
+    padding: 24px 0;
+    overflow-y: auto;
+    background: var(--page);
+  }
+  body:not(.view-mode-mobile) .card {
+    max-width: 720px;
+    width: calc(100% - 32px);
+    height: auto;
+    min-height: calc(100vh - 48px);
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 24px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, .07);
+    overflow: visible;
+  }
+  body:not(.view-mode-mobile) .scroll {
+    overflow: visible;
+    height: auto;
+  }
+}
+
+@media (min-width: 960px) {
+  body:not(.view-mode-mobile) {
+    padding: 28px 24px 60px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--page);
+  }
+
+  body:not(.view-mode-mobile) .card {
+    max-width: 1240px;
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 72px);
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 24px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .07);
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body:not(.view-mode-mobile) .statusbar {
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: center;
+  }
+
+  body:not(.view-mode-mobile) .head {
+    padding: 24px 32px 20px;
+    align-items: center;
+    gap: 24px;
+  }
+
+  body:not(.view-mode-mobile) .head-title {
+    font-size: 38px;
+    letter-spacing: -.032em;
+  }
+
+  body:not(.view-mode-mobile) .weather {
+    padding: 10px 15px;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .03);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  body:not(.view-mode-mobile) .weather:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+    transform: translateY(-1px);
+  }
+
+  body:not(.view-mode-mobile) .board-layout {
+    display: grid;
+    grid-template-areas:
+      "pills sidebar"
+      "feed  sidebar";
+    grid-template-columns: 1fr 340px;
+    gap: 16px 36px;
+    padding: 18px 32px 48px;
+    align-items: start;
+    overflow: visible;
+    flex: 1;
+  }
+
+  body:not(.view-mode-mobile) .pills {
+    grid-area: pills;
+    padding: 4px 0 14px;
+    border-bottom: 1px solid var(--rule-soft);
+    overflow-x: auto;
+    gap: 8px;
+  }
+
+  body:not(.view-mode-mobile) .scroll {
+    grid-area: feed;
+    overflow: visible;
+    height: auto;
+  }
+
+  body:not(.view-mode-mobile) .feed {
+    padding: 0;
+  }
+
+  body:not(.view-mode-mobile) .sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+  }
+
+  body:not(.view-mode-mobile) .markets {
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    background: #faf9f6;
+    padding: 16px;
+    order: unset;
+  }
+
+  body:not(.view-mode-mobile) .markets-head {
+    padding: 0 0 12px;
+  }
+
+  body:not(.view-mode-mobile) .markets-grid {
+    padding: 0;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  body:not(.view-mode-mobile) .sidebar-box {
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    background: #faf9f6;
+    padding: 16px;
+  }
+
+  body:not(.view-mode-mobile) .sidebar-box-title {
+    font: 600 9px/1 var(--mono);
+    letter-spacing: .12em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  body:not(.view-mode-mobile) .sidebar-status-line {
+    font: 500 11px/1.4 var(--mono);
+    letter-spacing: .04em;
+    color: var(--ink-meta);
+    margin-bottom: 12px;
+  }
+
+  body:not(.view-mode-mobile) .sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  body:not(.view-mode-mobile) .sidebar-btn {
+    padding: 9px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--card);
+    font: 600 10.5px/1 var(--mono);
+    letter-spacing: .06em;
+    color: var(--ink-soft);
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+
+  body:not(.view-mode-mobile) .sidebar-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  body:not(.view-mode-mobile) .sidebar-btn-accent {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-tint);
+  }
+
+  body:not(.view-mode-mobile) .desktop-only {
+    display: block;
+  }
+
+  body:not(.view-mode-mobile) .foot {
+    display: none;
+  }
+
+  /* Aufmacher im Magazin-Raster */
+  body:not(.view-mode-mobile) .leads-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+
+  body:not(.view-mode-mobile) .leads-grid > .lead:first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--rule-strong);
+  }
+
+  body:not(.view-mode-mobile) .leads-grid > .lead:first-child .lead-img {
+    aspect-ratio: 16 / 9;
+    max-height: 440px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: opacity .15s ease;
+  }
+  body:not(.view-mode-mobile) .leads-grid > .lead:first-child .lead-img:hover {
+    opacity: .95;
+  }
+
+  body:not(.view-mode-mobile) .leads-grid > .lead:first-child .lead-title {
+    font-size: 28px;
+    line-height: 1.18;
+    cursor: pointer;
+  }
+  body:not(.view-mode-mobile) .leads-grid > .lead:first-child .lead-title:hover {
+    color: var(--accent);
+  }
+
+  body:not(.view-mode-mobile) .leads-grid > .lead:not(:first-child) {
+    border: 1px solid var(--rule-soft);
+    border-radius: 14px;
+    padding: 16px;
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .02);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  body:not(.view-mode-mobile) .leads-grid > .lead:not(:first-child):hover {
+    border-color: var(--rule);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .05);
+  }
+
+  body:not(.view-mode-mobile) .leads-grid > .lead:not(:first-child) .lead-img {
+    aspect-ratio: 16 / 10;
+    max-height: 190px;
+    cursor: pointer;
+  }
+
+  body:not(.view-mode-mobile) .leads-grid > .lead:not(:first-child) .lead-title {
+    font-size: 18px;
+    cursor: pointer;
+  }
+  body:not(.view-mode-mobile) .leads-grid > .lead:not(:first-child) .lead-title:hover {
+    color: var(--accent);
+  }
+
+  /* Kurzmeldungen im 2-Spalten-Raster */
+  body:not(.view-mode-mobile) .brief-head {
+    padding: 16px 0 12px;
+    border-bottom: 1px solid var(--rule-soft);
+    margin-bottom: 16px;
+  }
+
+  body:not(.view-mode-mobile) .briefs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  body:not(.view-mode-mobile) .brief {
+    border-top: none;
+    border: 1px solid var(--rule-soft);
+    border-radius: 12px;
+    padding: 14px;
+    background: #faf9f6;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  body:not(.view-mode-mobile) .brief:hover {
+    border-color: var(--rule);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
+    transform: translateY(-1px);
+  }
+
+  body:not(.view-mode-mobile) .brief-title {
+    cursor: pointer;
+  }
+  body:not(.view-mode-mobile) .brief-title:hover {
+    color: var(--accent);
+  }
+
+  body:not(.view-mode-mobile) .brief-img {
+    cursor: pointer;
+  }
+
+  /* Suchansicht als modaler Dialog */
+  body:not(.view-mode-mobile) .search {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(5px);
+  }
+
+  body:not(.view-mode-mobile) .search-backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  body:not(.view-mode-mobile) .search-panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 720px;
+    max-height: 85vh;
+    background: var(--card);
+    border-radius: 18px;
+    border: 1px solid var(--rule);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .24);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body:not(.view-mode-mobile) .search-bar {
+    padding: 16px 20px;
+  }
+
+  body:not(.view-mode-mobile) .search-tabs {
+    padding: 10px 20px;
+  }
+
+  body:not(.view-mode-mobile) .search-results {
+    padding: 0 20px 24px;
+    max-height: 60vh;
+  }
 }

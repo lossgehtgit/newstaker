@@ -18,8 +18,17 @@
 
   <!-- Statuszeile ------------------------------------------------------ -->
   <div class="statusbar">
-    <span id="clock">–</span>
-    <span id="fetchline">LADE …</span>
+    <div class="status-time">
+      <span id="clock">–</span>
+      <span class="status-sep">·</span>
+      <span id="fetchline">LADE …</span>
+    </div>
+    <div class="status-view">
+      <button type="button" id="viewtoggle" class="view-toggle" title="Ansicht umschalten">
+        <span class="vt-icon">📱</span>
+        <span class="vt-text">Mobil</span>
+      </button>
+    </div>
   </div>
 
   <!-- Kopf mit Wetterkarte (Wetter aus Entwurf B) ----------------------- -->
@@ -36,36 +45,50 @@
     </div>
   </header>
 
-  <!-- Marktuebersicht: ETFs und Wachstumsaktien, Tagespreis + 3J-Veraenderung.
-       Reine Kennzahlen aus echten Kursdaten, keine Bewertung, keine Prognose. -->
-  <section class="markets" id="markets" hidden>
-    <div class="markets-head">
-      <span>MÄRKTE</span>
-      <span id="marketsage"></span>
-    </div>
-    <div class="markets-grid">
-      <div class="markets-col">
-        <div class="markets-col-title">ETFS</div>
-        <div class="markets-list" id="markets-etf"></div>
-      </div>
-      <div class="markets-col">
-        <div class="markets-col-title">EINZELAKTIEN</div>
-        <div class="markets-list" id="markets-stock"></div>
-      </div>
-    </div>
-  </section>
+  <div class="board-layout">
+    <!-- Themen-Pills (aus Entwurf B) -------------------------------------- -->
+    <nav class="pills" id="pills"></nav>
 
-  <!-- Themen-Pills (aus Entwurf B) -------------------------------------- -->
-  <nav class="pills" id="pills"></nav>
+    <!-- Meldungen --------------------------------------------------------- -->
+    <main class="scroll" id="scroll">
+      <div class="feed" id="feed"></div>
+      <div class="empty" id="empty" hidden>
+        <p>Keine Meldungen für diese Auswahl.</p>
+        <button type="button" id="emptyreset">Filter zurücksetzen</button>
+      </div>
+    </main>
 
-  <!-- Meldungen --------------------------------------------------------- -->
-  <main class="scroll" id="scroll">
-    <div class="feed" id="feed"></div>
-    <div class="empty" id="empty" hidden>
-      <p>Keine Meldungen für diese Auswahl.</p>
-      <button type="button" id="emptyreset">Filter zurücksetzen</button>
-    </div>
-  </main>
+    <!-- Seitenleiste auf Desktop (auf Mobile oben als Marktuebersicht) ---- -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Marktuebersicht: ETFs und Wachstumsaktien, Tagespreis + 3J-Veraenderung.
+           Reine Kennzahlen aus echten Kursdaten, keine Bewertung, keine Prognose. -->
+      <section class="markets" id="markets" hidden>
+        <div class="markets-head">
+          <span>MÄRKTE</span>
+          <span id="marketsage"></span>
+        </div>
+        <div class="markets-grid">
+          <div class="markets-col">
+            <div class="markets-col-title">ETFS</div>
+            <div class="markets-list" id="markets-etf"></div>
+          </div>
+          <div class="markets-col">
+            <div class="markets-col-title">EINZELAKTIEN</div>
+            <div class="markets-list" id="markets-stock"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sidebar-box desktop-only">
+        <div class="sidebar-box-title">AKTIONEN & STATUS</div>
+        <div class="sidebar-status-line" id="desktop-readline">–</div>
+        <div class="sidebar-actions">
+          <button type="button" id="desktop-hideread" class="sidebar-btn sidebar-btn-accent">GELESENE AUSBLENDEN</button>
+          <button type="button" id="desktop-searchopen" class="sidebar-btn">SUCHE ÖFFNEN</button>
+        </div>
+      </div>
+    </aside>
+  </div>
 
   <!-- Fusszeile --------------------------------------------------------- -->
   <footer class="foot">
@@ -76,16 +99,19 @@
 
   <!-- Suchansicht ------------------------------------------------------- -->
   <section class="search" id="search" hidden>
-    <div class="search-bar">
-      <input type="search" id="searchinput" placeholder="Titel und Teaser durchsuchen"
-             autocomplete="off" autocorrect="off" spellcheck="false">
-      <button type="button" id="searchclose" aria-label="Suche schliessen">✕</button>
+    <div class="search-backdrop" id="searchbackdrop"></div>
+    <div class="search-panel">
+      <div class="search-bar">
+        <input type="search" id="searchinput" placeholder="Titel und Teaser durchsuchen"
+               autocomplete="off" autocorrect="off" spellcheck="false">
+        <button type="button" id="searchclose" aria-label="Suche schliessen">✕</button>
+      </div>
+      <div class="search-tabs">
+        <button type="button" class="search-tab is-active" id="tab-all">Alle Meldungen</button>
+        <button type="button" class="search-tab" id="tab-saved">☆ Gemerkte</button>
+      </div>
+      <div class="scroll search-results" id="searchresults"></div>
     </div>
-    <div class="search-tabs">
-      <button type="button" class="search-tab is-active" id="tab-all">Alle Meldungen</button>
-      <button type="button" class="search-tab" id="tab-saved">☆ Gemerkte</button>
-    </div>
-    <div class="scroll search-results" id="searchresults"></div>
   </section>
 
 </div>

@@ -27,6 +27,8 @@ GitHub Pages + Actions). Live-Seite: `https://lossgehtgit.github.io/newstaker/`.
   Volltextsuche. Kein ORM.
 - **Frontend:** Vanilla HTML/CSS/JS, **kein Node, kein Buildstep**, zwei
   parallele Kopien (`web/` lokal-live, `docs/` statisch für GitHub Pages).
+  Responsives Magazin-Dashboard für Desktop (ab 960px: 2 Spalten, Aufmacher-Raster,
+  Märkte-Seitenleiste) und schlanke 390px-Karte für Mobilgeräte inkl. Umschalter (View-Toggle).
 - **CI/Cron:** GitHub Actions (`.github/workflows/update.yml`), alle 30 Minuten.
 
 ## Einstiegspunkte

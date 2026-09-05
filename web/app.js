@@ -354,18 +354,31 @@ function renderFeed() {
   $('empty').hidden = total > 0;
   if (total === 0) return;
 
-  board.leads.forEach((item) => feed.appendChild(renderLead(item, renderFeed)));
+  if (board.leads.length) {
+    const leadsBox = el('div', 'leads-grid');
+    board.leads.forEach((item) => leadsBox.appendChild(renderLead(item, renderFeed)));
+    feed.appendChild(leadsBox);
+  }
 
   if (board.briefs.length) {
     feed.appendChild(el('div', 'brief-head', `KURZMELDUNGEN · ${board.briefs.length}`));
-    board.briefs.forEach((item) => feed.appendChild(renderBrief(item, renderFeed)));
+    const briefsBox = el('div', 'briefs-grid');
+    board.briefs.forEach((item) => briefsBox.appendChild(renderBrief(item, renderFeed)));
+    feed.appendChild(briefsBox);
   }
 }
 
 function renderFootline() {
   const s = state.board.stats;
-  $('readline').textContent = `${s.read} GELESEN · ${s.saved} GEMERKT`;
-  $('hideread').textContent = state.hideRead ? 'GELESENE ZEIGEN' : 'GELESENE AUSBLENDEN';
+  const text = `${s.read} GELESEN · ${s.saved} GEMERKT`;
+  $('readline').textContent = text;
+  const dText = $('desktop-readline');
+  if (dText) dText.textContent = text;
+
+  const hideText = state.hideRead ? 'GELESENE ZEIGEN' : 'GELESENE AUSBLENDEN';
+  $('hideread').textContent = hideText;
+  const dHide = $('desktop-hideread');
+  if (dHide) dHide.textContent = hideText;
 }
 
 /* ------------------------------------------------------------------ Laden */
@@ -516,6 +529,26 @@ function wire() {
     if (ev.key === 'Escape' && !$('search').hidden) closeSearch();
   });
 
+  const dHide = $('desktop-hideread');
+  if (dHide) {
+    dHide.addEventListener('click', () => {
+      state.hideRead = !state.hideRead;
+      loadBoard();
+    });
+  }
+
+  const dSearch = $('desktop-searchopen');
+  if (dSearch) {
+    dSearch.addEventListener('click', openSearch);
+  }
+
+  const backdrop = $('searchbackdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', closeSearch);
+  }
+
+  initViewToggle();
+
   // Beim Zurueckkommen auf den Tab neu laden, damit der Abrufzeitpunkt stimmt.
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && $('search').hidden) {
@@ -523,6 +556,33 @@ function wire() {
       loadBoard();
     }
   });
+}
+
+function initViewToggle() {
+  const toggle = $('viewtoggle');
+  if (!toggle) return;
+  const saved = localStorage.getItem('newstaker.viewMode');
+  if (saved === 'mobile') {
+    document.body.classList.add('view-mode-mobile');
+  }
+  updateViewToggle();
+
+  toggle.addEventListener('click', () => {
+    const isMobile = document.body.classList.toggle('view-mode-mobile');
+    localStorage.setItem('newstaker.viewMode', isMobile ? 'mobile' : 'desktop');
+    updateViewToggle();
+  });
+}
+
+function updateViewToggle() {
+  const toggle = $('viewtoggle');
+  if (!toggle) return;
+  const isMobile = document.body.classList.contains('view-mode-mobile');
+  const icon = toggle.querySelector('.vt-icon');
+  const text = toggle.querySelector('.vt-text');
+  if (icon) icon.textContent = isMobile ? '🖥️' : '📱';
+  if (text) text.textContent = isMobile ? 'Desktop' : 'Mobil';
+  toggle.title = isMobile ? 'Zu Desktop-Ansicht wechseln' : 'Zu Mobil-Ansicht wechseln';
 }
 
 /* ------------------------------------------------------------------ Start */
