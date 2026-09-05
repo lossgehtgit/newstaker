@@ -123,3 +123,18 @@ reaktiviert sie.
    Stand löschen.
 3. `urllib.request` funktioniert auf der Zielmaschine nicht (SSL) — jeder neue
    Netzcode muss über `requests` gehen.
+4. **`main` wird gelegentlich komplett per History-Rewrite überschrieben**
+   (privacy-motiviert, z. B. `git filter-repo` zum Entfernen personenbezogener
+   Inhalte — bereits zweimal beobachtet, siehe `SESSION_REPORT.md` §11 und
+   den Commit „Kommentare neutralisiert (Personenbezug entfernt)"). Danach
+   haben **alle** Commits auf `main` neue Hashes, auch der allererste — ein
+   `git fetch && git merge`/`git log` zeigt dann „refusing to merge unrelated
+   histories" zwischen einem älteren lokalen Klon und `origin/main`.
+   **Nie** in diesem Fall den lokalen Stand auf `origin/main` pushen oder
+   forcen — das würde die bewusste Bereinigung rückgängig machen. Stattdessen
+   lokal `git fetch origin main && git reset --hard origin/main` (nur den
+   lokalen Branch-Zeiger korrigieren, `origin/main` ist immer die
+   maßgebliche Version). Ein zuvor gemergter PR kann durch so einen Rewrite
+   rückwirkend aus `main` verschwinden, obwohl GitHub ihn weiter als
+   „merged" anzeigt — nach jedem Rewrite-Verdacht `git log -- <pfad>` auf
+   `origin/main` gegenprüfen, statt dem GitHub-PR-Status blind zu vertrauen.
