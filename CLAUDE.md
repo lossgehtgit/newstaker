@@ -73,3 +73,54 @@ updated: YYYY-MM-DD
   komplett laden, sondern gezielt greppen, außer explizit "lies die ganze
   Datei" verlangt wird.
 - Bei Wiki-Updates gezielte Edits statt kompletter Neuschreibung bevorzugen.
+
+## Git Workflow
+
+Ist-Zustand bei Einführung dieser Regeln (Stand 2026-09-05, per `gh`-Äquivalent
+über die GitHub-API geprüft): Repo `lossgehtgit/newstaker` ist **public**,
+Default-Branch ist **`main`**. Für `main` ist **keine Branch Protection**
+aktiv (`protected: false`, keine Required Status Checks, kein Review-Zwang).
+Solo-Projekt — ein einziger Collaborator (`lossgehtgit`). Einziger
+GitHub-Actions-Workflow ist `.github/workflows/update.yml` (Feed-Abruf +
+`docs/`-Publish per Cron/`workflow_dispatch`/Push auf `main`); er läuft
+**nicht** auf `pull_request`-Events — es gibt also aktuell keinen
+automatischen CI-Check, der auf einem PR erscheinen würde.
+
+Konsequenz: Nichts davon verhindert technisch, dass ein PR mit rotem CI oder
+ganz ohne CI-Bestätigung gemerged wird. Die folgenden Regeln sind reine
+Selbstdisziplin — es gibt keinen GitHub-Mechanismus, der sie erzwingt.
+
+1. **Hauptbranch bleibt sauber.** Für jede nicht-triviale Änderung einen
+   eigenen Feature-Branch (`feature/<kurzbeschreibung>` oder
+   `fix/<kurzbeschreibung>`), nie direkt auf `main` entwickeln. Wenn möglich
+   dafür einen git worktree nutzen (`git worktree add
+   ../<repo>-worktrees/<branchname> -b <branchname>`), damit der Hauptordner
+   immer auf `main` bleibt, während die Feature-Arbeit isoliert in einem
+   eigenen Ordner läuft. In einer Claude-Code-Session entspricht das dem
+   `EnterWorktree`-Tool bzw. der expliziten Bitte "in einem Worktree
+   arbeiten".
+2. **Commit-Konvention:** Conventional Commits — `feat:`, `fix:`, `docs:`,
+   `refactor:`, `chore:`, `test:` als Präfix, danach eine kurze,
+   aussagekräftige Beschreibung im Imperativ.
+3. **PR-Merge-Gate ist Pflicht**, unabhängig davon ob GitHub es technisch
+   erzwingt: Vor jedem Merge die Checks des PRs prüfen (`gh pr checks <n>`
+   bzw. äquivalent über die GitHub-API/-MCP-Tools) und bestätigen, dass alle
+   relevanten Jobs grün sind. Laufen Checks noch: warten, nicht mergen in der
+   Annahme, Probleme fallen später schon auf. Da dieses Repo **kein Branch
+   Protection** hat, ist das der einzige Schutzmechanismus — er wird nie
+   übersprungen, auch nicht bei kleinen PRs. Hinweis: Aktuell läuft keine CI
+   auf `pull_request`-Events (siehe oben), `gh pr checks` zeigt also bis auf
+   Weiteres nichts an — die Regel gilt trotzdem, sobald/falls ein
+   PR-getriggerter Check hinzukommt, und bis dahin ersetzt eine bewusste
+   Diff-Durchsicht vor dem Merge die fehlende automatische Bestätigung.
+4. **Nach einem gemergten PR sofort aufräumen:** Remote-Branch und ggf.
+   lokalen Worktree löschen, statt sie liegen zu lassen.
+5. **Secrets nie committen:** keine echten Secrets (`*_SECRET`, `*_KEY`,
+   Tokens, private Keys, JWTs) in getrackten Dateien. Secrets leben nur in
+   `.env` (gitignored) oder im Secret-Management der Hosting-Plattform. Vor
+   jedem Commit kurz gegenchecken, dass der Diff nichts Verdächtiges enthält
+   — auch bei generierten Config-/Beispieldateien, die harmlos aussehen.
+6. **Destruktive Git-Operationen** (force-push, `reset --hard`,
+   History-Rewrites, `branch -D`) nur nach expliziter Rückfrage im Chat —
+   eine einmalige Zustimmung gilt nicht automatisch für spätere, ähnliche
+   Fälle.

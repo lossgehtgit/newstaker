@@ -11,6 +11,15 @@ Neue Einträge immer **anhängen**, nie bestehende Einträge ändern oder lösch
 
 ---
 
+## [2026-09-05] docs — Git-Workflow in CLAUDE.md verbindlich festgehalten
+Abschnitt „Git Workflow" in `CLAUDE.md` ergänzt: Feature-Branches/Worktrees
+statt direkt auf `main`, Conventional Commits, PR-Merge-Gate (`gh pr checks`
+vor jedem Merge grün — Pflicht, da `main` keine Branch Protection hat und der
+einzige Workflow `update.yml` nicht auf `pull_request` läuft), Aufräumen nach
+Merge, Secrets nie committen, destruktive Git-Ops nur nach Rückfrage. Ist-Zustand
+geprüft: Repo public, Default-Branch `main`, kein Branch Protection, Solo-Projekt
+(ein Collaborator).
+
 ## [2026-09-05] docs — Wiki-System eingerichtet
 
 Persistentes, dateibasiertes Wiki unter `wiki/` angelegt als externes
