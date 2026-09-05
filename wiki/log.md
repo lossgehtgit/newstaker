@@ -63,3 +63,11 @@ Treffer in einem Durchgang fixen, Verifikationslauf). Betroffene Dateien:
 `CLAUDE.md`, `.claude/skills/bug-class-sweep/SKILL.md`, `wiki/log.md`
 (diese Datei). Kein ADR nötig (Prozess-/Tooling-Konvention, keine
 Architekturentscheidung).
+
+Nachtrag: PR #4 ohne offene CI-Checks (kein `pull_request`-Trigger im Repo)
+und ohne Review-Kommentare per `merge`-Commit in `main` gemergt
+(`dd909fd`). Lokaler Feature-Branch gelöscht; Löschung des Remote-Branch
+`claude/hygiene-rules-codebase-f57tvf` scheiterte an einer 403-Egress-Policy
+dieser Session (git push --delete) — laut Proxy-Diagnose ein bewusster
+Policy-Block, kein Retry-Fall. Branch liegt bis zur manuellen Löschung durch
+den Repo-Owner auf GitHub weiter herum.
