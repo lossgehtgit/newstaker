@@ -45,3 +45,21 @@ Feature-Branch), wurde per Cherry-Pick auf einen frischen, von aktuellem
 Rewrites auf `main` — nie lokalen Stand draufpushen, immer `reset --hard
 origin/main`, PR-Status „merged" nicht blind vertrauen). Betroffene
 Dateien: `wiki/architecture.md`, `wiki/log.md` (diese Datei).
+
+## [2026-09-05] docs — Hygiene-Regeln in CLAUDE.md ergänzt, erster Beispiel-Skill angelegt
+
+Neuer Abschnitt „Hygiene-Regeln" in `CLAUDE.md`: fünf feste Arbeitsweisen
+(Bugfix ⇒ Bugklassen-Sweep; Detail-Änderung ⇒ Zusammenfassung mitziehen;
+"kann nicht passieren" ⇒ als Test verankern statt als Kommentar; "behoben"
+⇒ tatsächliche Ausgabe prüfen statt nur Log/Exception; neue Automatisierung
+⇒ echten Effekt statt Exit-Code prüfen, plus Idempotenz-Check vor
+Branch/PR/Issue-Erstellung). Jede Regel trägt einen Platzhalter für
+Präzedenzfälle, der bei Eintreten real ergänzt wird. Zusätzlich Abschnitt
+„Wiederkehrende Routinen als Skills": Kandidaten-Kriterium (>2x manuell
+erklärt) plus Verweis auf den ersten Beispiel-Skill
+`.claude/skills/bug-class-sweep/SKILL.md`, der Regel 1 automatisiert
+(Grep-Suche nach demselben Bug-Muster über die gesamte Codebase, alle
+Treffer in einem Durchgang fixen, Verifikationslauf). Betroffene Dateien:
+`CLAUDE.md`, `.claude/skills/bug-class-sweep/SKILL.md`, `wiki/log.md`
+(diese Datei). Kein ADR nötig (Prozess-/Tooling-Konvention, keine
+Architekturentscheidung).
