@@ -7,7 +7,7 @@ updated: 2026-09-05
 
 # News-Taker — Überblick
 
-Persönlicher, **deterministischer** Nachrichtentracker für Liv. Kein KI-Agent
+Persönlicher, **deterministischer** Nachrichtentracker. Kein KI-Agent
 im Datenpfad: nichts wird von einem Modell zusammengefasst, sortiert, geclustert
 oder übersetzt. Dieselben Rohdaten ergeben immer dasselbe Board (verankert in
 `tests/test_newstaker.py::test_cli_rebuild_ist_reproduzierbar`).
