@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.newstaker.fetch</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <!-- launchd kennt kein PATH: der Interpreter muss absolut angegeben
+             werden. Pfad ermittelt mit `python3 -c "import sys;print(sys.executable)"`. -->
+        <string>__PYTHON_BIN__</string>
+        <string>__PROJECT_DIR__/run.py</string>
+        <string>fetch</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__PROJECT_DIR__</string>
+
+    <!-- Alle 30 Minuten. -->
+    <key>StartInterval</key>
+    <integer>1800</integer>
+
+    <!-- Einmal direkt beim Laden, damit das Board sofort gefuellt ist. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>__PROJECT_DIR__/var/fetch.log</string>
+    <key>StandardErrorPath</key>
+    <string>__PROJECT_DIR__/var/fetch.err.log</string>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityIO</key>
+    <true/>
+</dict>
+</plist>

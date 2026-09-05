@@ -43,8 +43,17 @@ davon ist auf dem Rechner vorhanden. Kein Node, kein Buildstep.
 
 ### Automatischer Abruf
 
+Die fertige `.plist` liegt bewusst **nicht** im Repo — sie enthält absolute
+lokale Pfade inklusive Benutzername, und das Repo ist öffentlich. Stattdessen
+aus der Vorlage `scripts/com.newstaker.fetch.plist.template` mit den eigenen
+Pfaden erzeugen (Platzhalter `__PYTHON_BIN__`/`__PROJECT_DIR__`):
+
 ```bash
-cp scripts/com.newstaker.fetch.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/com.newstaker.fetch.plist
+PROJECT_DIR="$(pwd)"
+PYTHON_BIN="$(python3 -c 'import sys; print(sys.executable)')"
+sed -e "s|__PYTHON_BIN__|$PYTHON_BIN|g" -e "s|__PROJECT_DIR__|$PROJECT_DIR|g" \
+  scripts/com.newstaker.fetch.plist.template > ~/Library/LaunchAgents/com.newstaker.fetch.plist
+launchctl load ~/Library/LaunchAgents/com.newstaker.fetch.plist
 ```
 
 Holt ab dann alle 30 Minuten die Feeds. Protokoll in `var/fetch.log`.
@@ -296,7 +305,7 @@ newstaker/
 web/                  Frontend, Live-Version (kein Buildstep)
 docs/                 Frontend, statische Cloud-Version + generierte Daten (data/, tiles/)
 .github/workflows/    update.yml — der 30-Minuten-Cron-Abruf
-scripts/              com.newstaker.fetch.plist — lokaler launchd-Auto-Abruf
+scripts/              com.newstaker.fetch.plist.template — Vorlage für den lokalen launchd-Auto-Abruf
 var/                  Datenbank und Protokolle (nicht im Repo)
 ```
 

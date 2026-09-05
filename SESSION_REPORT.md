@@ -285,12 +285,16 @@ Wörter wie „secretary"/„tokenomics" aus echten Nachrichtentexten sowie
 Code-Kommentare, die ausdrücklich bestätigen, dass **kein** API-Key nötig
 ist — kein einziger echter Zugangsdaten-Fund in der gesamten Git-Historie.
 
-**Menschliche Entscheidung, nicht automatisch korrigiert:**
-`scripts/com.newstaker.fetch.plist` enthält absolute Pfade mit Livs echtem
-macOS-Benutzernamen — kein Passwort, aber jetzt in einem öffentlichen Repo
-sichtbar. launchd kennt kein `PATH` und keine Tilde-Expansion, ein absoluter
-Pfad ist dafür technisch notwendig; ob das so bleiben soll oder die Datei aus
-dem öffentlichen Repo ausgeschlossen wird, ist Livs Entscheidung.
+**Menschliche Entscheidung — inzwischen umgesetzt:** `scripts/com.newstaker.
+fetch.plist` enthielt absolute Pfade mit Livs echtem macOS-Benutzernamen,
+sichtbar in einem öffentlichen Repo. Auf Livs Wunsch behoben: die konkrete
+Datei wurde aus der Git-Verfolgung entfernt (bleibt lokal unverändert
+bestehen, ihre bereits installierte LaunchAgent-Kopie unter
+`~/Library/LaunchAgents/` ist davon nicht betroffen) und durch
+`scripts/com.newstaker.fetch.plist.template` mit Platzhaltern
+(`__PYTHON_BIN__`/`__PROJECT_DIR__`) ersetzt. README zeigt jetzt einen
+`sed`-Einzeiler, der die Vorlage lokal mit den eigenen Pfaden befüllt — vorab
+verifiziert, dass er byte-identisch die zuvor funktionierende Datei erzeugt.
 
 **Dokumentationslücken behoben:** Der Dateibaum im README-Abschnitt „Aufbau"
 listete `newstaker/pipeline.py` (das zentrale Orchestrierungsmodul) und den
