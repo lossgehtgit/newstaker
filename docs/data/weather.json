@@ -52,7 +52,7 @@
    {
     "date": "2026-09-06",
     "day": "SO",
-    "hi": 26,
+    "hi": 25,
     "icon": "☁︎",
     "label": "bewölkt",
     "lo": 10
@@ -60,9 +60,9 @@
    {
     "date": "2026-09-07",
     "day": "MO",
-    "hi": 30,
-    "icon": "☁︎",
-    "label": "bewölkt",
+    "hi": 28,
+    "icon": "☂︎",
+    "label": "Regen",
     "lo": 16
    }
   ]
