@@ -124,3 +124,56 @@ Selbstdisziplin — es gibt keinen GitHub-Mechanismus, der sie erzwingt.
    History-Rewrites, `branch -D`) nur nach expliziter Rückfrage im Chat —
    eine einmalige Zustimmung gilt nicht automatisch für spätere, ähnliche
    Fälle.
+
+## Hygiene-Regeln
+
+Feste Arbeitsweise ab 2026-09-05, damit Fehler und manuelle Routinen nicht bei
+jeder Session neu auftauchen bzw. neu erklärt werden müssen.
+
+1. **Bugfix ⇒ Bugklassen-Sweep.** Jeder gefundene Bug wird sofort als Klasse
+   behandelt: mit grep/Suche die gesamte Codebase nach dem gleichen Muster
+   durchsuchen und alle Treffer in einem Durchgang fixen — nicht nur die eine
+   Fundstelle, und nicht "beim nächsten Mal wieder einzeln finden". Siehe
+   Skill `.claude/skills/bug-class-sweep/` als Vorlage für diesen Ablauf.
+   *Präzedenzfälle:* noch keiner.
+2. **Detail-Änderung ⇒ Zusammenfassung mitziehen.** Wer einen
+   Status/Checkbox/Zähler an einer Stelle ändert (TODO-Liste, Statusseite,
+   Wiki-Index), aktualisiert im selben Schritt auch die Stelle, die das
+   aggregiert (Fortschrittstabelle, `index.md`-Header, Dashboard-Zahl). Sonst
+   laufen Detail und Zusammenfassung leise auseinander.
+   *Präzedenzfälle:* noch keiner.
+3. **"Kann nicht passieren" ⇒ als Test verankern, nicht als Kommentar.** Wenn
+   ein Befund mit einer Begründung wie "das Feld ist immer gesetzt" oder
+   "dieser Pfad ist aktuell nicht erreichbar" geschlossen wird, dann wird
+   genau die Annahme, von der das abhängt, in einem automatisierten Test
+   verankert. Sonst entwertet die nächste Vertragsänderung diese
+   Entscheidung, ohne dass irgendwo etwas anschlägt.
+   *Präzedenzfälle:* noch keiner.
+4. **"Behoben" ⇒ die falsche Ausgabe muss tatsächlich weg sein.** Eine
+   zusätzliche Logzeile oder ein abgefangener Fehler ist kein Fix. Vor dem
+   Abhaken den tatsächlichen Fehlerpfad auslösen und prüfen, was am Ende
+   ankommt (UI, API-Response, Datei) — nicht nur, dass intern etwas geloggt
+   wird.
+   *Präzedenzfälle:* noch keiner.
+5. **Neue Automatisierung ⇒ echten Effekt prüfen, nicht Exit-Code.** Jeder
+   wiederkehrende/geplante Job muss seinen tatsächlichen Effekt verifizieren
+   (Inhalt der Antwort, erzeugtes Artefakt, geänderter Zustand) statt nur
+   "kein Fehler geworfen". Zusätzlich vor dem Erzeugen von
+   Branches/PRs/Issues prüfen, ob dafür nicht schon ein offener Vorgang
+   existiert (Idempotenz).
+   *Präzedenzfälle:* noch keiner.
+
+Sobald real einer dieser Fälle eintritt, wird direkt ein kurzer
+Präzedenzfall-Satz zur jeweiligen Regel ergänzt (was ist passiert, wann,
+wodurch jetzt abgesichert) — das macht die Regel nachvollziehbar statt
+abstrakt und hilft bei Grenzfällen.
+
+## Wiederkehrende Routinen als Skills
+
+Jede manuelle Routine, die mehr als zweimal in ähnlicher Form erklärt wird,
+ist ein Kandidat für einen eigenen, wiederverwendbaren Claude-Code-Skill
+(Slash-Command) unter `.claude/skills/<name>/SKILL.md`, statt sie jedes Mal im
+Fließtext zu wiederholen. Vorlage: `.claude/skills/bug-class-sweep/SKILL.md`
+(automatisiert Hygiene-Regel 1). Neue Skills nach demselben Muster anlegen:
+kurzer, fokussierter Name, klare "wann greift das"-Beschreibung im
+Frontmatter, prägnante Schritt-für-Schritt-Anweisungen im Body.
