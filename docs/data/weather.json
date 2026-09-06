@@ -10,36 +10,36 @@
    {
     "cold": {
      "temp": 14,
-     "time": "07:00"
+     "time": "05:00"
     },
     "date": "2026-09-07",
     "day": "MO",
-    "hi": 28,
+    "hi": 27,
     "hot": {
-     "temp": 28,
+     "temp": 27,
      "time": "17:00"
     },
     "icon": "☂︎",
-    "label": "Regen",
+    "label": "Schauer",
     "lo": 14,
     "sunrise": "06:39",
     "sunset": "19:43"
    },
    {
     "cold": {
-     "temp": 19,
-     "time": "07:00"
+     "temp": 18,
+     "time": "05:00"
     },
     "date": "2026-09-08",
     "day": "DI",
-    "hi": 31,
+    "hi": 32,
     "hot": {
-     "temp": 31,
-     "time": "16:00"
+     "temp": 32,
+     "time": "17:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
-    "lo": 19,
+    "lo": 18,
     "sunrise": "06:41",
     "sunset": "19:41"
    },
@@ -75,14 +75,14 @@
    {
     "cold": {
      "temp": 15,
-     "time": "07:00"
+     "time": "05:00"
     },
     "date": "2026-09-07",
     "day": "MO",
-    "hi": 31,
+    "hi": 30,
     "hot": {
-     "temp": 31,
-     "time": "16:00"
+     "temp": 30,
+     "time": "15:00"
     },
     "icon": "☂︎",
     "label": "Regen",
@@ -100,10 +100,10 @@
     "hi": 32,
     "hot": {
      "temp": 32,
-     "time": "15:00"
+     "time": "16:00"
     },
-    "icon": "☁︎",
-    "label": "bewölkt",
+    "icon": "☂︎",
+    "label": "Schauer",
     "lo": 17,
     "sunrise": "06:50",
     "sunset": "19:51"
