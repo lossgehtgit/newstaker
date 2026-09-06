@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="ZEIT">
+  <defs>
+    <pattern id="h" width="18" height="18" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="18" height="18" fill="#f5f3ef"/>
+      <rect width="9" height="18" fill="#ebe8e0"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#h)"/>
+  <rect x="16" y="354" width="51" height="26" rx="5" fill="#ffffff" fill-opacity="0.92"/>
+  <text x="25" y="372" font-family="IBM Plex Mono, Menlo, monospace" font-size="12" letter-spacing="0.8" fill="#6f6b64">ZEIT</text>
+  <text x="624" y="30" text-anchor="end" font-family="IBM Plex Mono, Menlo, monospace" font-size="11" letter-spacing="1.2" fill="#a8a49c">POLITIK</text>
+</svg>
