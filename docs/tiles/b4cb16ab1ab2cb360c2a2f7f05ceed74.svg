@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-label="CNBC">
   <defs>
-    <pattern id="h" width="20" height="20" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-      <rect width="20" height="20" fill="#f4f2ee"/>
-      <rect width="10" height="20" fill="#eae7e1"/>
+    <pattern id="h" width="16" height="16" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="#f2f0ea"/>
+      <rect width="8" height="16" fill="#e8e5dd"/>
     </pattern>
   </defs>
   <rect width="640" height="400" fill="url(#h)"/>
