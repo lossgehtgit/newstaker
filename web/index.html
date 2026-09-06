@@ -40,18 +40,24 @@
     </div>
     <div class="weather" id="weather">
       <button class="weather-city" id="weathercity" type="button" aria-label="Stadt wechseln">–</button>
-      <div class="weather-days" id="weatherdays"></div>
-      <div class="weather-hours" id="weatherhours"></div>
+      <div class="weather-pages" id="weatherpages">
+        <div class="weather-page weather-page-days" id="weatherdays"></div>
+        <div class="weather-page weather-page-detail" id="weatherdetail"></div>
+      </div>
     </div>
   </header>
 
   <div class="board-layout">
     <!-- Themen-Pills (aus Entwurf B) -------------------------------------- -->
     <nav class="pills" id="pills"></nav>
+    <select class="source-filter" id="sourcefilter" aria-label="Nach Quelle filtern">
+      <option value="">Alle Quellen</option>
+    </select>
 
     <!-- Meldungen --------------------------------------------------------- -->
     <main class="scroll" id="scroll">
       <div class="feed" id="feed"></div>
+      <button type="button" id="feedmore" class="feed-more" hidden>WEITERE MELDUNGEN ZEIGEN</button>
       <div class="empty" id="empty" hidden>
         <p>Keine Meldungen für diese Auswahl.</p>
         <button type="button" id="emptyreset">Filter zurücksetzen</button>
@@ -70,10 +76,26 @@
         <div class="markets-grid">
           <div class="markets-col">
             <div class="markets-col-title">ETFS</div>
+            <div class="mk-filterbar">
+              <input type="search" class="mk-search" id="markets-etf-search" placeholder="Suchen …" autocomplete="off">
+              <select class="mk-sort" id="markets-etf-sort">
+                <option value="default">Rang</option>
+                <option value="change-desc">Veränderung ↓</option>
+                <option value="change-asc">Veränderung ↑</option>
+              </select>
+            </div>
             <div class="markets-list" id="markets-etf"></div>
           </div>
           <div class="markets-col">
             <div class="markets-col-title">EINZELAKTIEN</div>
+            <div class="mk-filterbar">
+              <input type="search" class="mk-search" id="markets-stock-search" placeholder="Suchen …" autocomplete="off">
+              <select class="mk-sort" id="markets-stock-sort">
+                <option value="default">Rang</option>
+                <option value="change-desc">Veränderung ↓</option>
+                <option value="change-asc">Veränderung ↑</option>
+              </select>
+            </div>
             <div class="markets-list" id="markets-stock"></div>
           </div>
         </div>
@@ -113,6 +135,17 @@
       <div class="scroll search-results" id="searchresults"></div>
     </div>
   </section>
+
+  <!-- Kurs-Lupe: groessere Ansicht der Sparkline eines Titels -------------- -->
+  <div class="mk-modal" id="mkmodal" hidden>
+    <div class="mk-modal-backdrop" id="mkmodalbackdrop"></div>
+    <div class="mk-modal-panel">
+      <button type="button" class="mk-modal-close" id="mkmodalclose" aria-label="Schliessen">✕</button>
+      <div class="mk-modal-name" id="mkmodalname"></div>
+      <div class="mk-modal-line" id="mkmodalline"></div>
+      <div class="mk-modal-chart" id="mkmodalchart"></div>
+    </div>
+  </div>
 
 </div>
 

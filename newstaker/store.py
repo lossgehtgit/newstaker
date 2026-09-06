@@ -120,12 +120,15 @@ CREATE TABLE IF NOT EXISTS weather (
     code       INTEGER NOT NULL,
     hi         REAL NOT NULL,
     lo         REAL NOT NULL,
+    sunrise    TEXT NOT NULL DEFAULT '',
+    sunset     TEXT NOT NULL DEFAULT '',
     fetched_at TEXT NOT NULL,
     PRIMARY KEY (city, day)
 );
 
--- Stundenwerte, ausschliesslich fuer den heutigen Tag (siehe weather.py) -
--- die Detailansicht "Tagesverlauf zum Durchscrollen" braucht keine Historie.
+-- Stundenwerte fuer alle abgerufenen Tage (config.WEATHER_DAYS) - Basis fuer
+-- die pro-Tag berechneten Extremzeiten (waermste/kaelteste Stunde) in
+-- weather.board_payload().
 CREATE TABLE IF NOT EXISTS weather_hour (
     city       TEXT NOT NULL,
     hour       TEXT NOT NULL,   -- ISO-Zeit, z. B. "2026-09-05T14:00"
@@ -191,6 +194,11 @@ def _migrate(conn: sqlite3.Connection) -> None:
     have_market = {row["name"] for row in conn.execute("PRAGMA table_info(market)")}
     if have_market and "spark" not in have_market:
         conn.execute("ALTER TABLE market ADD COLUMN spark TEXT NOT NULL DEFAULT '[]'")
+
+    have_weather = {row["name"] for row in conn.execute("PRAGMA table_info(weather)")}
+    if have_weather and "sunrise" not in have_weather:
+        conn.execute("ALTER TABLE weather ADD COLUMN sunrise TEXT NOT NULL DEFAULT ''")
+        conn.execute("ALTER TABLE weather ADD COLUMN sunset TEXT NOT NULL DEFAULT ''")
 
 
 def init(conn: sqlite3.Connection) -> None:
@@ -484,8 +492,11 @@ def save_weather(conn: sqlite3.Connection, city: str, days: list[dict[str, Any]]
     fetched = now_iso()
     conn.execute("DELETE FROM weather WHERE city=?", (city,))
     conn.executemany(
-        "INSERT INTO weather(city, day, code, hi, lo, fetched_at) VALUES(?,?,?,?,?,?)",
-        [(city, d["day"], d["code"], d["hi"], d["lo"], fetched) for d in days],
+        "INSERT INTO weather(city, day, code, hi, lo, sunrise, sunset, fetched_at) VALUES(?,?,?,?,?,?,?,?)",
+        [
+            (city, d["day"], d["code"], d["hi"], d["lo"], d.get("sunrise", ""), d.get("sunset", ""), fetched)
+            for d in days
+        ],
     )
 
 

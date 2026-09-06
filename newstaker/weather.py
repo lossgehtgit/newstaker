@@ -66,9 +66,7 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
         {
             "latitude": ",".join(str(config.CITIES[c]["lat"]) for c in names),
             "longitude": ",".join(str(config.CITIES[c]["lon"]) for c in names),
-            "daily": "weather_code,temperature_2m_max,temperature_2m_min",
-            # Nur fuer den Tagesverlauf des heutigen Tages (siehe board_payload) -
-            # forecast_days=1 genuegt, mehr Historie wird hier nicht gebraucht.
+            "daily": "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset",
             "hourly": "temperature_2m,weather_code",
             "forecast_days": max(config.WEATHER_DAYS, 1),
             "timezone": config.TIMEZONE,
@@ -80,7 +78,6 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
     # Bei mehreren Koordinaten antwortet Open-Meteo mit einer Liste, bei einer
     # einzelnen mit einem Objekt.
     blocks = payload if isinstance(payload, list) else [payload]
-    today = datetime.now().date().isoformat()
     written = 0
     for city, block in zip(names, blocks):
         daily = block.get("daily") or {}
@@ -88,9 +85,21 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
         codes = daily.get("weather_code") or []
         highs = daily.get("temperature_2m_max") or []
         lows = daily.get("temperature_2m_min") or []
+        sunrises = daily.get("sunrise") or []
+        sunsets = daily.get("sunset") or []
         rows = [
-            {"day": d, "code": int(c), "hi": float(hi), "lo": float(lo)}
-            for d, c, hi, lo in zip(days, codes, highs, lows)
+            {
+                "day": d,
+                "code": int(c),
+                "hi": float(hi),
+                "lo": float(lo),
+                "sunrise": sr[11:16] if sr else "",
+                "sunset": ss[11:16] if ss else "",
+            }
+            for d, c, hi, lo, sr, ss in zip(
+                days, codes, highs, lows,
+                sunrises or [""] * len(days), sunsets or [""] * len(days),
+            )
         ]
         if rows:
             store.save_weather(conn, city, rows)
@@ -103,7 +112,6 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
         hour_rows = [
             {"hour": h, "code": int(c), "temp": float(t)}
             for h, c, t in zip(hours, hour_codes, temps)
-            if h.startswith(today)
         ]
         if hour_rows:
             store.save_weather_hours(conn, city, hour_rows)
@@ -116,9 +124,17 @@ def board_payload(conn, city: str) -> dict:
         city = config.DEFAULT_CITY
     rows = store.load_weather(conn, city)
     today = datetime.now().date().isoformat()
+    hour_rows = store.load_weather_hours(conn, city)
+    by_day: dict[str, list] = {}
+    for row in hour_rows:
+        by_day.setdefault(row["hour"][:10], []).append(row)
+
     days = []
     for row in rows:
         icon, label = describe(row["code"])
+        day_hours = by_day.get(row["day"]) or []
+        hot = max(day_hours, key=lambda h: h["temp"], default=None)
+        cold = min(day_hours, key=lambda h: h["temp"], default=None)
         days.append(
             {
                 "day": "HEUTE" if row["day"] == today else weekday_label(row["day"]),
@@ -127,12 +143,17 @@ def board_payload(conn, city: str) -> dict:
                 "label": label,
                 "hi": round(row["hi"]),
                 "lo": round(row["lo"]),
+                "sunrise": row["sunrise"],
+                "sunset": row["sunset"],
+                "hot": {"time": hot["hour"][11:16], "temp": round(hot["temp"])} if hot else None,
+                "cold": {"time": cold["hour"][11:16], "temp": round(cold["temp"])} if cold else None,
             }
         )
-    hour_rows = store.load_weather_hours(conn, city)
     now_hour = datetime.now().strftime("%Y-%m-%dT%H:00")
     hours = []
     for row in hour_rows:
+        if not row["hour"].startswith(today):
+            continue
         icon, label = describe(row["code"])
         hours.append(
             {

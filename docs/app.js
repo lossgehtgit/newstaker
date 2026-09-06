@@ -20,6 +20,7 @@ const $ = (id) => document.getElementById(id);
 
 const LEAD_COUNT = 3;
 const BOARD_LIMIT = 120;
+const FEED_PAGE_SIZE = 10;
 const READ_KEY = 'newstaker.read';
 const SAVED_KEY = 'newstaker.saved';
 
@@ -35,6 +36,12 @@ const state = {
   hideRead: false,
   open: new Set(),      // aufgeklappte Teaser (nur diese Sitzung)
   searchMode: 'all',
+  sourceFilter: '',
+  feedVisible: FEED_PAGE_SIZE,
+  marketFilter: {
+    etf: { query: '', sort: 'default' },
+    stock: { query: '', sort: 'default' },
+  },
 };
 
 /* ----------------------------------------------------------------- Hilfen */
@@ -124,14 +131,33 @@ function renderFetchLine() {
   $('fetchline').textContent = `${state.totalSources} QUELLEN · ${when}`;
 }
 
+function weatherDetailRow(label, value) {
+  const row = el('div', 'wd-row');
+  row.appendChild(el('span', 'wd-label', label));
+  row.appendChild(el('span', 'wd-value', value));
+  return row;
+}
+
+function showWeatherDetail(day) {
+  const panel = $('weatherdetail');
+  panel.replaceChildren();
+  if (!day) return;
+  panel.appendChild(el('div', 'wd-title', day.day));
+  panel.appendChild(weatherDetailRow('Sonnenaufgang', day.sunrise || '–'));
+  panel.appendChild(weatherDetailRow('Sonnenuntergang', day.sunset || '–'));
+  panel.appendChild(weatherDetailRow('Wärmste Zeit', day.hot ? `${day.hot.time} · ${day.hot.temp}°` : '–'));
+  panel.appendChild(weatherDetailRow('Kälteste Zeit', day.cold ? `${day.cold.time} · ${day.cold.temp}°` : '–'));
+}
+
 function renderWeather() {
   const wx = state.weather;
   if (!wx) return;
   $('weathercity').textContent = wx.cityLabel;
   const rail = $('weatherdays');
   rail.replaceChildren();
-  wx.days.forEach((day) => {
-    const box = el('div', 'weather-day');
+  const pages = $('weatherpages');
+  wx.days.forEach((day, i) => {
+    const box = el('div', 'weather-day' + (i === 0 ? ' is-active' : ''));
     box.appendChild(el('div', 'd', day.day));
     const icon = el('div', 'i', day.icon);
     icon.title = day.label;
@@ -142,20 +168,23 @@ function renderWeather() {
     lo.textContent = `/${day.lo}`;
     temp.appendChild(lo);
     box.appendChild(temp);
+    box.addEventListener('click', () => {
+      rail.querySelectorAll('.weather-day').forEach((n) => n.classList.remove('is-active'));
+      box.classList.add('is-active');
+      showWeatherDetail(day);
+      pages.scrollTo({ left: pages.clientWidth, behavior: 'smooth' });
+    });
     rail.appendChild(box);
   });
 
-  const hourRail = $('weatherhours');
-  hourRail.replaceChildren();
-  (wx.hours || []).forEach((hour) => {
-    const box = el('div', 'weather-hour' + (hour.isNow ? ' is-now' : ''));
-    box.appendChild(el('div', 'h', hour.isNow ? 'JETZT' : hour.hour));
-    const icon = el('div', 'i', hour.icon);
-    icon.title = hour.label;
-    box.appendChild(icon);
-    box.appendChild(el('div', 't', `${hour.temp}°`));
-    hourRail.appendChild(box);
-  });
+  showWeatherDetail(wx.days[0]);
+  const detail = $('weatherdetail');
+  if (!detail.dataset.wired) {
+    detail.dataset.wired = '1';
+    detail.addEventListener('click', () => {
+      $('weatherpages').scrollTo({ left: 0, behavior: 'smooth' });
+    });
+  }
 }
 
 /* --------------------------------------------------- Filtern (wie im Server)
@@ -167,6 +196,7 @@ function applyFilters() {
   let items = state.allItems;
   if (state.topic) items = items.filter((e) => e.topic === state.topic);
   if (state.hideRead) items = items.filter((e) => !isRead(e.id));
+  if (state.sourceFilter) items = items.filter((e) => e.source === state.sourceFilter);
   return items;
 }
 
@@ -199,11 +229,41 @@ function sparkSvg(values, isPositive) {
   return svg;
 }
 
-function renderMarketColumn(elementId, rows) {
+function openMarketModal(row) {
+  $('mkmodalname').textContent = row.name;
+  const sign = row.changePct >= 0 ? '+' : '';
+  $('mkmodalline').textContent = `${row.price} ${row.currency} · ${sign}${row.changePct}% / ${state.markets.lookbackYears}J`;
+  const chart = $('mkmodalchart');
+  chart.replaceChildren();
+  chart.appendChild(sparkSvg(row.spark, row.changePct >= 0));
+  $('mkmodal').hidden = false;
+}
+
+function closeMarketModal() {
+  $('mkmodal').hidden = true;
+}
+
+function applyMarketFilter(rows, filter) {
+  let out = rows;
+  if (filter.query) {
+    const needle = filter.query.toLowerCase();
+    out = out.filter((row) =>
+      row.name.toLowerCase().includes(needle) || row.symbol.toLowerCase().includes(needle)
+    );
+  }
+  out = out.slice();
+  if (filter.sort === 'change-desc') out.sort((a, b) => b.changePct - a.changePct);
+  else if (filter.sort === 'change-asc') out.sort((a, b) => a.changePct - b.changePct);
+  return out;
+}
+
+function renderMarketColumn(kind, elementId, rows) {
   const box = $(elementId);
   box.replaceChildren();
-  rows.forEach((row) => {
+  const filtered = applyMarketFilter(rows, state.marketFilter[kind]);
+  filtered.forEach((row) => {
     const line = el('div', 'mk-row');
+    line.addEventListener('click', () => openMarketModal(row));
     line.appendChild(el('div', 'mk-name', row.name));
     const meta = el('div', 'mk-line');
     meta.appendChild(el('span', 'mk-price', `${row.price} ${row.currency}`));
@@ -211,7 +271,6 @@ function renderMarketColumn(elementId, rows) {
     const chg = el('span', 'mk-chg ' + (row.changePct >= 0 ? 'is-pos' : 'is-neg'), `${sign}${row.changePct}%`);
     meta.appendChild(chg);
     line.appendChild(meta);
-    line.appendChild(sparkSvg(row.spark, row.changePct >= 0));
     box.appendChild(line);
   });
 }
@@ -225,8 +284,8 @@ function renderMarkets() {
   }
   section.hidden = false;
   $('marketsage').textContent = `${mk.lookbackYears} JAHRE`;
-  renderMarketColumn('markets-etf', mk.etfs);
-  renderMarketColumn('markets-stock', mk.stocks);
+  renderMarketColumn('etf', 'markets-etf', mk.etfs);
+  renderMarketColumn('stock', 'markets-stock', mk.stocks);
 }
 
 /* ------------------------------------------------------------ Themen-Pills */
@@ -248,10 +307,23 @@ function renderPills() {
     if (topic.key === state.topic) pill.classList.add('is-active');
     pill.addEventListener('click', () => {
       state.topic = topic.key;
+      state.feedVisible = FEED_PAGE_SIZE;
       renderBoard();
     });
     nav.appendChild(pill);
   });
+}
+
+function renderSourceFilter() {
+  const select = $('sourcefilter');
+  if (!select) return;
+  const sources = Array.from(new Set(state.allItems.map((item) => item.source))).sort((a, b) => a.localeCompare(b, 'de'));
+  const current = state.sourceFilter;
+  select.replaceChildren();
+  select.appendChild(new Option('Alle Quellen', ''));
+  sources.forEach((s) => select.appendChild(new Option(s, s)));
+  select.value = sources.includes(current) ? current : '';
+  state.sourceFilter = select.value;
 }
 
 /* ------------------------------------------------------------------ Feed */
@@ -398,6 +470,7 @@ function renderFeed(leads, briefs) {
 
   const total = leads.length + briefs.length;
   $('empty').hidden = total > 0;
+  $('feedmore').hidden = true;
   if (total === 0) return;
 
   if (leads.length) {
@@ -406,11 +479,19 @@ function renderFeed(leads, briefs) {
     feed.appendChild(leadsBox);
   }
 
-  if (briefs.length) {
+  // "Qualitaet vor Menge": das Board liefert bereits nach Score sortiert
+  // (Quellen-Tier, Clustergroesse, Aktualitaet, Thema, siehe rank.py); hier
+  // wird nur noch die standardmaessig sichtbare Menge auf FEED_PAGE_SIZE
+  // Kurzmeldungen gedeckelt, mit "mehr laden" fuer den Rest.
+  const visibleBriefs = briefs.slice(0, state.feedVisible);
+  if (visibleBriefs.length) {
     feed.appendChild(el('div', 'brief-head', `KURZMELDUNGEN · ${briefs.length}`));
     const briefsBox = el('div', 'briefs-grid');
-    briefs.forEach((item) => briefsBox.appendChild(renderBrief(item, renderBoard)));
+    visibleBriefs.forEach((item) => briefsBox.appendChild(renderBrief(item, renderBoard)));
     feed.appendChild(briefsBox);
+  }
+  if (briefs.length > visibleBriefs.length) {
+    $('feedmore').hidden = false;
   }
 }
 
@@ -436,6 +517,7 @@ function renderBoard() {
 
   renderFetchLine();
   renderPills();
+  renderSourceFilter();
   renderFeed(leads, briefs);
   renderFootline();
 }
@@ -501,15 +583,18 @@ function renderSearchResults(results, query) {
 }
 
 let searchTimer = null;
+let searchRequestId = 0;
 
 async function runSearch() {
   const query = $('searchinput').value.trim();
 
   if (!query && state.searchMode === 'all') {
+    searchRequestId += 1;
     renderSearchResults([], '');
     return;
   }
 
+  const requestId = ++searchRequestId;
   let index;
   try {
     index = await ensureSearchIndex();
@@ -517,6 +602,10 @@ async function runSearch() {
     console.error('Suchindex nicht verfügbar:', err);
     return;
   }
+  // Bei schnellem Tippen kann eine aeltere Anfrage (z. B. der erste Aufruf,
+  // der noch den Suchindex nachladen musste) spaeter zurueckkommen als eine
+  // neuere - dann darf sie das schon engere Ergebnis nicht ueberschreiben.
+  if (requestId !== searchRequestId) return;
 
   let results = index;
   if (state.searchMode === 'saved') {
@@ -553,8 +642,36 @@ function wire() {
 
   $('hideread').addEventListener('click', () => {
     state.hideRead = !state.hideRead;
+    state.feedVisible = FEED_PAGE_SIZE;
     renderBoard();
   });
+
+  $('sourcefilter').addEventListener('change', () => {
+    state.sourceFilter = $('sourcefilter').value;
+    state.feedVisible = FEED_PAGE_SIZE;
+    renderBoard();
+  });
+
+  $('feedmore').addEventListener('click', () => {
+    state.feedVisible += FEED_PAGE_SIZE;
+    renderBoard();
+  });
+
+  ['etf', 'stock'].forEach((kind) => {
+    const search = $(`markets-${kind}-search`);
+    const sort = $(`markets-${kind}-sort`);
+    search.addEventListener('input', () => {
+      state.marketFilter[kind].query = search.value.trim();
+      renderMarkets();
+    });
+    sort.addEventListener('change', () => {
+      state.marketFilter[kind].sort = sort.value;
+      renderMarkets();
+    });
+  });
+
+  $('mkmodalclose').addEventListener('click', closeMarketModal);
+  $('mkmodalbackdrop').addEventListener('click', closeMarketModal);
 
   $('emptyreset').addEventListener('click', () => {
     state.topic = '';
@@ -591,7 +708,9 @@ function wire() {
   });
 
   document.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Escape' && !$('search').hidden) closeSearch();
+    if (ev.key !== 'Escape') return;
+    if (!$('mkmodal').hidden) closeMarketModal();
+    else if (!$('search').hidden) closeSearch();
   });
 
   const dHide = $('desktop-hideread');
