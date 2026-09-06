@@ -42,11 +42,17 @@ store.py (raw_fetch, item, feed_state)                                          
    Löschen bei leerem Ergebnis — Regressionstest
    `test_markets_totalausfall_erhaelt_alten_stand`).
    - `weather.py` holt in *demselben* Open-Meteo-Request zusätzlich zur
-     Tagesübersicht ein `hourly`-Feld (`temperature_2m,weather_code`,
-     `forecast_days=1`) und behält davon nur die Stunden des heutigen Tages
-     (`store.weather_hour`, PK `(city, hour)`, voller Ersatz je Refresh wie
-     bei `weather`). `board_payload()` liefert das zusätzlich als `hours`
-     (mit `isNow`-Flag fürs Hervorheben der aktuellen Stunde).
+     Tagesübersicht ein `hourly`-Feld (`temperature_2m,weather_code`) sowie
+     `daily=…,sunrise,sunset` — `forecast_days` (config.WEATHER_DAYS, 3) gilt
+     für Tages- *und* Stundenwerte gleichermaßen, `store.weather_hour` hält
+     seit 2026-09-06 also alle abgerufenen Tage, nicht mehr nur heute (PK
+     `(city, hour)`, voller Ersatz je Refresh wie bei `weather`).
+     `board_payload()` liefert weiterhin `hours` (nur heute, mit `isNow`-Flag)
+     sowie je Tag in `days[]` zusätzlich `sunrise`/`sunset` (HH:MM) und
+     `hot`/`cold` (`{time, temp}`, aus den Stundenwerten des jeweiligen Tages
+     berechnet — Regressionstest
+     `test_board_payload_liefert_sonnenzeiten_und_extremwerte`). Die Spalten
+     `weather.sunrise`/`weather.sunset` sind per `store._migrate` nachgezogen.
    - `markets.py` speichert seit dem Sparkline-Feature zusätzlich eine
      downgesampelte Kursreihe je Titel (`_downsample()`, `config.
      MARKETS_SPARK_POINTS` Stützstellen, Anfang/Ende bleiben erhalten) als
@@ -126,6 +132,12 @@ reaktiviert sie.
 
 ## Bekannte Fallen (aus echten Bugs, siehe SESSION_REPORT.md §11)
 
+0. **Bekannte Vorbelastung (nicht neu, nicht behoben):** `weather.py` ruft
+   `datetime.now()` direkt statt `now=` durchzureichen (Sonnenaufgang/
+   -untergang/Board-Filter sind reine Tageswerte der Open-Meteo-API, nicht
+   aus der Verarbeitungsreihenfolge abgeleitet, daher bislang harmlos für
+   `board_digest()` — trotzdem eine Abweichung vom sonst durchgehaltenen
+   Muster, falls hier künftig etwas Zeitfenster-Abhängiges dazukommt).
 1. `datetime.now()` an einer der oben genannten Zeit-Stellen statt `now=`
    durchzureichen bricht den Determinismus-Test lautlos (kein Crash, nur ein
    anderer Fingerabdruck).

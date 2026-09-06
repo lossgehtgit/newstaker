@@ -382,6 +382,46 @@ class TestWeather(unittest.TestCase):
         self.assertEqual(weather.weekday_label("2026-07-25"), "SA")
         self.assertEqual(weather.weekday_label("2026-07-27"), "MO")
 
+    def test_board_payload_liefert_sonnenzeiten_und_extremwerte(self):
+        """Verankert die Annahme, dass jeder Tag im Board-Payload Sonnenauf-
+        /-untergang sowie waermste/kaelteste Stunde mitfuehrt - Basis der
+        Detailseite in der Wetterkarte (siehe web/app.js showWeatherDetail).
+        Ohne diesen Test wuerde eine kuenftige API-Aenderung an weather.py
+        diese Felder lautlos wieder verschwinden lassen."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            alte_db, alter_var = config.DB_PATH, config.VAR_DIR
+            config.VAR_DIR = Path(tmp)
+            config.DB_PATH = Path(tmp) / "test.db"
+            conn = store.connect()
+            store.init(conn)
+            try:
+                today = datetime.now().date().isoformat()
+                store.save_weather(
+                    conn,
+                    "München",
+                    [{"day": today, "code": 0, "hi": 20.0, "lo": 10.0, "sunrise": "06:12", "sunset": "20:31"}],
+                )
+                store.save_weather_hours(
+                    conn,
+                    "München",
+                    [
+                        {"hour": f"{today}T06:00", "code": 0, "temp": 12.0},
+                        {"hour": f"{today}T15:00", "code": 0, "temp": 22.0},
+                    ],
+                )
+                conn.commit()
+                payload = weather.board_payload(conn, "München")
+                day = payload["days"][0]
+                self.assertEqual(day["sunrise"], "06:12")
+                self.assertEqual(day["sunset"], "20:31")
+                self.assertEqual(day["hot"], {"time": "15:00", "temp": 22})
+                self.assertEqual(day["cold"], {"time": "06:00", "temp": 12})
+            finally:
+                conn.close()
+                config.DB_PATH, config.VAR_DIR = alte_db, alter_var
+
 
 # --------------------------------------------------------------- Bilder
 

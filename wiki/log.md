@@ -133,3 +133,32 @@ scheiterte in dieser Session mit HTTP 403 (kein Schreibzugriff auf den Git-
 Remote direkt, nur ueber die GitHub-API/MCP-Tools, die aber kein
 Branch-Delete anbieten) - Branch muss manuell im Repo geloescht werden oder
 in einer Session mit Git-Push-Recht.
+
+## [2026-09-06] feature — Wetter-Detailkarte, Kurs-Lupe mit Filter, News-Quellenfilter und Suchfix
+Wetter: Stundenverlauf-Balken durch kompakte 3-Tage-Ansicht ersetzt, zweite
+Seite (Scroll-Snap, Klick zum Umschalten) je Tag mit Sonnenaufgang/-untergang
+und waermster/kaeltester Stunde. Backend: `newstaker/weather.py` holt jetzt
+`daily=…,sunrise,sunset`, `store.weather_hour` haelt alle abgerufenen Tage
+statt nur heute, `weather.board_payload()` liefert `days[].sunrise/sunset/hot/
+cold`; `store.py` Schema+Migration um `weather.sunrise`/`weather.sunset`
+erweitert. Neuer Test `test_board_payload_liefert_sonnenzeiten_und_extremwerte`
+(TestWeather) verankert die Feldform.
+Maerkte: inline-Sparkline unter jeder Zeile entfernt, Klick auf einen Titel
+oeffnet stattdessen ein zentriertes Modal ("Lupe") mit groesserer Sparkline
+(bestehendes `spark`-Feld, keine Backend-Aenderung). Ueber ETF-/Aktienliste
+je ein Suchfeld + Sortierung nach Veraenderung (Rang/auf/ab) - rein
+client-seitig, da `config.CANDIDATE_ETFS/STOCKS` keine Kategorie-/Land-
+Metadaten fuehren; Kategorie-/Land-Filter bewusst nicht gebaut (Datenmodell
+gibt es nicht her, siehe config.py).
+News: Quellenfilter-Dropdown neben den Themen-Pills (client-seitig ueber
+`item.source`). Standardansicht deckelt Kurzmeldungen auf 10 mit "weitere
+Meldungen zeigen"-Button statt alles auf einmal zu zeigen (Aufmacher bleiben
+sichtbar, Sortierung/Score aus `rank.py` unveraendert, keine Quelle wird
+entfernt). Suchfix: `runSearch()` in web/app.js und docs/app.js hatte keinen
+Schutz gegen ueberholende Antworten - bei schnellem Tippen konnte eine
+aeltere (breitere) Anfrage nach der neueren zurueckkommen und das engere
+Ergebnis wieder ueberschreiben ("Suche zeigt alles"); jetzt per
+`searchRequestId`-Zaehler nur noch die jeweils letzte Anfrage gerendert.
+Dateien: newstaker/weather.py, newstaker/store.py, tests/test_newstaker.py,
+web/app.js, web/app.css, web/index.html, docs/app.js, docs/app.css,
+docs/index.html, wiki/architecture.md.
