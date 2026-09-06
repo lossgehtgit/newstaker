@@ -9,7 +9,7 @@
   "days": [
    {
     "date": "2026-09-06",
-    "day": "SO",
+    "day": "HEUTE",
     "hi": 24,
     "icon": "☁︎",
     "label": "bewölkt",
@@ -32,7 +32,176 @@
     "lo": 18
    }
   ],
-  "hours": []
+  "hours": [
+   {
+    "hour": "00:00",
+    "icon": "☀︎",
+    "isNow": true,
+    "label": "klar",
+    "temp": 17
+   },
+   {
+    "hour": "01:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 16
+   },
+   {
+    "hour": "02:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 16
+   },
+   {
+    "hour": "03:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 16
+   },
+   {
+    "hour": "04:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 15
+   },
+   {
+    "hour": "05:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 15
+   },
+   {
+    "hour": "06:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 14
+   },
+   {
+    "hour": "07:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 14
+   },
+   {
+    "hour": "08:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 14
+   },
+   {
+    "hour": "09:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 16
+   },
+   {
+    "hour": "10:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 17
+   },
+   {
+    "hour": "11:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 19
+   },
+   {
+    "hour": "12:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 20
+   },
+   {
+    "hour": "13:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 22
+   },
+   {
+    "hour": "14:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 22
+   },
+   {
+    "hour": "15:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 23
+   },
+   {
+    "hour": "16:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 24
+   },
+   {
+    "hour": "17:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 24
+   },
+   {
+    "hour": "18:00",
+    "icon": "☁︎",
+    "isNow": false,
+    "label": "bewölkt",
+    "temp": 24
+   },
+   {
+    "hour": "19:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 23
+   },
+   {
+    "hour": "20:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 21
+   },
+   {
+    "hour": "21:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 19
+   },
+   {
+    "hour": "22:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 18
+   },
+   {
+    "hour": "23:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 17
+   }
+  ]
  },
  "Reutlingen": {
   "cities": [
@@ -44,7 +213,7 @@
   "days": [
    {
     "date": "2026-09-06",
-    "day": "SO",
+    "day": "HEUTE",
     "hi": 25,
     "icon": "☁︎",
     "label": "bewölkt",
@@ -67,6 +236,175 @@
     "lo": 17
    }
   ],
-  "hours": []
+  "hours": [
+   {
+    "hour": "00:00",
+    "icon": "☀︎",
+    "isNow": true,
+    "label": "leicht bewölkt",
+    "temp": 17
+   },
+   {
+    "hour": "01:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 15
+   },
+   {
+    "hour": "02:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 14
+   },
+   {
+    "hour": "03:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 14
+   },
+   {
+    "hour": "04:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 14
+   },
+   {
+    "hour": "05:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 13
+   },
+   {
+    "hour": "06:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 12
+   },
+   {
+    "hour": "07:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 10
+   },
+   {
+    "hour": "08:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 11
+   },
+   {
+    "hour": "09:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 14
+   },
+   {
+    "hour": "10:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 16
+   },
+   {
+    "hour": "11:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 19
+   },
+   {
+    "hour": "12:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 21
+   },
+   {
+    "hour": "13:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 23
+   },
+   {
+    "hour": "14:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 24
+   },
+   {
+    "hour": "15:00",
+    "icon": "☁︎",
+    "isNow": false,
+    "label": "bewölkt",
+    "temp": 25
+   },
+   {
+    "hour": "16:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 25
+   },
+   {
+    "hour": "17:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 25
+   },
+   {
+    "hour": "18:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 25
+   },
+   {
+    "hour": "19:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 25
+   },
+   {
+    "hour": "20:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 23
+   },
+   {
+    "hour": "21:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 21
+   },
+   {
+    "hour": "22:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "klar",
+    "temp": 20
+   },
+   {
+    "hour": "23:00",
+    "icon": "☀︎",
+    "isNow": false,
+    "label": "leicht bewölkt",
+    "temp": 19
+   }
+  ]
  }
 }
