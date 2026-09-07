@@ -1,11 +1,11 @@
 {
- "checkedAt": "2026-09-07T10:39:02+00:00",
+ "checkedAt": "2026-09-07T16:14:44+00:00",
  "etfs": [
   {
-   "changePct": 96.0,
+   "changePct": 95.9,
    "currency": "USD",
    "name": "iShares NASDAQ 100 UCITS ETF USD (Acc)",
-   "price": 1701.4,
+   "price": 1700.4,
    "spark": [
     868.2,
     833.0,
@@ -30,7 +30,7 @@
     1521.6,
     1704.0,
     1628.0,
-    1701.4
+    1700.4
    ],
    "symbol": "CSNDX.SW"
   },
@@ -68,10 +68,10 @@
    "symbol": "XDEM.DE"
   },
   {
-   "changePct": 78.8,
+   "changePct": 78.5,
    "currency": "USD",
    "name": "iShares Core S&P 500 UCITS ETF USD (Acc)",
-   "price": 831.67,
+   "price": 830.26,
    "spark": [
     465.14,
     443.63,
@@ -96,15 +96,15 @@
     756.16,
     814.74,
     808.04,
-    831.67
+    830.26
    ],
    "symbol": "CSPX.L"
   },
   {
-   "changePct": 78.8,
+   "changePct": 78.4,
    "currency": "USD",
    "name": "Vanguard S&P 500 UCITS ETF USD Accumulation",
-   "price": 149.14,
+   "price": 148.88,
    "spark": [
     83.43,
     79.52,
@@ -129,15 +129,15 @@
     135.62,
     146.08,
     144.9,
-    149.14
+    148.88
    ],
    "symbol": "VUAA.L"
   },
   {
-   "changePct": 78.3,
+   "changePct": 78.1,
    "currency": "EUR",
    "name": "Xtrackers MSCI Emerging Markets UCITS ETF 1C",
-   "price": 82.48,
+   "price": 82.37,
    "spark": [
     46.26,
     44.94,
@@ -162,7 +162,7 @@
     74.15,
     79.15,
     79.45,
-    82.48
+    82.37
    ],
    "symbol": "XMME.DE"
   }
