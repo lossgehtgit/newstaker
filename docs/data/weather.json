@@ -27,7 +27,7 @@
    },
    {
     "cold": {
-     "temp": 19,
+     "temp": 18,
      "time": "07:00"
     },
     "date": "2026-09-08",
@@ -35,11 +35,11 @@
     "hi": 31,
     "hot": {
      "temp": 31,
-     "time": "17:00"
+     "time": "16:00"
     },
-    "icon": "☁︎",
-    "label": "bewölkt",
-    "lo": 19,
+    "icon": "☂︎",
+    "label": "Regen",
+    "lo": 18,
     "sunrise": "06:41",
     "sunset": "19:41"
    },
@@ -192,7 +192,7 @@
    {
     "hour": "18:00",
     "icon": "☁︎",
-    "isNow": true,
+    "isNow": false,
     "label": "bewölkt",
     "temp": 28
    },
@@ -206,7 +206,7 @@
    {
     "hour": "20:00",
     "icon": "☁︎",
-    "isNow": false,
+    "isNow": true,
     "label": "bewölkt",
     "temp": 26
    },
@@ -215,13 +215,13 @@
     "icon": "☀︎",
     "isNow": false,
     "label": "leicht bewölkt",
-    "temp": 25
+    "temp": 24
    },
    {
     "hour": "22:00",
     "icon": "☀︎",
     "isNow": false,
-    "label": "klar",
+    "label": "leicht bewölkt",
     "temp": 23
    },
    {
@@ -261,19 +261,19 @@
    },
    {
     "cold": {
-     "temp": 16,
+     "temp": 17,
      "time": "07:00"
     },
     "date": "2026-09-08",
     "day": "DI",
-    "hi": 32,
+    "hi": 33,
     "hot": {
-     "temp": 32,
+     "temp": 33,
      "time": "16:00"
     },
     "icon": "☂︎",
-    "label": "Regen",
-    "lo": 16,
+    "label": "Schauer",
+    "lo": 17,
     "sunrise": "06:50",
     "sunset": "19:51"
    },
@@ -426,7 +426,7 @@
    {
     "hour": "18:00",
     "icon": "☁︎",
-    "isNow": true,
+    "isNow": false,
     "label": "bewölkt",
     "temp": 31
    },
@@ -440,7 +440,7 @@
    {
     "hour": "20:00",
     "icon": "☀︎",
-    "isNow": false,
+    "isNow": true,
     "label": "leicht bewölkt",
     "temp": 28
    },
@@ -448,22 +448,22 @@
     "hour": "21:00",
     "icon": "☀︎",
     "isNow": false,
-    "label": "leicht bewölkt",
-    "temp": 24
+    "label": "klar",
+    "temp": 25
    },
    {
     "hour": "22:00",
     "icon": "☀︎",
     "isNow": false,
-    "label": "leicht bewölkt",
-    "temp": 24
+    "label": "klar",
+    "temp": 25
    },
    {
     "hour": "23:00",
     "icon": "☀︎",
     "isNow": false,
     "label": "klar",
-    "temp": 22
+    "temp": 24
    }
   ]
  }
