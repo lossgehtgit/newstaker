@@ -8,6 +8,7 @@ wird an den echten Faellen geprueft, die bei der Kalibrierung aufgetreten sind.
 
 from __future__ import annotations
 
+import sqlite3
 import sys
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -814,6 +815,50 @@ class TestMarkets(unittest.TestCase):
         self.assertEqual(payload["searchIndex"][0]["symbol"], "SAP.DE")
         self.assertEqual(payload["searchIndex"][0]["changePctDaily"], 1.2)
         self.assertEqual(payload["etfs"][0]["changePctDaily"], 0.5)
+
+    def test_gleiches_symbol_in_kandidatenliste_und_suchindex(self):
+        """config.SEARCH_INDEX_STOCKS ueberschneidet sich bewusst mit
+        CANDIDATE_STOCKS (z.B. AMZN) - market.symbol darf deshalb keine
+        alleinige PRIMARY KEY sein, siehe store._migrate()."""
+        store.save_markets(
+            self.conn,
+            [],
+            [{"symbol": "AMZN", "name": "Amazon", "price": 200.0, "currency": "USD",
+              "changePct": 30.0, "changePctDaily": 1.0, "spark": [190.0, 200.0]}],
+            [{"symbol": "AMZN", "name": "Amazon", "price": 200.0, "currency": "USD",
+              "changePct": 0.0, "changePctDaily": 1.0, "spark": [190.0, 200.0]}],
+        )
+        self.conn.commit()
+        payload = markets.board_payload(self.conn)
+        self.assertEqual(len(payload["stocks"]), 1)
+        self.assertEqual(len(payload["searchIndex"]), 1)
+
+    def test_migration_alte_market_tabelle_ohne_kind_in_pk(self):
+        """Verankert die Migration in store._migrate(): DBs von vor dem
+        Suchindex hatten `symbol` allein als PRIMARY KEY."""
+        conn = sqlite3.connect(":memory:")
+        conn.row_factory = sqlite3.Row
+        conn.execute(
+            """CREATE TABLE market (
+                symbol TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL,
+                price REAL NOT NULL, currency TEXT NOT NULL, change_pct REAL NOT NULL,
+                spark TEXT NOT NULL DEFAULT '[]', fetched_at TEXT NOT NULL
+            )"""
+        )
+        conn.execute(
+            "INSERT INTO market(symbol, kind, name, price, currency, change_pct, fetched_at) "
+            "VALUES ('AMZN', 'stock', 'Amazon', 200.0, 'USD', 30.0, '2026-01-01T00:00:00+00:00')"
+        )
+        conn.commit()
+        store._migrate(conn)
+        conn.commit()
+        conn.execute(
+            "INSERT INTO market(symbol, kind, name, price, currency, change_pct, fetched_at) "
+            "VALUES ('AMZN', 'search', 'Amazon', 200.0, 'USD', 0.0, '2026-01-01T00:00:00+00:00')"
+        )
+        conn.commit()
+        rows = conn.execute("SELECT symbol, kind FROM market ORDER BY kind").fetchall()
+        self.assertEqual([(r["symbol"], r["kind"]) for r in rows], [("AMZN", "search"), ("AMZN", "stock")])
 
 
 if __name__ == "__main__":

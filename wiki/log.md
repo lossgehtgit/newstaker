@@ -187,3 +187,15 @@ Dateien: newstaker/markets.py, newstaker/store.py, newstaker/config.py,
 tests/test_newstaker.py, web/app.js, web/app.css, web/index.html,
 docs/app.js, docs/app.css, docs/index.html, wiki/architecture.md,
 wiki/database.md.
+
+## [2026-09-07] fix — market.symbol als alleinige PRIMARY KEY brach den Export nach PR #7
+config.SEARCH_INDEX_STOCKS ueberschneidet sich bewusst mit CANDIDATE_STOCKS
+(z.B. AMZN, TSLA) - beim Speichern beider Gruppen (`stock` und `search`) fuer
+denselben Titel schlug `INSERT` mit `UNIQUE constraint failed: market.symbol`
+fehl. Brach den GitHub-Actions-Export ab dem Merge von PR #7 (jeder Lauf rot,
+docs/ blieb auf dem alten Stand haengen). PRIMARY KEY jetzt (symbol, kind)
+statt nur symbol; store._migrate() baut die Tabelle fuer bestehende
+var/news.db einmalig um (sqlite kann PK nicht per ALTER aendern). Zwei neue
+Regressionstests (Hygiene-Regel 3): test_gleiches_symbol_in_kandidatenliste_
+und_suchindex, test_migration_alte_market_tabelle_ohne_kind_in_pk.
+Dateien: newstaker/store.py, tests/test_newstaker.py.

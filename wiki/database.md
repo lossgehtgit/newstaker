@@ -99,3 +99,11 @@ search if search else None)` — fällt nur die breitere Suchliste aus (Yahoo-
 Ausfall bei den zusätzlichen Symbolen), bleibt ihr alter Stand erhalten, auch
 wenn `etfs`/`stocks` frisch sind, und umgekehrt. Gleiche Nicht-Löschen-Regel
 wie beim Totalausfall, nur pro Gruppe statt global.
+
+**PRIMARY KEY ist `(symbol, kind)`, nicht `symbol` allein** (seit 2026-09-07,
+Hotfix): `config.SEARCH_INDEX_STOCKS` überschneidet sich bewusst mit
+`CANDIDATE_STOCKS`/`CANDIDATE_ETFS` (z. B. AMZN, TSLA stehen in beiden), ein
+`symbol`-only-PK ließ dann `INSERT` beim zweiten Vorkommen mit
+`UNIQUE constraint failed` scheitern — brach den Export direkt nach dem Merge
+des Suchindex-Features. `store._migrate()` baut die Tabelle für bestehende
+`var/news.db` einmalig um (sqlite kennt kein `ALTER TABLE ... ADD PRIMARY KEY`).
