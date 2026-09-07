@@ -22,8 +22,8 @@ const state = {
   sourceFilter: '',
   feedVisible: FEED_PAGE_SIZE,
   marketFilter: {
-    etf: { query: '', sort: 'default' },
-    stock: { query: '', sort: 'default' },
+    etf: { query: '', sort: 'change-desc' },
+    stock: { query: '', sort: 'change-desc' },
   },
 };
 
@@ -164,8 +164,10 @@ function sparkSvg(values, isPositive) {
 
 function openMarketModal(row) {
   $('mkmodalname').textContent = row.name;
-  const sign = row.changePct >= 0 ? '+' : '';
-  $('mkmodalline').textContent = `${row.price} ${row.currency} · ${sign}${row.changePct}% / ${state.markets.lookbackYears}J`;
+  const daySign = row.changePctDaily >= 0 ? '+' : '';
+  const yearSign = row.changePct >= 0 ? '+' : '';
+  $('mkmodalline').textContent =
+    `${row.price} ${row.currency} · ${daySign}${row.changePctDaily}% heute · ${yearSign}${row.changePct}% / ${state.markets.lookbackYears}J`;
   const chart = $('mkmodalchart');
   chart.replaceChildren();
   chart.appendChild(sparkSvg(row.spark, row.changePct >= 0));
@@ -176,32 +178,49 @@ function closeMarketModal() {
   $('mkmodal').hidden = true;
 }
 
-function applyMarketFilter(rows, filter) {
+function marketMatchesQuery(row, needle) {
+  return row.name.toLowerCase().includes(needle) || row.symbol.toLowerCase().includes(needle);
+}
+
+// Suche greift zusaetzlich auf den breiteren, ungefilterten Suchindex zu
+// (config.SEARCH_INDEX_STOCKS, z.B. SAP) - der ist keine "Top-3J-Wachstum"-
+// Rangliste, deshalb werden Treffer von dort separat markiert (row.fromIndex),
+// siehe .mk-row.is-index in app.css. Nur bei aktiver Suche, nie im
+// Leerzustand, sonst waere die Kuratierung der Standardansicht ausgehebelt.
+function applyMarketFilter(rows, filter, searchIndex) {
   let out = rows;
   if (filter.query) {
     const needle = filter.query.toLowerCase();
-    out = out.filter((row) =>
-      row.name.toLowerCase().includes(needle) || row.symbol.toLowerCase().includes(needle)
-    );
+    out = out.filter((row) => marketMatchesQuery(row, needle));
+    if (searchIndex && searchIndex.length) {
+      const have = new Set(out.map((row) => row.symbol));
+      const extra = searchIndex
+        .filter((row) => marketMatchesQuery(row, needle) && !have.has(row.symbol))
+        .map((row) => ({ ...row, fromIndex: true }));
+      out = out.concat(extra);
+    }
   }
   out = out.slice();
-  if (filter.sort === 'change-desc') out.sort((a, b) => b.changePct - a.changePct);
-  else if (filter.sort === 'change-asc') out.sort((a, b) => a.changePct - b.changePct);
+  if (filter.sort === 'change-desc') out.sort((a, b) => b.changePctDaily - a.changePctDaily);
+  else if (filter.sort === 'change-asc') out.sort((a, b) => a.changePctDaily - b.changePctDaily);
   return out;
 }
 
-function renderMarketColumn(kind, elementId, rows) {
+function renderMarketColumn(kind, elementId, rows, searchIndex) {
   const box = $(elementId);
   box.replaceChildren();
-  const filtered = applyMarketFilter(rows, state.marketFilter[kind]);
+  const filtered = applyMarketFilter(rows, state.marketFilter[kind], searchIndex);
   filtered.forEach((row) => {
-    const line = el('div', 'mk-row');
+    const line = el('div', 'mk-row' + (row.fromIndex ? ' is-index' : ''));
     line.addEventListener('click', () => openMarketModal(row));
-    line.appendChild(el('div', 'mk-name', row.name));
+    const nameRow = el('div', 'mk-name-row');
+    nameRow.appendChild(el('div', 'mk-name', row.name));
+    if (row.fromIndex) nameRow.appendChild(el('span', 'mk-tag', 'SUCHE'));
+    line.appendChild(nameRow);
     const meta = el('div', 'mk-line');
     meta.appendChild(el('span', 'mk-price', `${row.price} ${row.currency}`));
-    const sign = row.changePct >= 0 ? '+' : '';
-    const chg = el('span', 'mk-chg ' + (row.changePct >= 0 ? 'is-pos' : 'is-neg'), `${sign}${row.changePct}%`);
+    const sign = row.changePctDaily >= 0 ? '+' : '';
+    const chg = el('span', 'mk-chg ' + (row.changePctDaily >= 0 ? 'is-pos' : 'is-neg'), `${sign}${row.changePctDaily}%`);
     meta.appendChild(chg);
     line.appendChild(meta);
     box.appendChild(line);
@@ -217,8 +236,9 @@ function renderMarkets() {
   }
   section.hidden = false;
   $('marketsage').textContent = `${mk.lookbackYears} JAHRE`;
-  renderMarketColumn('etf', 'markets-etf', mk.etfs);
-  renderMarketColumn('stock', 'markets-stock', mk.stocks);
+  const searchIndex = mk.searchIndex || [];
+  renderMarketColumn('etf', 'markets-etf', mk.etfs, searchIndex);
+  renderMarketColumn('stock', 'markets-stock', mk.stocks, searchIndex);
 }
 
 /* ------------------------------------------------------------ Themen-Pills */
@@ -630,8 +650,19 @@ function wire() {
 
   // Marktleiste faehrt beim Runterscrollen der Meldungen ein, damit nur noch
   // die News zu sehen sind - wieder sichtbar sobald man nach oben scrollt.
+  // rAF-gedrosselt statt der Klasse bei jedem einzelnen scroll-Event
+  // umzuhaengen - sonst reflowt .markets (max-height-Uebergang) mehrfach pro
+  // Frame und der Uebergang wirkt ruckelig ("bricht"). Eigener Container
+  // (#scroll) als .weather-pages (horizontales Swipe im Kopfbereich) - beide
+  // Scroll-Listener beruehren sich nicht.
+  let marketsCollapseTicking = false;
   $('scroll').addEventListener('scroll', () => {
-    $('markets').classList.toggle('is-collapsed', $('scroll').scrollTop > 24);
+    if (marketsCollapseTicking) return;
+    marketsCollapseTicking = true;
+    requestAnimationFrame(() => {
+      $('markets').classList.toggle('is-collapsed', $('scroll').scrollTop > 24);
+      marketsCollapseTicking = false;
+    });
   }, { passive: true });
 
   $('searchinput').addEventListener('input', () => {

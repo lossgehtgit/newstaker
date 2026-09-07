@@ -162,3 +162,28 @@ Ergebnis wieder ueberschreiben ("Suche zeigt alles"); jetzt per
 Dateien: newstaker/weather.py, newstaker/store.py, tests/test_newstaker.py,
 web/app.js, web/app.css, web/index.html, docs/app.js, docs/app.css,
 docs/index.html, wiki/architecture.md.
+
+## [2026-09-07] feature — Marktleiste zeigt Tagesveraenderung, einfachere Namen, freie Firmensuche, ruhigeres Scroll-/Wetter-Layout
+Sechs Nutzer-Rueckmeldungen zur letzten Runde umgesetzt: (1) Markt-Badges
+zeigen jetzt `changePctDaily` (letzter Schluss vs. vorletzter) statt der
+3J-Veraenderung, die weiter die Titel-*Auswahl* bestimmt und in die Lupe
+gewandert ist (`markets.py::_metrics_from_chart`, `store.market.
+change_pct_daily`, `app.js::openMarketModal`/`renderMarketColumn`). (2)
+Namen bevorzugen `meta.shortName`, laufen durch neues `_simplify_name()`
+(Allowlist-Regex gegen ETF-/Rechtsform-Boilerplate). (3) Neuer, ungefilterter
+Suchindex `config.SEARCH_INDEX_STOCKS` (~26 Titel, u.a. SAP) via
+`markets._refresh_search_group()`, gespeichert als eigene `market.kind=
+'search'`-Gruppe (store.save_markets() ersetzt etf/stock und search jetzt
+getrennt, `search=None` laesst Bestehendes stehen), exponiert als
+`board_payload()["searchIndex"]`; Frontend-Suche merged Treffer daraus in die
+kuratierte Liste, optisch mit `.mk-tag "SUCHE"` abgesetzt. (4) Scroll-
+Collapse der Marktleiste jetzt rAF-gedrosselt plus transform/opacity statt
+reinem max-height-Sprung (ruckelte beim Runterscrollen). (5) Wetterkarte
+bekommt eine feste Breite (vorher zirkulaere `flex:0 0 100%`-Breitenberechnung
+in `.weather-pages`, die Detailzeilen abschneiden konnte), erste Seite
+(Tagesuebersicht) mit groesserer Schrift. (6) "Rang"-Sortieroption bei
+ETFs/Aktien entfernt, Default jetzt `change-desc`.
+Dateien: newstaker/markets.py, newstaker/store.py, newstaker/config.py,
+tests/test_newstaker.py, web/app.js, web/app.css, web/index.html,
+docs/app.js, docs/app.css, docs/index.html, wiki/architecture.md,
+wiki/database.md.

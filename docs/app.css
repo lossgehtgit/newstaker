@@ -212,8 +212,17 @@ body.view-mode-mobile .desktop-only {
 
 /* Wetterkarte - uebernommen aus Entwurf 1b */
 
+/* Feste Breite statt content-basierter Groesse: .weather-page hat
+   `flex: 0 0 100%` in .weather-pages, das braucht eine definierte
+   Containerbreite als Bezugsgroesse. Ohne die geriet die Breite je nach
+   laengster Zeile der jeweils sichtbaren Seite ins Schwimmen (mal zu breit
+   fuer die 3-Tage-Uebersicht, mal zu schmal fuer die Detailseite -
+   .weather-pages' overflow-x:auto erzwingt dabei implizit auch
+   overflow-y:auto, was die Detailzeilen bei falscher Hoehenberechnung
+   abschnitt statt umzubrechen). */
 .weather {
   flex: none;
+  width: 156px;
   min-height: 44px;
   padding: 9px 11px;
   text-align: left;
@@ -238,17 +247,17 @@ body.view-mode-mobile .desktop-only {
 
 .weather-days { display: flex; gap: 9px; }
 
-.weather-day { min-width: 26px; text-align: center; cursor: pointer; }
-.weather-day .d { font-size: 8.5px; line-height: 1; color: var(--ink-meta); }
+.weather-day { min-width: 28px; text-align: center; cursor: pointer; }
+.weather-day .d { font-size: 9.5px; line-height: 1; color: var(--ink-meta); }
 .weather-day .i {
-  margin: 4px 0 3px;
+  margin: 5px 0 4px;
   font-family: var(--mono);
   font-variant-emoji: text;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1;
   color: var(--ink);
 }
-.weather-day .t { font-size: 10.5px; font-weight: 600; line-height: 1; color: var(--ink); }
+.weather-day .t { font-size: 12px; font-weight: 600; line-height: 1; color: var(--ink); }
 .weather-day .t span { color: var(--ink-fainter); font-weight: 500; }
 .weather-day.is-active { border-radius: 8px; box-shadow: inset 0 0 0 1px var(--accent); }
 
@@ -286,18 +295,27 @@ body.view-mode-mobile .desktop-only {
   border-bottom: 1px solid var(--rule-soft);
   max-height: 260px;
   opacity: 1;
+  transform: translateY(0);
   overflow: hidden;
-  transition: max-height .22s ease, opacity .16s ease, padding .22s ease, border-color .22s ease;
+  will-change: max-height, opacity, transform;
+  transition: max-height .28s cubic-bezier(.4,0,.2,1), opacity .2s ease,
+              transform .28s cubic-bezier(.4,0,.2,1), padding .28s cubic-bezier(.4,0,.2,1),
+              border-color .28s ease;
 }
 
 /* Beim Runterscrollen der Meldungsliste faehrt die Marktleiste ein, damit nur
-   noch die News zu sehen sind - siehe scroll-Listener in app.js. */
+   noch die News zu sehen sind - siehe rAF-gedrosselter scroll-Listener in
+   app.js (getrennter Scroll-Container von .weather-pages, keine
+   Ueberschneidung). transform+opacity laufen zusammen mit max-height, damit
+   der Uebergang wie ein Wegschieben wirkt statt eines abrupten Zusammenfallens. */
 .markets.is-collapsed {
   max-height: 0;
   opacity: 0;
+  transform: translateY(-6px);
   padding-top: 0;
   padding-bottom: 0;
   border-bottom-color: transparent;
+  pointer-events: none;
 }
 
 .markets-head {
@@ -357,6 +375,8 @@ body.view-mode-mobile .desktop-only {
 
 .mk-row { display: block; cursor: pointer; }
 
+.mk-name-row { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
+
 .mk-name {
   font-size: 11.5px;
   font-weight: 600;
@@ -365,6 +385,20 @@ body.view-mode-mobile .desktop-only {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Treffer aus dem breiteren Suchindex (config.SEARCH_INDEX_STOCKS, z.B. SAP) -
+   sichtbar von der kuratierten "Top-3J-Wachstum ohne Dividende"-Liste
+   unterschieden, damit klar bleibt, dass hier keine Wachstums-Aussage steckt. */
+.mk-row.is-index .mk-name { color: var(--ink-soft, var(--ink)); }
+.mk-tag {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--rule-soft);
+  font: 600 8px/1.4 var(--mono);
+  letter-spacing: .06em;
+  color: var(--ink-fainter);
 }
 
 .mk-line {
@@ -876,6 +910,7 @@ body.view-mode-mobile .desktop-only {
   }
 
   body:not(.view-mode-mobile) .weather {
+    width: 184px;
     padding: 10px 15px;
     border-radius: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, .03);

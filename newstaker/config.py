@@ -386,6 +386,20 @@ CANDIDATE_STOCKS = [
     "DDOG", "NET", "SNOW", "RBLX", "COIN", "ISRG", "LULU", "TTD", "ADBE",
 ]
 
+# Breiterer, ungefilterter Suchindex fuer "beliebige Firma/Ticker suchbar"
+# (z.B. SAP, das wegen Dividendenausschuettung nie in CANDIDATE_STOCKS landen
+# kann). Keine Dividenden-Ausschluss-Regel, kein Top-N, keine 3J-Rangliste -
+# nur Name/Preis/Tagesveraenderung/Spark, siehe markets.py::_refresh_search().
+# Bewusst auf ein paar Dutzend bekannte Titel begrenzt (DAX-Schwergewichte +
+# grosse US-Techwerte), nicht auf "alle Ticker" - das wuerde den
+# MARKETS_TTL_MINUTES-Abrufaufwand sprengen.
+SEARCH_INDEX_STOCKS = [
+    "SAP.DE", "SIE.DE", "ALV.DE", "DTE.DE", "AIR.DE", "MBG.DE", "BMW.DE",
+    "BAS.DE", "MUV2.DE", "ADS.DE", "DHL.DE", "IFX.DE", "VOW3.DE", "RWE.DE",
+    "AAPL", "MSFT", "GOOGL", "META", "NVDA", "AMZN", "TSLA", "JPM", "V",
+    "WMT", "KO", "MCD", "DIS",
+]
+
 
 def source_by_key(key: str) -> dict | None:
     for src in SOURCES:

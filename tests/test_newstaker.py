@@ -679,8 +679,8 @@ class TestPipelineInMemory(unittest.TestCase):
         with mock.patch.object(markets, "_fetch_chart", return_value=None):
             result = markets.refresh(self.conn, force=True)
 
-        self.assertEqual(result, {"refreshed": False, "etfs": 0, "stocks": 0, "failed": True})
-        etfs, stocks, _ = store.load_markets(self.conn)
+        self.assertEqual(result, {"refreshed": False, "etfs": 0, "stocks": 0, "search": 0, "failed": True})
+        etfs, stocks, _search, _ = store.load_markets(self.conn)
         self.assertEqual(len(etfs), 1, "alter Marktstand darf bei Totalausfall nicht verschwinden")
         self.assertEqual(etfs[0]["symbol"], "TEST")
 
@@ -731,6 +731,23 @@ def _synthetic_chart(closes, *, dividends=None, price=None):
 
 
 class TestMarkets(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+
+        self.tmp = tempfile.TemporaryDirectory()
+        self._alte_db = config.DB_PATH
+        self._alter_var = config.VAR_DIR
+        config.VAR_DIR = Path(self.tmp.name)
+        config.DB_PATH = Path(self.tmp.name) / "test.db"
+        self.conn = store.connect()
+        store.init(self.conn)
+
+    def tearDown(self):
+        self.conn.close()
+        config.DB_PATH = self._alte_db
+        config.VAR_DIR = self._alter_var
+        self.tmp.cleanup()
+
     def test_dividendenzahler_wird_ausgeschlossen(self):
         chart = _synthetic_chart([100.0] * 500, dividends={"1700000000": {"amount": 0.5}})
         self.assertIsNone(markets._metrics_from_chart("TEST", chart))
@@ -756,6 +773,47 @@ class TestMarkets(unittest.TestCase):
         ]
         rows.sort(key=lambda m: (-m["changePct"], m["symbol"]))
         self.assertEqual([r["symbol"] for r in rows], ["B", "C", "A"])
+
+    def test_gueltiger_titel_liefert_tagesveraenderung(self):
+        closes = [100.0] * 399 + [90.0, 99.0]
+        chart = _synthetic_chart(closes)
+        m = markets._metrics_from_chart("TEST", chart)
+        self.assertAlmostEqual(m["changePctDaily"], 10.0, places=1)
+
+    def test_dividendentitel_landet_im_ungefilterten_suchindex(self):
+        chart = _synthetic_chart([100.0, 105.0], dividends={"1700000000": {"amount": 0.5}})
+        m = markets._metrics_from_chart("SAP.DE", chart, require_dividend_free=False, min_history=2)
+        self.assertIsNotNone(m)
+        self.assertAlmostEqual(m["changePctDaily"], 5.0, places=1)
+
+    def test_simplify_name_entfernt_boilerplate(self):
+        cases = [
+            ("Vanguard FTSE All-World UCITS ETF (USD) Accumulating", "Vanguard FTSE All-World"),
+            ("iShares Core MSCI World UCITS ETF USD (Acc)", "iShares Core MSCI World"),
+            ("SAP SE", "SAP"),
+            ("Apple Inc.", "Apple"),
+            ("Amazon.com, Inc.", "Amazon.com"),
+            ("Tesla, Inc. Common Stock", "Tesla"),
+        ]
+        for raw, expected in cases:
+            self.assertEqual(markets._simplify_name(raw), expected, raw)
+
+    def test_board_payload_liefert_search_index(self):
+        store.save_markets(
+            self.conn,
+            [{"symbol": "AAA", "name": "A-ETF", "price": 1.0, "currency": "EUR",
+              "changePct": 1.0, "changePctDaily": 0.5, "spark": [1.0, 1.1]}],
+            [],
+            [{"symbol": "SAP.DE", "name": "SAP", "price": 200.0, "currency": "EUR",
+              "changePct": 0.0, "changePctDaily": 1.2, "spark": [199.0, 200.0]}],
+        )
+        self.conn.commit()
+        payload = markets.board_payload(self.conn)
+        self.assertIn("searchIndex", payload)
+        self.assertEqual(len(payload["searchIndex"]), 1)
+        self.assertEqual(payload["searchIndex"][0]["symbol"], "SAP.DE")
+        self.assertEqual(payload["searchIndex"][0]["changePctDaily"], 1.2)
+        self.assertEqual(payload["etfs"][0]["changePctDaily"], 0.5)
 
 
 if __name__ == "__main__":
