@@ -139,14 +139,15 @@ CREATE TABLE IF NOT EXISTS weather_hour (
 );
 
 CREATE TABLE IF NOT EXISTS market (
-    symbol      TEXT PRIMARY KEY,
-    kind        TEXT NOT NULL,   -- 'etf' | 'stock'
-    name        TEXT NOT NULL,
-    price       REAL NOT NULL,
-    currency    TEXT NOT NULL,
-    change_pct  REAL NOT NULL,   -- Veraenderung ueber config.MARKETS_LOOKBACK_YEARS
-    spark       TEXT NOT NULL DEFAULT '[]',  -- JSON-Liste, abgetastete Kursreihe fuer die Mini-Grafik
-    fetched_at  TEXT NOT NULL
+    symbol           TEXT PRIMARY KEY,
+    kind             TEXT NOT NULL,   -- 'etf' | 'stock' | 'search'
+    name             TEXT NOT NULL,
+    price            REAL NOT NULL,
+    currency         TEXT NOT NULL,
+    change_pct       REAL NOT NULL,   -- Veraenderung ueber config.MARKETS_LOOKBACK_YEARS (0 bei kind='search')
+    change_pct_daily REAL NOT NULL DEFAULT 0,  -- letzter Schlusskurs vs. vorletzter
+    spark            TEXT NOT NULL DEFAULT '[]',  -- JSON-Liste, abgetastete Kursreihe fuer die Mini-Grafik
+    fetched_at       TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta (
@@ -194,6 +195,8 @@ def _migrate(conn: sqlite3.Connection) -> None:
     have_market = {row["name"] for row in conn.execute("PRAGMA table_info(market)")}
     if have_market and "spark" not in have_market:
         conn.execute("ALTER TABLE market ADD COLUMN spark TEXT NOT NULL DEFAULT '[]'")
+    if have_market and "change_pct_daily" not in have_market:
+        conn.execute("ALTER TABLE market ADD COLUMN change_pct_daily REAL NOT NULL DEFAULT 0")
 
     have_weather = {row["name"] for row in conn.execute("PRAGMA table_info(weather)")}
     if have_weather and "sunrise" not in have_weather:
@@ -535,31 +538,45 @@ def load_weather_hours(conn: sqlite3.Connection, city: str) -> list[sqlite3.Row]
 # ------------------------------------------------------------------ Maerkte
 
 
-def save_markets(conn: sqlite3.Connection, etfs: list[dict[str, Any]], stocks: list[dict[str, Any]]) -> None:
-    """Ersetzt den kompletten Marktstand durch einen frischen Abruf.
+def save_markets(
+    conn: sqlite3.Connection,
+    etfs: list[dict[str, Any]],
+    stocks: list[dict[str, Any]],
+    search: list[dict[str, Any]] | None = None,
+) -> None:
+    """Ersetzt den Marktstand durch einen frischen Abruf.
 
     Ein voller Ersatz statt Upsert je Symbol: faellt ein Titel aus der
     Kandidatenliste raus (z.B. weil er jetzt Dividende zahlt), soll er nicht
-    als veralteter Datensatz liegen bleiben.
+    als veralteter Datensatz liegen bleiben. `etfs`/`stocks` und `search`
+    werden getrennt ersetzt (eigene DELETE je Kind-Gruppe), damit ein
+    Totalausfall der einen Gruppe (z.B. `search`, siehe `search=None`) den
+    zuletzt guten Stand der anderen nicht mit loescht.
     """
     fetched = now_iso()
-    conn.execute("DELETE FROM market")
+    conn.execute("DELETE FROM market WHERE kind IN ('etf', 'stock')")
     rows = [(m, "etf") for m in etfs] + [(m, "stock") for m in stocks]
+    if search is not None:
+        conn.execute("DELETE FROM market WHERE kind = 'search'")
+        rows += [(m, "search") for m in search]
     conn.executemany(
-        """INSERT INTO market(symbol, kind, name, price, currency, change_pct, spark, fetched_at)
-           VALUES(?,?,?,?,?,?,?,?)""",
+        """INSERT INTO market(symbol, kind, name, price, currency, change_pct, change_pct_daily, spark, fetched_at)
+           VALUES(?,?,?,?,?,?,?,?,?)""",
         [
             (
-                m["symbol"], kind, m["name"], m["price"], m["currency"], m["changePct"],
-                json.dumps(m.get("spark", [])), fetched,
+                m["symbol"], kind, m["name"], m["price"], m["currency"], m.get("changePct", 0.0),
+                m.get("changePctDaily", 0.0), json.dumps(m.get("spark", [])), fetched,
             )
             for m, kind in rows
         ],
     )
 
 
-def load_markets(conn: sqlite3.Connection) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
-    """Liefert (etfs, stocks, checked_at) - jeweils schon nach Veraenderung sortiert."""
+def load_markets(
+    conn: sqlite3.Connection,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], str]:
+    """Liefert (etfs, stocks, search, checked_at) - etfs/stocks nach 3J-Veraenderung
+    sortiert, search alphabetisch (keine Rangliste, siehe Modul-Docstring)."""
     rows = conn.execute(
         "SELECT * FROM market ORDER BY kind, change_pct DESC, symbol"
     ).fetchall()
@@ -571,13 +588,15 @@ def load_markets(conn: sqlite3.Connection) -> tuple[list[dict[str, Any]], list[d
             "price": row["price"],
             "currency": row["currency"],
             "changePct": row["change_pct"],
+            "changePctDaily": row["change_pct_daily"],
             "spark": json.loads(row["spark"]) if row["spark"] else [],
         }
 
     etfs = [to_dict(r) for r in rows if r["kind"] == "etf"]
     stocks = [to_dict(r) for r in rows if r["kind"] == "stock"]
+    search = sorted((to_dict(r) for r in rows if r["kind"] == "search"), key=lambda m: m["symbol"])
     checked_at = rows[0]["fetched_at"] if rows else ""
-    return etfs, stocks, checked_at
+    return etfs, stocks, search, checked_at
 
 
 def market_age_minutes(conn: sqlite3.Connection) -> float | None:

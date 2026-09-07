@@ -58,6 +58,39 @@ store.py (raw_fetch, item, feed_state)                                          
      MARKETS_SPARK_POINTS` Stützstellen, Anfang/Ende bleiben erhalten) als
      JSON in `market.spark` (Migration in `store._migrate`). `board_payload()`
      gibt sie unverändert als `spark`-Liste je Eintrag weiter.
+   - Seit 2026-09-07 liefert `_metrics_from_chart()` zusätzlich zur 3J-
+     `changePct` eine `changePctDaily` (letzter Schlusskurs vs. vorletzter,
+     Spalte `market.change_pct_daily`). Das Frontend zeigt `changePctDaily`
+     als Default-Badge in der Liste (die Titel-*Auswahl* bleibt unverändert
+     nach 3J-Wachstum/dividendenfrei sortiert, nur die angezeigte Zahl
+     wechselt); `changePct` (3J) erscheint nur noch in der Lupe (`openMarket
+     Modal()` in `app.js`).
+   - Namen kommen jetzt bevorzugt aus `meta.shortName` (vorher `longName`
+     zuerst) und laufen durch `_simplify_name()` — eine kurze Allowlist-Regex
+     (`_NAME_BOILERPLATE_RE`), die Fondsstruktur-/Rechtsform-Suffixe wie
+     "UCITS ETF", "(USD) Accumulating", "Inc.", "Common Stock" entfernt.
+     Kein allgemeiner Parser, siehe `TestMarkets.
+     test_simplify_name_entfernt_boilerplate` für die abgedeckten Muster.
+   - Neuer, ungefilterter Firmen-/Ticker-Suchindex (`config.
+     SEARCH_INDEX_STOCKS`, z.B. SAP, das wegen Dividende nie in
+     `CANDIDATE_STOCKS` landen kann): `markets._refresh_search_group()`
+     holt dieselben Kennzahlen wie `_refresh_group()`, aber ohne
+     Dividenden-Filter und ohne 400-Tage-Mindesthistorie
+     (`_metrics_from_chart(..., require_dividend_free=False,
+     min_history=2)`), ohne Top-N-Deckelung. Gespeichert als eigene
+     `market.kind='search'`-Gruppe (siehe database.md), exponiert in
+     `board_payload()["searchIndex"]`. Läuft im selben `refresh()`-Aufruf und
+     derselben `MARKETS_TTL_MINUTES`-Kadenz wie `etf`/`stock`, wird aber
+     unabhängig davon "voll ersetzt" — fällt nur die Suchliste aus, bleibt
+     ihr alter Stand stehen (siehe database.md, Bekannte Falle `market`).
+     Frontend (`renderMarketColumn()` in `app.js`): bei aktiver Suchanfrage
+     werden Treffer aus `searchIndex` zusätzlich zur jeweils sichtbaren
+     kuratierten Gruppe gesucht und dedupliziert eingeblendet, mit
+     `.mk-row.is-index`/`.mk-tag "SUCHE"` optisch von der Wachstumsliste
+     abgesetzt (kein falscher Eindruck, ein Treffer sei ein "Top-3J-
+     Wachstumstitel"). Bewusst auf ~26 bekannte Titel begrenzt (DAX +
+     grosse US-Techwerte), nicht "alle Ticker" — sonst würde der
+     TTL-Abrufaufwand sprengen.
 8. **Board bauen** (`pipeline.build_board()`) — SQL-Join über `item`, `source`,
    `state`, `cluster`; wählt je Cluster einen Aufmacher (bestes Tier, dann
    frühestes Datum, dann `id`), berechnet Live-Score, sortiert, filtert

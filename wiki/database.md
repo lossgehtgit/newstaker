@@ -26,7 +26,7 @@ manuelle `_migrate()`-Funktion für nachträglich hinzugekommene Spalten
 | `og_cache` | Ergebnis der `og:image`-Stufe je URL, damit eine blockierte Seite nie zweimal angefasst wird |
 | `weather` | PK `(city, day)`, TTL-gesteuert über `weather_age_minutes()` |
 | `weather_hour` | PK `(city, hour)`, nur der heutige Tag (voller Ersatz je Refresh) — Grundlage für den scrollbaren Tagesverlauf im Frontend |
-| `market` | ETF/Aktien-Kennzahlen, **voller Ersatz** bei jedem erfolgreichen Refresh (siehe Falle unten). Spalte `spark` (JSON-Liste, `config.MARKETS_SPARK_POINTS` Stützstellen) speist die Mini-Kursgrafik im Frontend, siehe `markets._downsample()` |
+| `market` | ETF/Aktien/Such-Kennzahlen, **voller Ersatz je `kind`-Gruppe** bei jedem erfolgreichen Refresh der jeweiligen Gruppe (siehe Falle unten). `kind` unterscheidet `'etf'` / `'stock'` (kuratierte, dividendenfreie Wachstumsliste, per 3J-Rangliste gefiltert) und `'search'` (`config.SEARCH_INDEX_STOCKS`, ungefiltert/ungerankt, breite Firmen-/Ticker-Suche z.B. SAP). Spalte `change_pct` = 3J-Veränderung (bei `kind='search'` immer 0, keine Rangliste dort), `change_pct_daily` = letzter Schlusskurs vs. vorletzter (seit 2026-09-07 das Standard-Badge im Frontend, `change_pct` nur noch in der Lupe). Spalte `spark` (JSON-Liste, `config.MARKETS_SPARK_POINTS` Stützstellen) speist die Mini-Kursgrafik im Frontend, siehe `markets._downsample()` |
 | `meta` | Key-Value, u. a. `last_fetch_at` (JSON-kodierter Wert) |
 | `item_fts` | FTS5 virtual table für Volltextsuche, siehe unten |
 
@@ -90,3 +90,12 @@ ersatzlos löschen (war ein echter, behobener Bug, siehe
 `test_markets_totalausfall_erhaelt_alten_stand`). Wer `markets.py` ändert:
 diese Unterscheidung (leeres Ergebnis wegen "kein Titel qualifiziert" vs.
 "API komplett nicht erreichbar") bewusst erhalten.
+
+Seit dem Suchindex-Feature (2026-09-07) ersetzt `save_markets()` `etf`/`stock`
+und `search` **getrennt**: `search=None` (Default) lässt vorhandene
+`kind='search'`-Zeilen unangetastet, ein übergebenes (auch leeres) `search`
+ersetzt nur diese. `markets.refresh()` ruft `save_markets(conn, etfs, stocks,
+search if search else None)` — fällt nur die breitere Suchliste aus (Yahoo-
+Ausfall bei den zusätzlichen Symbolen), bleibt ihr alter Stand erhalten, auch
+wenn `etfs`/`stocks` frisch sind, und umgekehrt. Gleiche Nicht-Löschen-Regel
+wie beim Totalausfall, nur pro Gruppe statt global.
