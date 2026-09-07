@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS weather_hour (
 );
 
 CREATE TABLE IF NOT EXISTS market (
-    symbol           TEXT PRIMARY KEY,
+    symbol           TEXT NOT NULL,
     kind             TEXT NOT NULL,   -- 'etf' | 'stock' | 'search'
     name             TEXT NOT NULL,
     price            REAL NOT NULL,
@@ -147,7 +147,10 @@ CREATE TABLE IF NOT EXISTS market (
     change_pct       REAL NOT NULL,   -- Veraenderung ueber config.MARKETS_LOOKBACK_YEARS (0 bei kind='search')
     change_pct_daily REAL NOT NULL DEFAULT 0,  -- letzter Schlusskurs vs. vorletzter
     spark            TEXT NOT NULL DEFAULT '[]',  -- JSON-Liste, abgetastete Kursreihe fuer die Mini-Grafik
-    fetched_at       TEXT NOT NULL
+    fetched_at       TEXT NOT NULL,
+    PRIMARY KEY (symbol, kind)  -- derselbe Titel kann in mehreren Gruppen stehen
+                                -- (config.SEARCH_INDEX_STOCKS ueberschneidet sich
+                                -- bewusst mit CANDIDATE_ETFS/CANDIDATE_STOCKS)
 );
 
 CREATE TABLE IF NOT EXISTS meta (
@@ -197,6 +200,32 @@ def _migrate(conn: sqlite3.Connection) -> None:
         conn.execute("ALTER TABLE market ADD COLUMN spark TEXT NOT NULL DEFAULT '[]'")
     if have_market and "change_pct_daily" not in have_market:
         conn.execute("ALTER TABLE market ADD COLUMN change_pct_daily REAL NOT NULL DEFAULT 0")
+
+    # Aeltere DBs haben `symbol` allein als PRIMARY KEY - seit dem Suchindex
+    # (config.SEARCH_INDEX_STOCKS) kann derselbe Titel in mehreren Gruppen
+    # stehen (z.B. AMZN in 'stock' und 'search'), das braucht (symbol, kind)
+    # als Schluessel. sqlite kann eine PK nicht per ALTER aendern, also Tabelle
+    # neu aufbauen - der `market`-Bestand ist ohnehin nur ein TTL-Cache, der
+    # beim naechsten Refresh komplett ersetzt wird (siehe save_markets()).
+    if have_market:
+        pk_cols = [row["name"] for row in conn.execute("PRAGMA table_info(market)") if row["pk"]]
+        if pk_cols == ["symbol"]:
+            conn.execute("ALTER TABLE market RENAME TO market_old")
+            conn.execute(
+                """CREATE TABLE market (
+                    symbol TEXT NOT NULL, kind TEXT NOT NULL, name TEXT NOT NULL,
+                    price REAL NOT NULL, currency TEXT NOT NULL, change_pct REAL NOT NULL,
+                    change_pct_daily REAL NOT NULL DEFAULT 0, spark TEXT NOT NULL DEFAULT '[]',
+                    fetched_at TEXT NOT NULL, PRIMARY KEY (symbol, kind)
+                )"""
+            )
+            conn.execute(
+                """INSERT INTO market(symbol, kind, name, price, currency, change_pct,
+                                       change_pct_daily, spark, fetched_at)
+                   SELECT symbol, kind, name, price, currency, change_pct,
+                          change_pct_daily, spark, fetched_at FROM market_old"""
+            )
+            conn.execute("DROP TABLE market_old")
 
     have_weather = {row["name"] for row in conn.execute("PRAGMA table_info(weather)")}
     if have_weather and "sunrise" not in have_weather:
