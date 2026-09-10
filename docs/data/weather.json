@@ -14,9 +14,9 @@
     },
     "date": "2026-09-10",
     "day": "HEUTE",
-    "hi": 17,
+    "hi": 18,
     "hot": {
-     "temp": 17,
+     "temp": 18,
      "time": "16:00"
     },
     "icon": "☁︎",
@@ -27,33 +27,33 @@
    },
    {
     "cold": {
-     "temp": 13,
+     "temp": 12,
      "time": "07:00"
     },
     "date": "2026-09-11",
     "day": "FR",
-    "hi": 19,
+    "hi": 20,
     "hot": {
-     "temp": 19,
-     "time": "17:00"
+     "temp": 20,
+     "time": "18:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
-    "lo": 13,
+    "lo": 12,
     "sunrise": "06:44",
     "sunset": "19:34"
    },
    {
     "cold": {
      "temp": 10,
-     "time": "06:00"
+     "time": "07:00"
     },
     "date": "2026-09-12",
     "day": "SA",
-    "hi": 20,
+    "hi": 21,
     "hot": {
-     "temp": 20,
-     "time": "15:00"
+     "temp": 21,
+     "time": "16:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
@@ -108,7 +108,7 @@
    {
     "hour": "06:00",
     "icon": "☁︎",
-    "isNow": true,
+    "isNow": false,
     "label": "bewölkt",
     "temp": 12
    },
@@ -143,65 +143,65 @@
    {
     "hour": "11:00",
     "icon": "☁︎",
-    "isNow": false,
+    "isNow": true,
     "label": "bewölkt",
-    "temp": 14
+    "temp": 15
    },
    {
     "hour": "12:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 15
+    "temp": 16
    },
    {
     "hour": "13:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 16
+    "temp": 17
    },
    {
     "hour": "14:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 17
+    "temp": 18
    },
    {
     "hour": "15:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 17
+    "temp": 18
    },
    {
     "hour": "16:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 17
+    "temp": 18
    },
    {
     "hour": "17:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 17
+    "temp": 18
    },
    {
     "hour": "18:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 17
+    "temp": 18
    },
    {
     "hour": "19:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 16
+    "temp": 17
    },
    {
     "hour": "20:00",
@@ -222,7 +222,7 @@
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 15
+    "temp": 14
    },
    {
     "hour": "23:00",
@@ -244,7 +244,7 @@
    {
     "cold": {
      "temp": 8,
-     "time": "07:00"
+     "time": "08:00"
     },
     "date": "2026-09-10",
     "day": "HEUTE",
@@ -271,27 +271,27 @@
      "temp": 22,
      "time": "16:00"
     },
-    "icon": "☁︎",
-    "label": "bewölkt",
+    "icon": "≈",
+    "label": "Nebel",
     "lo": 8,
     "sunrise": "06:54",
     "sunset": "19:44"
    },
    {
     "cold": {
-     "temp": 11,
+     "temp": 8,
      "time": "07:00"
     },
     "date": "2026-09-12",
     "day": "SA",
-    "hi": 22,
+    "hi": 23,
     "hot": {
-     "temp": 22,
-     "time": "15:00"
+     "temp": 23,
+     "time": "16:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
-    "lo": 11,
+    "lo": 8,
     "sunrise": "06:55",
     "sunset": "19:42"
    }
@@ -342,7 +342,7 @@
    {
     "hour": "06:00",
     "icon": "≈",
-    "isNow": true,
+    "isNow": false,
     "label": "Nebel",
     "temp": 9
    },
@@ -377,7 +377,7 @@
    {
     "hour": "11:00",
     "icon": "☁︎",
-    "isNow": false,
+    "isNow": true,
     "label": "bewölkt",
     "temp": 14
    },
@@ -393,14 +393,14 @@
     "icon": "☀︎",
     "isNow": false,
     "label": "leicht bewölkt",
-    "temp": 18
+    "temp": 17
    },
    {
     "hour": "14:00",
     "icon": "☀︎",
     "isNow": false,
     "label": "leicht bewölkt",
-    "temp": 19
+    "temp": 18
    },
    {
     "hour": "15:00",
@@ -432,9 +432,9 @@
    },
    {
     "hour": "19:00",
-    "icon": "☁︎",
+    "icon": "☀︎",
     "isNow": false,
-    "label": "bewölkt",
+    "label": "leicht bewölkt",
     "temp": 18
    },
    {
@@ -449,13 +449,13 @@
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 15
+    "temp": 16
    },
    {
     "hour": "22:00",
-    "icon": "☁︎",
+    "icon": "☀︎",
     "isNow": false,
-    "label": "bewölkt",
+    "label": "leicht bewölkt",
     "temp": 14
    },
    {
@@ -463,7 +463,7 @@
     "icon": "☀︎",
     "isNow": false,
     "label": "leicht bewölkt",
-    "temp": 14
+    "temp": 13
    }
   ]
  }
