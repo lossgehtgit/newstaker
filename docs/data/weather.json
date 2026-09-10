@@ -32,10 +32,10 @@
     },
     "date": "2026-09-11",
     "day": "FR",
-    "hi": 19,
+    "hi": 20,
     "hot": {
-     "temp": 19,
-     "time": "17:00"
+     "temp": 20,
+     "time": "16:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
@@ -45,19 +45,19 @@
    },
    {
     "cold": {
-     "temp": 12,
+     "temp": 11,
      "time": "07:00"
     },
     "date": "2026-09-12",
     "day": "SA",
-    "hi": 21,
+    "hi": 22,
     "hot": {
-     "temp": 21,
+     "temp": 22,
      "time": "16:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
-    "lo": 12,
+    "lo": 11,
     "sunrise": "06:46",
     "sunset": "19:32"
    }
@@ -192,7 +192,7 @@
    {
     "hour": "18:00",
     "icon": "☁︎",
-    "isNow": true,
+    "isNow": false,
     "label": "bewölkt",
     "temp": 17
    },
@@ -213,7 +213,7 @@
    {
     "hour": "21:00",
     "icon": "☁︎",
-    "isNow": false,
+    "isNow": true,
     "label": "bewölkt",
     "temp": 16
    },
@@ -222,7 +222,7 @@
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 15
+    "temp": 16
    },
    {
     "hour": "23:00",
@@ -284,10 +284,10 @@
     },
     "date": "2026-09-12",
     "day": "SA",
-    "hi": 22,
+    "hi": 23,
     "hot": {
-     "temp": 22,
-     "time": "17:00"
+     "temp": 23,
+     "time": "15:00"
     },
     "icon": "☁︎",
     "label": "bewölkt",
@@ -426,7 +426,7 @@
    {
     "hour": "18:00",
     "icon": "☀︎",
-    "isNow": true,
+    "isNow": false,
     "label": "leicht bewölkt",
     "temp": 19
    },
@@ -442,28 +442,28 @@
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 17
+    "temp": 18
    },
    {
     "hour": "21:00",
     "icon": "☁︎",
-    "isNow": false,
+    "isNow": true,
     "label": "bewölkt",
-    "temp": 16
+    "temp": 17
    },
    {
     "hour": "22:00",
     "icon": "☁︎",
     "isNow": false,
     "label": "bewölkt",
-    "temp": 15
+    "temp": 16
    },
    {
     "hour": "23:00",
     "icon": "☀︎",
     "isNow": false,
     "label": "leicht bewölkt",
-    "temp": 14
+    "temp": 15
    }
   ]
  }
