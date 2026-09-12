@@ -45,8 +45,8 @@
    },
    {
     "cold": {
-     "temp": 15,
-     "time": "07:00"
+     "temp": 14,
+     "time": "23:00"
     },
     "date": "2026-09-14",
     "day": "MO",
@@ -57,7 +57,7 @@
     },
     "icon": "☂︎",
     "label": "Schauer",
-    "lo": 15,
+    "lo": 14,
     "sunrise": "06:49",
     "sunset": "19:28"
    }
@@ -199,7 +199,7 @@
    {
     "hour": "19:00",
     "icon": "☀︎",
-    "isNow": true,
+    "isNow": false,
     "label": "leicht bewölkt",
     "temp": 22
    },
@@ -213,7 +213,7 @@
    {
     "hour": "21:00",
     "icon": "☀︎",
-    "isNow": false,
+    "isNow": true,
     "label": "klar",
     "temp": 19
    },
@@ -433,7 +433,7 @@
    {
     "hour": "19:00",
     "icon": "☀︎",
-    "isNow": true,
+    "isNow": false,
     "label": "leicht bewölkt",
     "temp": 23
    },
@@ -447,7 +447,7 @@
    {
     "hour": "21:00",
     "icon": "☁︎",
-    "isNow": false,
+    "isNow": true,
     "label": "bewölkt",
     "temp": 17
    },
