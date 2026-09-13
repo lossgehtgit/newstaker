@@ -2,7 +2,7 @@
 title: "Überblick"
 type: overview
 project: newstaker
-updated: 2026-09-13
+updated: 2026-09-14
 ---
 
 # News-Taker — Überblick
@@ -39,7 +39,7 @@ GitHub Pages + Actions). Live-Seite: `https://lossgehtgit.github.io/newstaker/`.
 | `newstaker/server.py` | HTTP-Server (JSON-API + Auslieferung von `web/`) für die lokale Live-Version |
 | `newstaker/export.py` | Statischer Export nach `docs/` für GitHub Pages |
 | `newstaker/pipeline.py` | Verdrahtet die gesamte Pipeline (`refresh()`, `rebuild()`, `build_board()`) — zentrale Orchestrierung |
-| `newstaker/dailybrief.py` | Morning-Brief-Karte: Top-5, Teaser-Zitate, Wikipedia-Fun-Fact (gecacht), Markt-Kennzahl — siehe architecture.md |
+| `newstaker/dailybrief.py` | Morning-Brief-Karte: Top-5, kuratierter Fun-Fact (`config.DAILY_FACTS`), Markt-Kennzahl — siehe architecture.md |
 | `newstaker/config.py` | Alle Stellschrauben an einem Ort: Quellen, Themen, Ranking-Gewichte, Cluster-Schwellen, Marktkandidaten |
 
 Details zum Datenfluss: siehe [architecture.md](architecture.md).

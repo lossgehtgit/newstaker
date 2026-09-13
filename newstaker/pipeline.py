@@ -212,11 +212,10 @@ def refresh(conn, *, verbose: bool = False, force: bool = False, image_budget: i
     clusters = rebuild_clusters(conn)
     wx = weather.refresh(conn, force=force)
     mk = markets.refresh(conn, force=force, verbose=verbose)
-    brief = dailybrief.refresh(conn, force=force)
     store.prune_raw(conn)
     store.set_meta(conn, "last_fetch_at", store.now_iso())
     conn.commit()
-    return {"feeds": feeds, "images": img, "clusters": clusters, "weather": wx, "markets": mk, "dailyBrief": brief}
+    return {"feeds": feeds, "images": img, "clusters": clusters, "weather": wx, "markets": mk}
 
 
 def rebuild(conn, *, now: datetime | None = None) -> dict:
@@ -360,7 +359,7 @@ def build_board(
         if entry["topic"] in counts:
             counts[entry["topic"]] += 1
 
-    brief = dailybrief.board_payload(conn, payload_items, markets.board_payload(conn), now=now)
+    brief = dailybrief.board_payload(payload_items, markets.board_payload(conn), now=now)
 
     return {
         "generatedAt": now.isoformat(timespec="seconds"),

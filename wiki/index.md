@@ -2,7 +2,7 @@
 title: "Wiki-Index"
 type: overview
 project: newstaker
-updated: 2026-09-13
+updated: 2026-09-14
 ---
 
 # Wiki-Index — News-Taker
@@ -15,10 +15,10 @@ Einzelprojekt-Repo, deshalb liegen alle Seiten direkt unter `wiki/` (kein
 
 | Titel | Pfad | Type | Updated |
 |---|---|---|---|
-| Wiki-Index (diese Seite) | `wiki/index.md` | overview | 2026-09-13 |
-| Überblick | `wiki/overview.md` | overview | 2026-09-13 |
-| Architektur | `wiki/architecture.md` | architecture | 2026-09-13 |
-| Datenbank | `wiki/database.md` | database | 2026-09-13 |
+| Wiki-Index (diese Seite) | `wiki/index.md` | overview | 2026-09-14 |
+| Überblick | `wiki/overview.md` | overview | 2026-09-14 |
+| Architektur | `wiki/architecture.md` | architecture | 2026-09-14 |
+| Datenbank | `wiki/database.md` | database | 2026-09-14 |
 | ADR-Vorlage/Anleitung | `wiki/decisions/README.md` | — | 2026-09-05 |
 | Änderungsprotokoll | `wiki/log.md` | log (append-only, nie komplett lesen) | 2026-09-05 |
 

@@ -2,7 +2,7 @@
 title: "Architektur"
 type: architecture
 project: newstaker
-updated: 2026-09-13
+updated: 2026-09-14
 ---
 
 # Architektur
@@ -102,45 +102,40 @@ store.py (raw_fetch, item, feed_state)                                          
    (Cluster/Thema/Gelesen), deckelt auf `config.BOARD_LIMIT`. Am Ende hängt
    `build_board()` zusätzlich `dailyBrief` an (siehe unten).
 
-## Morning Brief (`newstaker/dailybrief.py`, seit 2026-09-13)
+## Morning Brief (`newstaker/dailybrief.py`, seit 2026-09-13, überarbeitet 2026-09-14)
 
-Eine ruhige Karte oben im Feed (`web/app.js`/`docs/app.js::renderDailyBrief`),
-komplett ohne KI-generierten Text — nur Zitat, Auswahl und Arithmetik aus
-bereits vorhandenen Daten:
+Eine ruhige Karte oben im Feed (`web/app.js`/`docs/app.js::renderDailyBrief`).
+Komplett netzfrei und ohne KI-generierten Text zur Laufzeit:
 
 - **Top 5**: die ersten 5 Einträge der bereits fertig sortierten,
   gefilterten `payload_items`-Liste in `build_board()` (dieselbe Rangliste
-  wie `leads`+`briefs`) — keine eigene Zweitsortierung.
-- **Zwei Bullets zur Nr. 1**: `dailybrief._teaser_bullets()` zerlegt
-  `item.teaser` (bereits in `item.teaser` gespeichert, aus dem Feed-
-  `<description>`/`<summary>`, siehe `feedparse.py`) satzweise, nimmt die
-  ersten zwei Sätze — 100% wörtliches Zitat. Degradiert auf keine Bullets,
-  wenn der Teaser leer ist oder (gefaltet) mit dem Titel übereinstimmt.
-- **Fun Fact des Tages**: Wikipedias öffentliche „on this day"-REST-API
-  (`config.DAILY_FACT_URL`, `en.wikipedia.org/api/rest_v1/feed/onthisday/
-  selected/{MM}/{DD}`), einmal pro Kalendertag abgerufen und in
-  `store.daily_fact` (einzeilig, `id=1`) gecacht — `dailybrief.refresh()`
-  läuft im selben `pipeline.refresh()`-Aufruf wie weather/markets, mit
-  derselben Nicht-Löschen-Regel bei Netzausfall (alter Fakt bleibt stehen,
-  Regressionstest `test_dailybrief_wikipedia_ausfall_behaelt_alten_fakt`).
-  `board_payload()` liest den Cache nur, fetcht nie selbst — genau die
-  weather/markets-Trennung, die `rebuild()` netzfrei hält.
-  **Wichtig für den Determinismus**: das Kalendertag-`MM`/`DD` für die
-  URL kommt in `refresh()` bewusst aus der echten Wanduhr (Wall-Clock-
-  Netz-Frische-Frage wie bei weather/markets-TTL, siehe Bekannte Falle 0
-  unten) — `board_payload()` selbst berührt nie `datetime.now()`, sondern
-  nur das durchgereichte `now=` (für die Finanz-Rotation) und den DB-Cache.
+  wie `leads`+`briefs`, also Quellen-Tier/Cluster-Größe/Aktualität/Themen-
+  Boost aus `rank.py`) — keine eigene Zweitsortierung, nur Titel+Quelle,
+  keine Stichpunkte (früher gab es Zitat-Bullets nur für Eintrag 1, das war
+  uneinheitlich und wurde entfernt).
+- **Fun Fact des Tages**: `dailybrief._fact_of_the_day()` wählt deterministisch
+  nach `now.timetuple().tm_yday % len(config.DAILY_FACTS)` einen Eintrag aus
+  einer von Hand geschriebenen, geprüften Liste (`config.DAILY_FACTS`,
+  Wirtschaftsbegriffe/Geschichte/Technik einfach erklärt) — kein Netzabruf
+  mehr (ursprünglich Wikipedias „on this day"-API, siehe Git-History; wurde
+  ersetzt, weil ein Live-Netzabruf beim CI-Export nicht zur deterministischen
+  Architektur passte und die Auswahl an Themen begrenzt war). Kein Zufall,
+  `board_payload()` berührt `datetime.now()` nirgends selbst, nur das
+  durchgereichte `now=`.
 - **Finanz-Kennzahl**: `dailybrief._finance_stat()` wählt aus den bereits
   geladenen `markets.board_payload()`-Arrays (`etfs`+`stocks`) den größten
   Gewinner — je nach `now.timetuple().tm_yday % 2` entweder Tages- oder
   3-Jahres-Veränderung (`changePctDaily`/`changePct`), reine Auswahl+
   Formatierung, keine neue Metrik.
 
-`pipeline.build_board()` ruft `dailybrief.board_payload(conn, payload_items,
+`pipeline.build_board()` ruft `dailybrief.board_payload(payload_items,
 markets.board_payload(conn), now=now)` auf und hängt das Ergebnis als
 `dailyBrief`-Schlüssel an — `export.py::export_board()` reicht es unverändert
-durch. Da hier nur DB-Lesen + reine Funktionen von `now` passieren, bleibt
-`rebuild()` (das nie `dailybrief.refresh()` aufruft) determinismus-sicher.
+durch. Reine Funktionen von `now` und bereits geladenen Daten, kein Netzzugriff
+und keine DB-Schreibzugriffe — `rebuild()` bleibt determinismus-sicher, es
+gibt kein `dailybrief.refresh()` mehr (die alte `daily_fact`-Tabelle wurde
+aus dem Schema entfernt, da sie nur für den verworfenen Wikipedia-Cache
+gebraucht wurde).
 
 Alle Stufen sind **idempotent**. `pipeline.rebuild()` reprozessiert
 ausschließlich bereits gespeicherte `raw_fetch`-Zeilen — kein Netz nötig.
