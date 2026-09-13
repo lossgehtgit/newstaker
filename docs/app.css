@@ -247,7 +247,7 @@ body.view-mode-mobile .desktop-only {
 
 .weather-days { display: flex; gap: 9px; }
 
-.weather-day { min-width: 28px; text-align: center; cursor: pointer; }
+.weather-day { min-width: 28px; padding: 5px 6px 4px; text-align: center; cursor: pointer; }
 .weather-day .d { font-size: 9.5px; line-height: 1; color: var(--ink-meta); }
 .weather-day .i {
   margin: 5px 0 4px;
@@ -592,17 +592,6 @@ body.view-mode-mobile .desktop-only {
   letter-spacing: .03em;
   color: var(--ink-faint);
 }
-
-.bc-bullets { list-style: none; margin: 6px 0 0; padding: 0; }
-.bc-bullet {
-  position: relative;
-  padding-left: 12px;
-  margin-top: 3px;
-  font-size: 12px;
-  line-height: 1.4;
-  color: var(--ink-teaser);
-}
-.bc-bullet::before { content: '·'; position: absolute; left: 2px; color: var(--ink-fainter); }
 
 .bc-fact {
   margin-top: 13px;

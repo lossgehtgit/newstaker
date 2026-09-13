@@ -719,41 +719,29 @@ class TestPipelineInMemory(unittest.TestCase):
 
     def test_dailybrief_payload_form(self):
         """Verankert die dailyBrief-Struktur im Board-Payload (Punkt 3 der
-        Morning-Brief-Anforderung) - top5/topBullets/fact/financeStat muessen
-        immer vorhanden sein, auch ohne gecachten Fun Fact."""
+        Morning-Brief-Anforderung) - top5/fact/financeStat muessen immer
+        vorhanden sein; der Fun Fact kommt aus config.DAILY_FACTS, nie leer."""
         self._einlesen()
         self.conn.commit()
         pipeline.rebuild_clusters(self.conn)
         board = pipeline.build_board(self.conn)
         brief = board["dailyBrief"]
         self.assertIn("top5", brief)
-        self.assertIn("topBullets", brief)
         self.assertIn("fact", brief)
         self.assertIn("financeStat", brief)
         self.assertLessEqual(len(brief["top5"]), 5)
-        self.assertIsNone(brief["fact"], "ohne gecachten Fakt darf keiner erfunden werden")
+        self.assertIsNotNone(brief["fact"])
+        self.assertIn("title", brief["fact"])
+        self.assertIn("extract", brief["fact"])
 
-    def test_dailybrief_teaser_bullets_degradieren_bei_leerem_teaser(self):
-        """Kein Teaser (oder Teaser == Titel) -> keine Bullets, nie Fuellstoff."""
-        self.assertEqual(dailybrief._teaser_bullets("Titel", ""), [])
-        self.assertEqual(dailybrief._teaser_bullets("Titel", "Titel"), [])
-        bullets = dailybrief._teaser_bullets("Titel", "Erster Satz. Zweiter Satz. Dritter Satz.")
-        self.assertEqual(bullets, ["Erster Satz.", "Zweiter Satz."])
-
-    def test_dailybrief_wikipedia_ausfall_behaelt_alten_fakt(self):
-        """Wie test_markets_totalausfall_erhaelt_alten_stand, nur fuer den Fun
-        Fact: schlaegt der Wikipedia-Abruf fehl, darf der zuletzt gute Fakt
-        nicht verschwinden (dieselbe Nicht-Loeschen-Regel wie bei markets/
-        weather bei einem Totalausfall der Datenquelle)."""
-        store.save_daily_fact(self.conn, "01-01", "Alter Fakt", "Ein alter, guter Fakt.", "https://example.org")
-        self.conn.commit()
-
-        with mock.patch.object(dailybrief.fetch, "fetch_json", return_value=None):
-            result = dailybrief.refresh(self.conn, force=True)
-
-        self.assertEqual(result, {"refreshed": False, "failed": True})
-        row = store.load_daily_fact(self.conn)
-        self.assertEqual(row["title"], "Alter Fakt", "alter Fakt darf bei Netzausfall nicht verschwinden")
+    def test_dailybrief_fact_of_the_day_ist_deterministisch(self):
+        """Kein Zufall, kein Netzabruf: derselbe Kalendertag liefert immer
+        denselben Fakt aus config.DAILY_FACTS (rebuild()-Determinismus)."""
+        tag = datetime(2026, 3, 4, tzinfo=timezone.utc)
+        a = dailybrief._fact_of_the_day(now=tag)
+        b = dailybrief._fact_of_the_day(now=tag)
+        self.assertEqual(a, b)
+        self.assertIn(a["title"], {f["title"] for f in config.DAILY_FACTS})
 
     def test_dailybrief_financestat_rotiert_nach_tag_im_jahr(self):
         markets_payload = {

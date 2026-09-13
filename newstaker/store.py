@@ -154,19 +154,6 @@ CREATE TABLE IF NOT EXISTS market (
                                 -- bewusst mit CANDIDATE_ETFS/CANDIDATE_STOCKS)
 );
 
--- "Fun Fact des Tages" (Wikipedia "on this day"), einmal pro Kalendertag
--- abgerufen und gecacht - genau wie weather/market bleibt bei einem
--- Netzausfall der zuletzt gute Stand stehen (kein Loeschen bei leerem
--- Ergebnis, siehe dailybrief.refresh()).
-CREATE TABLE IF NOT EXISTS daily_fact (
-    id         INTEGER PRIMARY KEY CHECK (id = 1),  -- immer genau eine Zeile
-    day        TEXT NOT NULL,   -- "MM-DD", fuer welchen Kalendertag der Fakt gilt
-    title      TEXT NOT NULL,
-    extract    TEXT NOT NULL,
-    page_url   TEXT NOT NULL DEFAULT '',
-    fetched_at TEXT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS meta (
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
@@ -644,24 +631,6 @@ def load_markets(
     search = sorted((to_dict(r) for r in rows if r["kind"] == "search"), key=lambda m: m["symbol"])
     checked_at = rows[0]["fetched_at"] if rows else ""
     return etfs, stocks, search, checked_at
-
-
-# -------------------------------------------------------------- Fun Fact
-
-
-def save_daily_fact(conn: sqlite3.Connection, day: str, title: str, extract: str, page_url: str) -> None:
-    conn.execute(
-        """INSERT INTO daily_fact(id, day, title, extract, page_url, fetched_at)
-           VALUES(1,?,?,?,?,?)
-           ON CONFLICT(id) DO UPDATE SET
-               day=excluded.day, title=excluded.title, extract=excluded.extract,
-               page_url=excluded.page_url, fetched_at=excluded.fetched_at""",
-        (day, title, extract, page_url, now_iso()),
-    )
-
-
-def load_daily_fact(conn: sqlite3.Connection) -> sqlite3.Row | None:
-    return conn.execute("SELECT * FROM daily_fact WHERE id=1").fetchone()
 
 
 def market_age_minutes(conn: sqlite3.Connection) -> float | None:

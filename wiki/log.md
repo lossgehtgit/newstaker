@@ -202,3 +202,22 @@ Dateien: newstaker/store.py, tests/test_newstaker.py.
 
 ## [2026-09-13] feature — Morning-Brief-Karte, Wetter-Stundenverlauf mit Niederschlag, Wetterkarten-Sizing
 Neues Modul `newstaker/dailybrief.py`: Top-5-Schlagzeilen (aus payload_items), zwei woertliche Teaser-Bullets zur Nr. 1, Wikipedia-„on this day"-Fun-Fact (neue Tabelle `daily_fact`, TTL-gecacht, Netzausfall-sicher), Markt-Kennzahl aus etfs/stocks (Tages-/3J-Rotation nach Tag-im-Jahr) - als `dailyBrief` in `pipeline.build_board()`/`export.export_board()`. Wetter-Detailseite (`weather.py`, `store.weather_hour` +`precip`-Spalte, Open-Meteo `hourly=...,precipitation`) ersetzt die Sonnenauf-/-untergang-/Extremzeiten-Statkarte durch einen scrollbaren Stundenverlauf (Temperatur+Niederschlag) je Tag; sunrise/sunset/hot/cold-Spalten/Payload-Felder bleiben bestehen, nur ungenutzt in der neuen UI. `.weather`-Kartenbreite/-Padding leicht vergroessert (156->176px mobil, 184->204px Desktop) gegen abgeschnittenen Text. Betroffen: `newstaker/{dailybrief.py (neu),weather.py,store.py,pipeline.py,export.py,config.py}`, `web/{app.js,app.css}`, `docs/{app.js,app.css}`, `tests/test_newstaker.py` (+8 Tests, 75 gesamt).
+
+## [2026-09-14] fix — Wetter-Auswahlrahmen, einheitliche Top-5 ohne Bullets, kuratierter Fun Fact statt Wikipedia-Live-Abruf, "3 JAHRE"-Label entfernt
+Vierte Feedback-Runde. (1) `.weather-day`-Padding erhoeht, damit der aktive-
+Tag-Auswahlrahmen (`.is-active`, inset box-shadow) Text/Icon nicht mehr am
+Rand abschneidet. (2) Morning-Brief-Top-5 zeigt jetzt einheitlich nur
+Titel+Quelle fuer alle 5 Eintraege, keine Zitat-Bullets mehr (vorher nur bei
+Eintrag 1, uneinheitlich) - die Top-5-Auswahl selbst war schon die bestehende
+Rangfolge aus rank.py, keine Aenderung noetig. (3) Fun Fact kommt nicht mehr
+von Wikipedias "on this day"-API, sondern aus einer von Hand geschriebenen,
+geprueften Liste (`config.DAILY_FACTS`, ~67 Eintraege Wirtschaft/Geschichte/
+Technik einfach erklaert), taeglich deterministisch nach Tag-des-Jahres
+ausgewaehlt - kein Netzabruf mehr, `dailybrief.refresh()` und die
+`daily_fact`-Tabelle sind komplett entfallen. (4) Das verwirrende "3 JAHRE"-
+Label ueber der Marktleiste entfernt (Badges zeigen seit der letzten Runde
+die Tagesveraenderung, nur der Lupe-Modal nennt noch die 3J-Zahl).
+Dateien: newstaker/dailybrief.py, newstaker/config.py, newstaker/store.py,
+newstaker/pipeline.py, tests/test_newstaker.py, web/app.js, web/app.css,
+web/index.html, docs/app.js, docs/app.css, docs/index.html,
+wiki/architecture.md, wiki/database.md, wiki/overview.md.

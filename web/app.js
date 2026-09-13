@@ -240,7 +240,6 @@ function renderMarkets() {
     return;
   }
   section.hidden = false;
-  $('marketsage').textContent = `${mk.lookbackYears} JAHRE`;
   const searchIndex = mk.searchIndex || [];
   renderMarketColumn('etf', 'markets-etf', mk.etfs, searchIndex);
   renderMarketColumn('stock', 'markets-stock', mk.stocks, searchIndex);
@@ -462,7 +461,7 @@ function renderDailyBrief(brief) {
   card.appendChild(el('div', 'bc-kicker', 'MORNING BRIEF'));
 
   const list = el('ol', 'bc-top5');
-  brief.top5.forEach((item, i) => {
+  brief.top5.forEach((item) => {
     const li = el('li', 'bc-item');
     const link = el('a', 'bc-link');
     link.href = item.url;
@@ -471,11 +470,6 @@ function renderDailyBrief(brief) {
     link.appendChild(el('span', 'bc-title', item.title));
     link.appendChild(el('span', 'bc-source', item.source));
     li.appendChild(link);
-    if (i === 0 && brief.topBullets && brief.topBullets.length) {
-      const ul = el('ul', 'bc-bullets');
-      brief.topBullets.forEach((b) => ul.appendChild(el('li', 'bc-bullet', b)));
-      li.appendChild(ul);
-    }
     list.appendChild(li);
   });
   card.appendChild(list);
