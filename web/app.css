@@ -222,9 +222,9 @@ body.view-mode-mobile .desktop-only {
    abschnitt statt umzubrechen). */
 .weather {
   flex: none;
-  width: 156px;
+  width: 176px;
   min-height: 44px;
-  padding: 9px 11px;
+  padding: 10px 13px;
   text-align: left;
   border: 1px solid var(--rule);
   border-radius: 14px;
@@ -261,9 +261,9 @@ body.view-mode-mobile .desktop-only {
 .weather-day .t span { color: var(--ink-fainter); font-weight: 500; }
 .weather-day.is-active { border-radius: 8px; box-shadow: inset 0 0 0 1px var(--accent); }
 
-/* Zweiseitige Karte: Seite 1 die kompakte 3-Tage-Uebersicht, Seite 2 die
-   Details (Sonnenauf-/-untergang, waermste/kaelteste Zeit) des angetippten
-   Tages - per Scroll-Snap durchwischbar statt eines eigenen JS-Sliders. */
+/* Zweiseitige Karte: Seite 1 die kompakte 3-Tage-Uebersicht, Seite 2 der
+   stundenweise Verlauf (Temperatur + Niederschlag) des angetippten Tages -
+   per Scroll-Snap durchwischbar statt eines eigenen JS-Sliders. */
 .weather-pages {
   display: flex;
   overflow-x: auto;
@@ -277,10 +277,32 @@ body.view-mode-mobile .desktop-only {
 .weather-page-days { display: flex; gap: 9px; }
 .weather-page-detail { cursor: pointer; padding-left: 1px; }
 
-.wd-title { font-size: 9.5px; letter-spacing: .06em; color: var(--ink-meta); margin-bottom: 5px; }
-.wd-row { display: flex; justify-content: space-between; gap: 10px; font-size: 10.5px; line-height: 1.5; }
-.wd-label { color: var(--ink-fainter); }
-.wd-value { font-weight: 600; color: var(--ink); }
+.wd-title { font-size: 9.5px; letter-spacing: .06em; color: var(--ink-meta); margin-bottom: 6px; }
+
+/* Stundenverlauf des angetippten Tages - horizontal scrollbare Kette statt
+   der frueheren Sonnenauf-/-untergang-/Extremzeiten-Statkarte. */
+.wd-hours {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 1px;
+}
+.wd-hours::-webkit-scrollbar { display: none; }
+
+.wd-hour { flex: none; min-width: 30px; text-align: center; }
+.wd-hour.is-now .wd-hour-h { color: var(--accent); font-weight: 600; }
+.wd-hour-h { font-size: 9px; line-height: 1; color: var(--ink-meta); }
+.wd-hour-i {
+  margin: 4px 0 3px;
+  font-family: var(--mono);
+  font-variant-emoji: text;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--ink);
+}
+.wd-hour-t { font-size: 11px; font-weight: 600; line-height: 1; color: var(--ink); }
+.wd-hour-p { margin-top: 2px; font-size: 8px; line-height: 1.2; color: var(--accent); white-space: nowrap; }
 
 /* ------------------------------------------------------- Marktuebersicht oben
    Zwei Boxen: ETFs und Einzelaktien. Reine Kennzahlen aus echten Kursdaten -
@@ -528,6 +550,89 @@ body.view-mode-mobile .desktop-only {
   font: 600 11px/1 var(--mono);
   letter-spacing: .06em;
 }
+
+/* Morning Brief - eine ruhige Karte oben im Feed, siehe newstaker/dailybrief.py.
+   Bewusst am Look der Wetterkarte/Markt-Boxen orientiert (Rahmen, Radius,
+   Mono fuer Kicker/Meta), kein zusaetzliches "Widget"-Design. */
+
+.brief-card {
+  margin: 17px 0 0;
+  padding: 15px 16px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--accent-tint);
+}
+
+.bc-kicker {
+  font: 500 9.5px/1 var(--mono);
+  letter-spacing: .14em;
+  color: var(--ink-meta);
+  margin-bottom: 10px;
+}
+
+.bc-top5 { list-style: none; margin: 0; padding: 0; }
+
+.bc-item + .bc-item { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--rule-soft); }
+
+.bc-link { display: block; text-decoration: none; }
+
+.bc-title {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.bc-source {
+  display: block;
+  margin-top: 2px;
+  font: 400 9.5px/1.3 var(--mono);
+  letter-spacing: .03em;
+  color: var(--ink-faint);
+}
+
+.bc-bullets { list-style: none; margin: 6px 0 0; padding: 0; }
+.bc-bullet {
+  position: relative;
+  padding-left: 12px;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-teaser);
+}
+.bc-bullet::before { content: '·'; position: absolute; left: 2px; color: var(--ink-fainter); }
+
+.bc-fact {
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-soft);
+}
+.bc-fact-label {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: .12em;
+  color: var(--ink-meta);
+  margin-bottom: 5px;
+}
+.bc-fact-text { font-size: 12px; line-height: 1.45; color: var(--ink-soft); text-wrap: pretty; }
+.bc-fact-link {
+  display: inline-block;
+  margin-top: 4px;
+  font: 400 10.5px/1.3 var(--mono);
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+
+.bc-finance {
+  margin-top: 11px;
+  padding-top: 11px;
+  border-top: 1px solid var(--rule-soft);
+  font: 400 12px/1.4 var(--mono);
+  color: var(--ink-soft);
+}
+.bc-finance.is-pos { color: var(--accent); }
+.bc-finance.is-neg { color: var(--negative, #b3261e); }
 
 /* Aufmacher - Raster aus 1a, ohne Nummer, mit Bild */
 
@@ -910,8 +1015,8 @@ body.view-mode-mobile .desktop-only {
   }
 
   body:not(.view-mode-mobile) .weather {
-    width: 184px;
-    padding: 10px 15px;
+    width: 204px;
+    padding: 11px 17px;
     border-radius: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, .03);
     transition: transform .12s ease, box-shadow .12s ease;

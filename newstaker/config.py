@@ -370,6 +370,16 @@ TIMEZONE = "Europe/Berlin"
 # Ausgeschlossen wurden dabei u.a. EQQQ, VFEM, ASML, BKNG, CRM, INTU - die
 # zahlen inzwischen Dividende.
 
+# ---------------------------------------------------------------- Morning Brief
+#
+# "Fun Fact des Tages": Wikipedias oeffentliche "on this day"-REST-API, keine
+# Anmeldung noetig. Einmal pro Kalendertag abgerufen und in daily_fact
+# gecacht (siehe store.py), damit ein Seitenaufruf nie selbst gegen Wikipedia
+# geht und ein Ausfall den letzten guten Fakt nicht loescht.
+
+DAILY_FACT_URL = "https://en.wikipedia.org/api/rest_v1/feed/onthisday/selected/{mm}/{dd}"
+DAILY_FACT_TTL_MINUTES = 24 * 60
+
 MARKETS_LOOKBACK_YEARS = 3
 MARKETS_TOP_N = 5
 MARKETS_TTL_MINUTES = 12 * 60  # Kursverlauf ueber 3 Jahre aendert sich nicht im 30-Min-Takt

@@ -2,7 +2,7 @@
 title: "Architektur"
 type: architecture
 project: newstaker
-updated: 2026-09-05
+updated: 2026-09-13
 ---
 
 # Architektur
@@ -42,16 +42,21 @@ store.py (raw_fetch, item, feed_state)                                          
    Löschen bei leerem Ergebnis — Regressionstest
    `test_markets_totalausfall_erhaelt_alten_stand`).
    - `weather.py` holt in *demselben* Open-Meteo-Request zusätzlich zur
-     Tagesübersicht ein `hourly`-Feld (`temperature_2m,weather_code`) sowie
-     `daily=…,sunrise,sunset` — `forecast_days` (config.WEATHER_DAYS, 3) gilt
-     für Tages- *und* Stundenwerte gleichermaßen, `store.weather_hour` hält
-     seit 2026-09-06 also alle abgerufenen Tage, nicht mehr nur heute (PK
-     `(city, hour)`, voller Ersatz je Refresh wie bei `weather`).
-     `board_payload()` liefert weiterhin `hours` (nur heute, mit `isNow`-Flag)
-     sowie je Tag in `days[]` zusätzlich `sunrise`/`sunset` (HH:MM) und
-     `hot`/`cold` (`{time, temp}`, aus den Stundenwerten des jeweiligen Tages
-     berechnet — Regressionstest
-     `test_board_payload_liefert_sonnenzeiten_und_extremwerte`). Die Spalten
+     Tagesübersicht ein `hourly`-Feld (`temperature_2m,weather_code,
+     precipitation`) sowie `daily=…,sunrise,sunset` — `forecast_days`
+     (config.WEATHER_DAYS, 3) gilt für Tages- *und* Stundenwerte gleichermaßen,
+     `store.weather_hour` hält seit 2026-09-06 also alle abgerufenen Tage,
+     nicht mehr nur heute (PK `(city, hour)`, voller Ersatz je Refresh wie bei
+     `weather`, seit 2026-09-13 zusätzlich Spalte `precip`).
+     `board_payload()` liefert je Tag in `days[]` weiterhin `sunrise`/`sunset`
+     (HH:MM) und `hot`/`cold` (`{time, temp}`) sowie seit 2026-09-13 zusätzlich
+     `hours` (Liste `{hour, icon, label, temp, precip, isNow}` für genau diesen
+     Tag) — Grundlage der neuen Stundenverlauf-Detailseite in der Wetterkarte
+     (`web/app.js::showWeatherDetail`/`weatherHourChip`, ersetzt die frühere
+     Sonnenauf-/-untergang-/Extremzeiten-Statkarte; die Spalten selbst bleiben
+     unverändert bestehen, nur die Anzeige wurde umgebaut). Regressionstests
+     `test_board_payload_liefert_sonnenzeiten_und_extremwerte` und
+     `test_board_payload_liefert_stundenverlauf_mit_niederschlag`. Die Spalten
      `weather.sunrise`/`weather.sunset` sind per `store._migrate` nachgezogen.
    - `markets.py` speichert seit dem Sparkline-Feature zusätzlich eine
      downgesampelte Kursreihe je Titel (`_downsample()`, `config.
@@ -94,7 +99,48 @@ store.py (raw_fetch, item, feed_state)                                          
 8. **Board bauen** (`pipeline.build_board()`) — SQL-Join über `item`, `source`,
    `state`, `cluster`; wählt je Cluster einen Aufmacher (bestes Tier, dann
    frühestes Datum, dann `id`), berechnet Live-Score, sortiert, filtert
-   (Cluster/Thema/Gelesen), deckelt auf `config.BOARD_LIMIT`.
+   (Cluster/Thema/Gelesen), deckelt auf `config.BOARD_LIMIT`. Am Ende hängt
+   `build_board()` zusätzlich `dailyBrief` an (siehe unten).
+
+## Morning Brief (`newstaker/dailybrief.py`, seit 2026-09-13)
+
+Eine ruhige Karte oben im Feed (`web/app.js`/`docs/app.js::renderDailyBrief`),
+komplett ohne KI-generierten Text — nur Zitat, Auswahl und Arithmetik aus
+bereits vorhandenen Daten:
+
+- **Top 5**: die ersten 5 Einträge der bereits fertig sortierten,
+  gefilterten `payload_items`-Liste in `build_board()` (dieselbe Rangliste
+  wie `leads`+`briefs`) — keine eigene Zweitsortierung.
+- **Zwei Bullets zur Nr. 1**: `dailybrief._teaser_bullets()` zerlegt
+  `item.teaser` (bereits in `item.teaser` gespeichert, aus dem Feed-
+  `<description>`/`<summary>`, siehe `feedparse.py`) satzweise, nimmt die
+  ersten zwei Sätze — 100% wörtliches Zitat. Degradiert auf keine Bullets,
+  wenn der Teaser leer ist oder (gefaltet) mit dem Titel übereinstimmt.
+- **Fun Fact des Tages**: Wikipedias öffentliche „on this day"-REST-API
+  (`config.DAILY_FACT_URL`, `en.wikipedia.org/api/rest_v1/feed/onthisday/
+  selected/{MM}/{DD}`), einmal pro Kalendertag abgerufen und in
+  `store.daily_fact` (einzeilig, `id=1`) gecacht — `dailybrief.refresh()`
+  läuft im selben `pipeline.refresh()`-Aufruf wie weather/markets, mit
+  derselben Nicht-Löschen-Regel bei Netzausfall (alter Fakt bleibt stehen,
+  Regressionstest `test_dailybrief_wikipedia_ausfall_behaelt_alten_fakt`).
+  `board_payload()` liest den Cache nur, fetcht nie selbst — genau die
+  weather/markets-Trennung, die `rebuild()` netzfrei hält.
+  **Wichtig für den Determinismus**: das Kalendertag-`MM`/`DD` für die
+  URL kommt in `refresh()` bewusst aus der echten Wanduhr (Wall-Clock-
+  Netz-Frische-Frage wie bei weather/markets-TTL, siehe Bekannte Falle 0
+  unten) — `board_payload()` selbst berührt nie `datetime.now()`, sondern
+  nur das durchgereichte `now=` (für die Finanz-Rotation) und den DB-Cache.
+- **Finanz-Kennzahl**: `dailybrief._finance_stat()` wählt aus den bereits
+  geladenen `markets.board_payload()`-Arrays (`etfs`+`stocks`) den größten
+  Gewinner — je nach `now.timetuple().tm_yday % 2` entweder Tages- oder
+  3-Jahres-Veränderung (`changePctDaily`/`changePct`), reine Auswahl+
+  Formatierung, keine neue Metrik.
+
+`pipeline.build_board()` ruft `dailybrief.board_payload(conn, payload_items,
+markets.board_payload(conn), now=now)` auf und hängt das Ergebnis als
+`dailyBrief`-Schlüssel an — `export.py::export_board()` reicht es unverändert
+durch. Da hier nur DB-Lesen + reine Funktionen von `now` passieren, bleibt
+`rebuild()` (das nie `dailybrief.refresh()` aufruft) determinismus-sicher.
 
 Alle Stufen sind **idempotent**. `pipeline.rebuild()` reprozessiert
 ausschließlich bereits gespeicherte `raw_fetch`-Zeilen — kein Netz nötig.

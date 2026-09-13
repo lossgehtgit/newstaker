@@ -67,7 +67,7 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
             "latitude": ",".join(str(config.CITIES[c]["lat"]) for c in names),
             "longitude": ",".join(str(config.CITIES[c]["lon"]) for c in names),
             "daily": "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset",
-            "hourly": "temperature_2m,weather_code",
+            "hourly": "temperature_2m,weather_code,precipitation",
             "forecast_days": max(config.WEATHER_DAYS, 1),
             "timezone": config.TIMEZONE,
         },
@@ -109,9 +109,10 @@ def refresh(conn, *, force: bool = False) -> dict[str, int]:
         hours = hourly.get("time") or []
         hour_codes = hourly.get("weather_code") or []
         temps = hourly.get("temperature_2m") or []
+        precips = hourly.get("precipitation") or [0.0] * len(hours)
         hour_rows = [
-            {"hour": h, "code": int(c), "temp": float(t)}
-            for h, c, t in zip(hours, hour_codes, temps)
+            {"hour": h, "code": int(c), "temp": float(t), "precip": float(p)}
+            for h, c, t, p in zip(hours, hour_codes, temps, precips)
         ]
         if hour_rows:
             store.save_weather_hours(conn, city, hour_rows)
@@ -128,6 +129,24 @@ def board_payload(conn, city: str) -> dict:
     by_day: dict[str, list] = {}
     for row in hour_rows:
         by_day.setdefault(row["hour"][:10], []).append(row)
+
+    now_hour = datetime.now().strftime("%Y-%m-%dT%H:00")
+
+    def _hourly_strip(day_hours: list) -> list[dict]:
+        strip = []
+        for h in day_hours:
+            h_icon, h_label = describe(h["code"])
+            strip.append(
+                {
+                    "hour": h["hour"][11:16],
+                    "icon": h_icon,
+                    "label": h_label,
+                    "temp": round(h["temp"]),
+                    "precip": round(h["precip"], 1) if h["precip"] else 0,
+                    "isNow": h["hour"] == now_hour,
+                }
+            )
+        return strip
 
     days = []
     for row in rows:
@@ -147,21 +166,7 @@ def board_payload(conn, city: str) -> dict:
                 "sunset": row["sunset"],
                 "hot": {"time": hot["hour"][11:16], "temp": round(hot["temp"])} if hot else None,
                 "cold": {"time": cold["hour"][11:16], "temp": round(cold["temp"])} if cold else None,
-            }
-        )
-    now_hour = datetime.now().strftime("%Y-%m-%dT%H:00")
-    hours = []
-    for row in hour_rows:
-        if not row["hour"].startswith(today):
-            continue
-        icon, label = describe(row["code"])
-        hours.append(
-            {
-                "hour": row["hour"][11:16],
-                "icon": icon,
-                "label": label,
-                "temp": round(row["temp"]),
-                "isNow": row["hour"] == now_hour,
+                "hours": _hourly_strip(day_hours),
             }
         )
     return {
@@ -169,5 +174,4 @@ def board_payload(conn, city: str) -> dict:
         "cityLabel": city.upper(),
         "cities": list(config.CITIES),
         "days": days,
-        "hours": hours,
     }

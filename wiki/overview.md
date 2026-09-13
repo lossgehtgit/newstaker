@@ -2,7 +2,7 @@
 title: "Überblick"
 type: overview
 project: newstaker
-updated: 2026-09-05
+updated: 2026-09-13
 ---
 
 # News-Taker — Überblick
@@ -39,6 +39,7 @@ GitHub Pages + Actions). Live-Seite: `https://lossgehtgit.github.io/newstaker/`.
 | `newstaker/server.py` | HTTP-Server (JSON-API + Auslieferung von `web/`) für die lokale Live-Version |
 | `newstaker/export.py` | Statischer Export nach `docs/` für GitHub Pages |
 | `newstaker/pipeline.py` | Verdrahtet die gesamte Pipeline (`refresh()`, `rebuild()`, `build_board()`) — zentrale Orchestrierung |
+| `newstaker/dailybrief.py` | Morning-Brief-Karte: Top-5, Teaser-Zitate, Wikipedia-Fun-Fact (gecacht), Markt-Kennzahl — siehe architecture.md |
 | `newstaker/config.py` | Alle Stellschrauben an einem Ort: Quellen, Themen, Ranking-Gewichte, Cluster-Schwellen, Marktkandidaten |
 
 Details zum Datenfluss: siehe [architecture.md](architecture.md).
@@ -59,7 +60,7 @@ python3 run.py init && python3 run.py fetch -v && python3 run.py serve
 | `python3 run.py export -v` | Abrufen + statischen Export nach `docs/` schreiben (für GitHub Pages) |
 | `python3 run.py status` | Zustandsbericht, zeigt auch stumme Feeds |
 
-**Tests** (63 Stück, keine Netzabhängigkeit):
+**Tests** (75 Stück, keine Netzabhängigkeit):
 
 ```bash
 python3 -m unittest discover -s tests -v
@@ -74,7 +75,7 @@ run.py                CLI
 newstaker/            Backend-Paket (Pipeline, Server, Export, Config)
 web/                  Frontend, lokale Live-Version (liest die JSON-API von server.py)
 docs/                 Frontend, statische Cloud-Version + generierte Daten (data/, tiles/) — von GitHub Pages ausgeliefert
-tests/test_newstaker.py  63 Tests, ohne Netzzugriff
+tests/test_newstaker.py  75 Tests, ohne Netzzugriff
 .github/workflows/    update.yml — 30-Minuten-Cron, exportiert nach docs/ und pusht zurück
 scripts/              com.newstaker.fetch.plist.template — Vorlage für lokalen launchd-Auto-Abruf (macOS)
 var/                  Datenbank + Logs, NICHT im Repo (.gitignore)
