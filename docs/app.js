@@ -29,6 +29,7 @@ const state = {
   topics: [],
   totalSources: 0,
   lastFetchAt: '',
+  dailyBrief: null,
   weather: null,
   markets: null,
   searchIndex: null,    // erst bei Bedarf geladen
@@ -131,11 +132,17 @@ function renderFetchLine() {
   $('fetchline').textContent = `${state.totalSources} QUELLEN · ${when}`;
 }
 
-function weatherDetailRow(label, value) {
-  const row = el('div', 'wd-row');
-  row.appendChild(el('span', 'wd-label', label));
-  row.appendChild(el('span', 'wd-value', value));
-  return row;
+function weatherHourChip(hour) {
+  const chip = el('div', 'wd-hour' + (hour.isNow ? ' is-now' : ''));
+  chip.appendChild(el('div', 'wd-hour-h', hour.hour));
+  const icon = el('div', 'wd-hour-i', hour.icon);
+  icon.title = hour.label;
+  chip.appendChild(icon);
+  chip.appendChild(el('div', 'wd-hour-t', `${hour.temp}°`));
+  if (hour.precip > 0) {
+    chip.appendChild(el('div', 'wd-hour-p', `☔︎ ${hour.precip}mm`));
+  }
+  return chip;
 }
 
 function showWeatherDetail(day) {
@@ -143,10 +150,9 @@ function showWeatherDetail(day) {
   panel.replaceChildren();
   if (!day) return;
   panel.appendChild(el('div', 'wd-title', day.day));
-  panel.appendChild(weatherDetailRow('Sonnenaufgang', day.sunrise || '–'));
-  panel.appendChild(weatherDetailRow('Sonnenuntergang', day.sunset || '–'));
-  panel.appendChild(weatherDetailRow('Wärmste Zeit', day.hot ? `${day.hot.time} · ${day.hot.temp}°` : '–'));
-  panel.appendChild(weatherDetailRow('Kälteste Zeit', day.cold ? `${day.cold.time} · ${day.cold.temp}°` : '–'));
+  const strip = el('div', 'wd-hours');
+  (day.hours || []).forEach((hour) => strip.appendChild(weatherHourChip(hour)));
+  panel.appendChild(strip);
 }
 
 function renderWeather() {
@@ -484,9 +490,69 @@ function renderBrief(item, rerender) {
   return node;
 }
 
+/* --------------------------------------------------------- Morning Brief
+   Ruhige Karte oben im Feed: Top-5-Schlagzeilen (bereits vorhandene
+   Rangliste), zwei woertliche Teaser-Zitate zur Nr. 1, ein Wikipedia-"on
+   this day"-Fakt und eine Kennzahl aus den bereits geladenen Marktdaten -
+   keine neuen Abrufe, kein generierter Text (siehe newstaker/dailybrief.py). */
+
+function renderDailyBrief(brief) {
+  if (!brief || !brief.top5 || !brief.top5.length) return null;
+
+  const card = el('div', 'brief-card');
+  card.appendChild(el('div', 'bc-kicker', 'MORNING BRIEF'));
+
+  const list = el('ol', 'bc-top5');
+  brief.top5.forEach((item, i) => {
+    const li = el('li', 'bc-item');
+    const link = el('a', 'bc-link');
+    link.href = item.url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.appendChild(el('span', 'bc-title', item.title));
+    link.appendChild(el('span', 'bc-source', item.source));
+    li.appendChild(link);
+    if (i === 0 && brief.topBullets && brief.topBullets.length) {
+      const ul = el('ul', 'bc-bullets');
+      brief.topBullets.forEach((b) => ul.appendChild(el('li', 'bc-bullet', b)));
+      li.appendChild(ul);
+    }
+    list.appendChild(li);
+  });
+  card.appendChild(list);
+
+  if (brief.fact) {
+    const fact = el('div', 'bc-fact');
+    fact.appendChild(el('div', 'bc-fact-label', 'FUN FACT DES TAGES'));
+    fact.appendChild(el('div', 'bc-fact-text', brief.fact.extract));
+    if (brief.fact.url) {
+      const link = el('a', 'bc-fact-link', brief.fact.title);
+      link.href = brief.fact.url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      fact.appendChild(link);
+    }
+    card.appendChild(fact);
+  }
+
+  if (brief.financeStat) {
+    const stat = brief.financeStat;
+    const pct = stat.changePct;
+    const line = el('div', 'bc-finance' + (pct >= 0 ? ' is-pos' : ' is-neg'));
+    line.textContent =
+      `${stat.label}: ${stat.name} ${pct >= 0 ? '+' : ''}${pct}% (${stat.period})`;
+    card.appendChild(line);
+  }
+
+  return card;
+}
+
 function renderFeed(leads, briefs) {
   const feed = $('feed');
   feed.replaceChildren();
+
+  const briefCard = renderDailyBrief(state.dailyBrief);
+  if (briefCard) feed.appendChild(briefCard);
 
   const total = leads.length + briefs.length;
   $('empty').hidden = total > 0;
@@ -554,6 +620,7 @@ async function loadBoard() {
     state.allItems = board.items;
     state.topics = board.topics;
     state.lastFetchAt = board.lastFetchAt;
+    state.dailyBrief = board.dailyBrief;
     state.totalSources = new Set(board.items.map((e) => e.source)).size;
     state.weatherCities = Object.keys(weather);
     state.weatherData = weather;

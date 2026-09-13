@@ -83,6 +83,7 @@ def export_board(conn, *, now: datetime) -> dict:
         "lastFetchAt": full["lastFetchAt"],
         "items": items,
         "topics": full["topics"],
+        "dailyBrief": full["dailyBrief"],
     }
 
 

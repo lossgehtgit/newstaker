@@ -18,7 +18,7 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from newstaker import cluster, config, feedparse, images, markets, normalize, pipeline, rank, store, weather  # noqa: E402
+from newstaker import cluster, config, dailybrief, feedparse, images, markets, normalize, pipeline, rank, store, weather  # noqa: E402
 
 
 NOW = datetime(2026, 7, 25, 12, 0, tzinfo=timezone.utc)
@@ -423,6 +423,38 @@ class TestWeather(unittest.TestCase):
                 conn.close()
                 config.DB_PATH, config.VAR_DIR = alte_db, alter_var
 
+    def test_board_payload_liefert_stundenverlauf_mit_niederschlag(self):
+        """Grundlage der neuen Stundenansicht (Punkt 2): jeder Tag muss eine
+        'hours'-Liste mit Temperatur UND Niederschlag je Stunde mitfuehren."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            alte_db, alter_var = config.DB_PATH, config.VAR_DIR
+            config.VAR_DIR = Path(tmp)
+            config.DB_PATH = Path(tmp) / "test.db"
+            conn = store.connect()
+            store.init(conn)
+            try:
+                today = datetime.now().date().isoformat()
+                store.save_weather(conn, "München", [{"day": today, "code": 61, "hi": 18.0, "lo": 9.0}])
+                store.save_weather_hours(
+                    conn,
+                    "München",
+                    [
+                        {"hour": f"{today}T06:00", "code": 61, "temp": 10.0, "precip": 2.4},
+                        {"hour": f"{today}T15:00", "code": 0, "temp": 18.0, "precip": 0.0},
+                    ],
+                )
+                conn.commit()
+                day = weather.board_payload(conn, "München")["days"][0]
+                self.assertEqual(len(day["hours"]), 2)
+                self.assertEqual(day["hours"][0]["precip"], 2.4)
+                self.assertEqual(day["hours"][1]["precip"], 0)
+                self.assertEqual(day["hours"][0]["temp"], 10)
+            finally:
+                conn.close()
+                config.DB_PATH, config.VAR_DIR = alte_db, alter_var
+
 
 # --------------------------------------------------------------- Bilder
 
@@ -684,6 +716,56 @@ class TestPipelineInMemory(unittest.TestCase):
         etfs, stocks, _search, _ = store.load_markets(self.conn)
         self.assertEqual(len(etfs), 1, "alter Marktstand darf bei Totalausfall nicht verschwinden")
         self.assertEqual(etfs[0]["symbol"], "TEST")
+
+    def test_dailybrief_payload_form(self):
+        """Verankert die dailyBrief-Struktur im Board-Payload (Punkt 3 der
+        Morning-Brief-Anforderung) - top5/topBullets/fact/financeStat muessen
+        immer vorhanden sein, auch ohne gecachten Fun Fact."""
+        self._einlesen()
+        self.conn.commit()
+        pipeline.rebuild_clusters(self.conn)
+        board = pipeline.build_board(self.conn)
+        brief = board["dailyBrief"]
+        self.assertIn("top5", brief)
+        self.assertIn("topBullets", brief)
+        self.assertIn("fact", brief)
+        self.assertIn("financeStat", brief)
+        self.assertLessEqual(len(brief["top5"]), 5)
+        self.assertIsNone(brief["fact"], "ohne gecachten Fakt darf keiner erfunden werden")
+
+    def test_dailybrief_teaser_bullets_degradieren_bei_leerem_teaser(self):
+        """Kein Teaser (oder Teaser == Titel) -> keine Bullets, nie Fuellstoff."""
+        self.assertEqual(dailybrief._teaser_bullets("Titel", ""), [])
+        self.assertEqual(dailybrief._teaser_bullets("Titel", "Titel"), [])
+        bullets = dailybrief._teaser_bullets("Titel", "Erster Satz. Zweiter Satz. Dritter Satz.")
+        self.assertEqual(bullets, ["Erster Satz.", "Zweiter Satz."])
+
+    def test_dailybrief_wikipedia_ausfall_behaelt_alten_fakt(self):
+        """Wie test_markets_totalausfall_erhaelt_alten_stand, nur fuer den Fun
+        Fact: schlaegt der Wikipedia-Abruf fehl, darf der zuletzt gute Fakt
+        nicht verschwinden (dieselbe Nicht-Loeschen-Regel wie bei markets/
+        weather bei einem Totalausfall der Datenquelle)."""
+        store.save_daily_fact(self.conn, "01-01", "Alter Fakt", "Ein alter, guter Fakt.", "https://example.org")
+        self.conn.commit()
+
+        with mock.patch.object(dailybrief.fetch, "fetch_json", return_value=None):
+            result = dailybrief.refresh(self.conn, force=True)
+
+        self.assertEqual(result, {"refreshed": False, "failed": True})
+        row = store.load_daily_fact(self.conn)
+        self.assertEqual(row["title"], "Alter Fakt", "alter Fakt darf bei Netzausfall nicht verschwinden")
+
+    def test_dailybrief_financestat_rotiert_nach_tag_im_jahr(self):
+        markets_payload = {
+            "etfs": [{"symbol": "A", "name": "A ETF", "changePct": 10.0, "changePctDaily": 1.0}],
+            "stocks": [{"symbol": "B", "name": "B Inc", "changePct": 50.0, "changePctDaily": 9.0}],
+        }
+        gerade_tag = datetime(2026, 1, 2, tzinfo=timezone.utc)  # tm_yday=2, gerade
+        ungerade_tag = datetime(2026, 1, 1, tzinfo=timezone.utc)  # tm_yday=1, ungerade
+        stat_gerade = dailybrief._finance_stat(markets_payload, now=gerade_tag)
+        stat_ungerade = dailybrief._finance_stat(markets_payload, now=ungerade_tag)
+        self.assertEqual(stat_gerade["symbol"], "B")  # groesster Tagesgewinn
+        self.assertEqual(stat_ungerade["symbol"], "B")  # groesstes 3J-Wachstum
 
 
 class TestConfig(unittest.TestCase):

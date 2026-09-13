@@ -134,6 +134,7 @@ CREATE TABLE IF NOT EXISTS weather_hour (
     hour       TEXT NOT NULL,   -- ISO-Zeit, z. B. "2026-09-05T14:00"
     code       INTEGER NOT NULL,
     temp       REAL NOT NULL,
+    precip     REAL NOT NULL DEFAULT 0,  -- mm Niederschlag in dieser Stunde
     fetched_at TEXT NOT NULL,
     PRIMARY KEY (city, hour)
 );
@@ -151,6 +152,19 @@ CREATE TABLE IF NOT EXISTS market (
     PRIMARY KEY (symbol, kind)  -- derselbe Titel kann in mehreren Gruppen stehen
                                 -- (config.SEARCH_INDEX_STOCKS ueberschneidet sich
                                 -- bewusst mit CANDIDATE_ETFS/CANDIDATE_STOCKS)
+);
+
+-- "Fun Fact des Tages" (Wikipedia "on this day"), einmal pro Kalendertag
+-- abgerufen und gecacht - genau wie weather/market bleibt bei einem
+-- Netzausfall der zuletzt gute Stand stehen (kein Loeschen bei leerem
+-- Ergebnis, siehe dailybrief.refresh()).
+CREATE TABLE IF NOT EXISTS daily_fact (
+    id         INTEGER PRIMARY KEY CHECK (id = 1),  -- immer genau eine Zeile
+    day        TEXT NOT NULL,   -- "MM-DD", fuer welchen Kalendertag der Fakt gilt
+    title      TEXT NOT NULL,
+    extract    TEXT NOT NULL,
+    page_url   TEXT NOT NULL DEFAULT '',
+    fetched_at TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta (
@@ -231,6 +245,10 @@ def _migrate(conn: sqlite3.Connection) -> None:
     if have_weather and "sunrise" not in have_weather:
         conn.execute("ALTER TABLE weather ADD COLUMN sunrise TEXT NOT NULL DEFAULT ''")
         conn.execute("ALTER TABLE weather ADD COLUMN sunset TEXT NOT NULL DEFAULT ''")
+
+    have_weather_hour = {row["name"] for row in conn.execute("PRAGMA table_info(weather_hour)")}
+    if have_weather_hour and "precip" not in have_weather_hour:
+        conn.execute("ALTER TABLE weather_hour ADD COLUMN precip REAL NOT NULL DEFAULT 0")
 
 
 def init(conn: sqlite3.Connection) -> None:
@@ -549,12 +567,12 @@ def weather_age_minutes(conn: sqlite3.Connection, city: str) -> float | None:
 
 
 def save_weather_hours(conn: sqlite3.Connection, city: str, hours: list[dict[str, Any]]) -> None:
-    """Ersetzt die Stundenwerte einer Stadt (nur der heutige Tag wird gehalten)."""
+    """Ersetzt die Stundenwerte einer Stadt (alle abgerufenen Tage, config.WEATHER_DAYS)."""
     fetched = now_iso()
     conn.execute("DELETE FROM weather_hour WHERE city=?", (city,))
     conn.executemany(
-        "INSERT INTO weather_hour(city, hour, code, temp, fetched_at) VALUES(?,?,?,?,?)",
-        [(city, h["hour"], h["code"], h["temp"], fetched) for h in hours],
+        "INSERT INTO weather_hour(city, hour, code, temp, precip, fetched_at) VALUES(?,?,?,?,?,?)",
+        [(city, h["hour"], h["code"], h["temp"], h.get("precip", 0.0), fetched) for h in hours],
     )
 
 
@@ -626,6 +644,24 @@ def load_markets(
     search = sorted((to_dict(r) for r in rows if r["kind"] == "search"), key=lambda m: m["symbol"])
     checked_at = rows[0]["fetched_at"] if rows else ""
     return etfs, stocks, search, checked_at
+
+
+# -------------------------------------------------------------- Fun Fact
+
+
+def save_daily_fact(conn: sqlite3.Connection, day: str, title: str, extract: str, page_url: str) -> None:
+    conn.execute(
+        """INSERT INTO daily_fact(id, day, title, extract, page_url, fetched_at)
+           VALUES(1,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET
+               day=excluded.day, title=excluded.title, extract=excluded.extract,
+               page_url=excluded.page_url, fetched_at=excluded.fetched_at""",
+        (day, title, extract, page_url, now_iso()),
+    )
+
+
+def load_daily_fact(conn: sqlite3.Connection) -> sqlite3.Row | None:
+    return conn.execute("SELECT * FROM daily_fact WHERE id=1").fetchone()
 
 
 def market_age_minutes(conn: sqlite3.Connection) -> float | None:

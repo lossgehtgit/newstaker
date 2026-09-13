@@ -12,7 +12,7 @@ import json
 import hashlib
 from datetime import datetime, timedelta, timezone
 
-from . import cluster, config, feedparse, fetch, images, markets, normalize, rank, store, weather
+from . import cluster, config, dailybrief, feedparse, fetch, images, markets, normalize, rank, store, weather
 
 
 # --------------------------------------------------------------- Einlesen
@@ -212,10 +212,11 @@ def refresh(conn, *, verbose: bool = False, force: bool = False, image_budget: i
     clusters = rebuild_clusters(conn)
     wx = weather.refresh(conn, force=force)
     mk = markets.refresh(conn, force=force, verbose=verbose)
+    brief = dailybrief.refresh(conn, force=force)
     store.prune_raw(conn)
     store.set_meta(conn, "last_fetch_at", store.now_iso())
     conn.commit()
-    return {"feeds": feeds, "images": img, "clusters": clusters, "weather": wx, "markets": mk}
+    return {"feeds": feeds, "images": img, "clusters": clusters, "weather": wx, "markets": mk, "dailyBrief": brief}
 
 
 def rebuild(conn, *, now: datetime | None = None) -> dict:
@@ -359,11 +360,14 @@ def build_board(
         if entry["topic"] in counts:
             counts[entry["topic"]] += 1
 
+    brief = dailybrief.board_payload(conn, payload_items, markets.board_payload(conn), now=now)
+
     return {
         "generatedAt": now.isoformat(timespec="seconds"),
         "lastFetchAt": store.get_meta(conn, "last_fetch_at", ""),
         "leads": payload_items[: config.LEAD_COUNT],
         "briefs": payload_items[config.LEAD_COUNT :],
+        "dailyBrief": brief,
         "clusterStrip": strip,
         "topics": [
             {"key": t, "label": config.TOPIC_LABELS[t], "count": counts.get(t, 0)}

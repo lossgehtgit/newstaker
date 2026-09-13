@@ -2,7 +2,7 @@
 title: "Datenbank"
 type: database
 project: newstaker
-updated: 2026-09-05
+updated: 2026-09-13
 ---
 
 # Datenbank
@@ -25,7 +25,8 @@ manuelle `_migrate()`-Funktion für nachträglich hinzugekommene Spalten
 | `feed_state` | Letzter bekannter ETag/Last-Modified/Hash je Feed, für conditional GET |
 | `og_cache` | Ergebnis der `og:image`-Stufe je URL, damit eine blockierte Seite nie zweimal angefasst wird |
 | `weather` | PK `(city, day)`, TTL-gesteuert über `weather_age_minutes()` |
-| `weather_hour` | PK `(city, hour)`, nur der heutige Tag (voller Ersatz je Refresh) — Grundlage für den scrollbaren Tagesverlauf im Frontend |
+| `weather_hour` | PK `(city, hour)`, alle abgerufenen Tage (voller Ersatz je Refresh) — Grundlage für den scrollbaren Stundenverlauf je Tag im Frontend. Seit 2026-09-13 zusätzlich `precip` (mm Niederschlag dieser Stunde) |
+| `daily_fact` | Einzeilig (`id=1`), Wikipedia-„on this day"-Fakt fürs Morning-Brief, TTL-gecacht wie `weather`/`market` — bei Netzausfall bleibt der letzte gute Fakt stehen |
 | `market` | ETF/Aktien/Such-Kennzahlen, **voller Ersatz je `kind`-Gruppe** bei jedem erfolgreichen Refresh der jeweiligen Gruppe (siehe Falle unten). `kind` unterscheidet `'etf'` / `'stock'` (kuratierte, dividendenfreie Wachstumsliste, per 3J-Rangliste gefiltert) und `'search'` (`config.SEARCH_INDEX_STOCKS`, ungefiltert/ungerankt, breite Firmen-/Ticker-Suche z.B. SAP). Spalte `change_pct` = 3J-Veränderung (bei `kind='search'` immer 0, keine Rangliste dort), `change_pct_daily` = letzter Schlusskurs vs. vorletzter (seit 2026-09-07 das Standard-Badge im Frontend, `change_pct` nur noch in der Lupe). Spalte `spark` (JSON-Liste, `config.MARKETS_SPARK_POINTS` Stützstellen) speist die Mini-Kursgrafik im Frontend, siehe `markets._downsample()` |
 | `meta` | Key-Value, u. a. `last_fetch_at` (JSON-kodierter Wert) |
 | `item_fts` | FTS5 virtual table für Volltextsuche, siehe unten |
