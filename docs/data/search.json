@@ -1,6 +1,111 @@
 [
  {
   "dateShort": "13.09.",
+  "id": "11bcfa76f30072caf5eafa2b11bac88a",
+  "image": "https://images.tagesschau.de/image/632ca585-bc27-49e8-a13e-0d5bd386c416/AAABoJm22Y4/AAABnSSvrFg/16x9-big/sendungsbild-1795556.jpg?width=1920",
+  "kicker": "POLITIK",
+  "meta": "Tagesschau · 13.09.2026 · 07:41",
+  "publishedAt": "2026-09-13T07:41:36+00:00",
+  "source": "Tagesschau",
+  "teaser": "tagesschau in 100 Sekunden",
+  "time": "07:41",
+  "title": "tagesschau in 100 Sekunden",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://tagesschau.de/tagesschau_in_100_sekunden/video-1648140.html"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "4172e806e496b5e71e77856d7af58922",
+  "image": "https://img.zeit.de/politik/deutschland/2026-09/weisungsrecht-justizministerien-staatsanwaltschaft-deutscher-richterbund-afd-sachsen-anhalt-foto-1/wide__1300x731",
+  "kicker": "POLITIK",
+  "meta": "ZEIT · 13.09.2026 · 07:39",
+  "publishedAt": "2026-09-13T07:39:22+00:00",
+  "source": "ZEIT",
+  "teaser": "Der Richterbund sorgt sich nach dem AfD-Sieg in Sachsen-Anhalt vor einem parteipolitischen Missbrauch der Staatsanwaltschaften. Die Justiz müsse besser geschützt werden.",
+  "time": "07:39",
+  "title": "Weisungsrecht für Justizministerien: Richterbund warnt nach AfD-Erfolg vor Missbrauch der Justiz",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://zeit.de/politik/deutschland/2026-09/weisungsrecht-justizministerien-staatsanwaltschaft-deutscher-richterbund-afd-sachsen-anhalt"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "f379300689598238951327548cce89f0",
+  "image": "https://img.zeit.de/news/2026-09/13/mann-aus-auto-geschleudert-sperrung-auf-a6-nach-mannheim-image-group/original__640x360",
+  "kicker": "POLITIK",
+  "meta": "ZEIT · 13.09.2026 · 07:37",
+  "publishedAt": "2026-09-13T07:37:40+00:00",
+  "source": "ZEIT",
+  "teaser": "None",
+  "time": "07:37",
+  "title": "Verkehrsunfall: Mann aus Auto geschleudert: Sperrung auf A6 nach Mannheim",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://zeit.de/news/2026-09/13/mann-aus-auto-geschleudert-sperrung-auf-a6-nach-mannheim"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "6531bd10ded341c95cb47485d35171a0",
+  "image": "https://img.zeit.de/news/2026-09/13/wie-gladiatoren-hoffenheim-erleichtert-ueber-siegpremiere-image-group/original__640x360",
+  "kicker": "POLITIK",
+  "meta": "ZEIT · 13.09.2026 · 07:37",
+  "publishedAt": "2026-09-13T07:37:19+00:00",
+  "source": "ZEIT",
+  "teaser": "None",
+  "time": "07:37",
+  "title": "Fußball-Bundesliga: Wie Gladiatoren - Hoffenheim erleichtert über Siegpremiere",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://zeit.de/news/2026-09/13/wie-gladiatoren-hoffenheim-erleichtert-ueber-siegpremiere"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "ebe7216f0c0c0259b22f97387e40d469",
+  "image": "https://images.tagesschau.de/image/e7904a01-0786-494a-996d-b1dfd43b3049/AAABoJmxImM/AAABnSSvrFg/16x9-big/teaserbild-124.jpg?width=1920",
+  "kicker": "POLITIK",
+  "meta": "Tagesschau · 13.09.2026 · 07:35",
+  "publishedAt": "2026-09-13T07:35:42+00:00",
+  "source": "Tagesschau",
+  "teaser": "Sonntag ist es im Süden zunächst gebietsweise noch sonnig. Sonst gibts meist viele Wolken und verbreitet wird es nass. 16 bis 28 Grad.",
+  "time": "07:35",
+  "title": "Wetter Deutschland: Wolken, Temperaturen, Wind und Aussichten",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://tagesschau.de/wetter/deutschland/wettervorhersage-deutschland-100.html"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "9656b03d5cbd6c022db3f40f8376cf6b",
+  "image": "https://img.zeit.de/news/2026-09/13/fuenf-verletzte-nach-brand-in-einer-kueche-image-group/original__640x360",
+  "kicker": "POLITIK",
+  "meta": "ZEIT · 13.09.2026 · 07:32",
+  "publishedAt": "2026-09-13T07:32:35+00:00",
+  "source": "ZEIT",
+  "teaser": "None",
+  "time": "07:32",
+  "title": "Feuer in Wohnhaus: Frittieren geht schief: Fünf Menschen verletzt",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://zeit.de/news/2026-09/13/fuenf-verletzte-nach-brand-in-einer-kueche"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "8e9717c419eb0f7706b86866bec09b61",
+  "image": "https://img.zeit.de/news/2026-09/13/schlaegerei-bei-dartspiel-in-der-oberpfalz-image-group/original__640x360",
+  "kicker": "POLITIK",
+  "meta": "ZEIT · 13.09.2026 · 07:31",
+  "publishedAt": "2026-09-13T07:31:19+00:00",
+  "source": "ZEIT",
+  "teaser": "None",
+  "time": "07:31",
+  "title": "Zwei Verletzte: Schlägerei bei Dartspiel in der Oberpfalz",
+  "topic": "politik",
+  "topicLabel": "Politik",
+  "url": "https://zeit.de/news/2026-09/13/schlaegerei-bei-dartspiel-in-der-oberpfalz"
+ },
+ {
+  "dateShort": "13.09.",
   "id": "309fbe61c61f6789121b48e22d2200f8",
   "image": "https://media0.faz.net/image/077fbd8c367a/w4032h2268x0y378/202601/43601.0.1670565499/restposten-von-der-liebig.webp",
   "kicker": "POLITIK",
@@ -28,6 +133,21 @@
   "topic": "politik",
   "topicLabel": "Politik",
   "url": "https://zeit.de/mobilitaet/2026-09/steffen-bilger-cdu-bahn-infrastruktur-probleme-sachsen-anhalt"
+ },
+ {
+  "dateShort": "13.09.",
+  "id": "4cdb00f1b1c1ef78512fbf59fa667fe1",
+  "image": "https://images.handelsblatt.com/9N2td04nORdP/cover/900/506/0/0/107/106/0.5/0.5/iran-krieg-strasse-von-hormus.jpg",
+  "kicker": "WELT",
+  "meta": "Handelsblatt · 13.09.2026 · 07:24 · DPA",
+  "publishedAt": "2026-09-13T07:24:47+00:00",
+  "source": "Handelsblatt",
+  "teaser": "Ein Angriff auf ein ziviles iranisches Schiff in der Straße von Hormus fordert ein Todesopfer. Was über den Vorfall und die angespannte Lage bekannt ist.",
+  "time": "07:24",
+  "title": "Iran-Krieg: Ein Toter nach Angriff auf iranisches Containerschiff",
+  "topic": "welt",
+  "topicLabel": "Welt",
+  "url": "https://handelsblatt.com/politik/international/iran-krieg-ein-toter-nach-angriff-auf-iranisches-containerschiff/100254142.html"
  },
  {
   "dateShort": "13.09.",
@@ -67,7 +187,7 @@
   "meta": "FAZ · 13.09.2026 · 07:21",
   "publishedAt": "2026-09-13T07:21:45+00:00",
   "source": "FAZ",
-  "teaser": "Was passiert, wenn man auf einer Kreuzfahrt ständig bedient wird, selbst dann, wenn man das gar nicht möchte.",
+  "teaser": "Was passiert, wenn man auf einer Kreuzfahrt ständig bedient wird, selbst dann, wenn man das gar nicht möchte? David Foster Wallace hat sich darauf eingelassen.",
   "time": "07:21",
   "title": "Soziologie des Konsums: Gnadenlos verwöhnt",
   "topic": "politik",
@@ -121,21 +241,6 @@
  },
  {
   "dateShort": "13.09.",
-  "id": "b9f79b3ccb1bbbad732f5863a37fc918",
-  "image": "https://img.zeit.de/news/2026-09/13/grauer-sonntag-mit-regen-wann-sich-die-wolken-zurueckziehen-image-group/original__640x360",
-  "kicker": "POLITIK",
-  "meta": "ZEIT · 13.09.2026 · 07:09",
-  "publishedAt": "2026-09-13T07:09:39+00:00",
-  "source": "ZEIT",
-  "teaser": "None",
-  "time": "07:09",
-  "title": "Wettervorhersage: Grauer Sonntag mit Regen - Wann sich die Wolken zurückziehen",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://zeit.de/news/2026-09/13/grauer-sonntag-mit-regen-wann-sich-die-wolken-zurueckziehen"
- },
- {
-  "dateShort": "13.09.",
   "id": "94c7a6a88e48d1d821bc6e6e79c1040b",
   "image": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/09f1/live/aaa670e0-af38-11f1-a540-61c3f7fc4e6c.jpg",
   "kicker": "TECHNOLOGIE",
@@ -163,21 +268,6 @@
   "topic": "politik",
   "topicLabel": "Politik",
   "url": "https://spiegel.de/politik/deutschland/gefahr-durch-ki-kuenstliche-intelligenz-afd-in-sachsen-anhalt-a-a83ab520-e30a-48d9-b82f-673f557f8065"
- },
- {
-  "dateShort": "13.09.",
-  "id": "957bd28e2d2abf7a87cf19219d16b814",
-  "image": "https://img.zeit.de/news/2026-09/13/klose-schwaermt-zoma-trifft-der-neue-nuernberger-reifegrad-image-group/original__640x360",
-  "kicker": "POLITIK",
-  "meta": "ZEIT · 13.09.2026 · 07:02",
-  "publishedAt": "2026-09-13T07:02:03+00:00",
-  "source": "ZEIT",
-  "teaser": "None",
-  "time": "07:02",
-  "title": "2. Fußball-Bundesliga: Klose schwärmt, Zoma trifft: Der neue Nürnberger Reifegrad",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://zeit.de/news/2026-09/13/klose-schwaermt-zoma-trifft-der-neue-nuernberger-reifegrad"
  },
  {
   "dateShort": "13.09.",
@@ -286,21 +376,6 @@
  },
  {
   "dateShort": "13.09.",
-  "id": "ec1efe1111f56fa5cc264cea47fac276",
-  "image": "https://img.zeit.de/news/2026-09/13/mit-tempo-100-durch-delmenhorst-polizei-stoppt-autorennen-image-group/original__640x360",
-  "kicker": "POLITIK",
-  "meta": "ZEIT · 13.09.2026 · 06:56",
-  "publishedAt": "2026-09-13T06:56:06+00:00",
-  "source": "ZEIT",
-  "teaser": "None",
-  "time": "06:56",
-  "title": "Kriminalität: Mit Tempo 100 durch Delmenhorst – Polizei stoppt Autorennen",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://zeit.de/news/2026-09/13/mit-tempo-100-durch-delmenhorst-polizei-stoppt-autorennen"
- },
- {
-  "dateShort": "13.09.",
   "id": "aeab104bdc441df61d958d5ff4acf546",
   "image": "https://cdn.prod.www.spiegel.de/images/c0410305-d4bf-49e6-be0c-65b46c6a366e_w520_r2.08_fpx64.25_fpy44.99.jpg",
   "kicker": "POLITIK",
@@ -328,21 +403,6 @@
   "topic": "politik",
   "topicLabel": "Politik",
   "url": "https://faz.net/aktuell/sport/fussball/bundesliga/hamburger-sv-sportvorstaendin-kathleen-krueger-im-interview-accg-201204320.html"
- },
- {
-  "dateShort": "13.09.",
-  "id": "f379300689598238951327548cce89f0",
-  "image": "https://img.zeit.de/news/2026-09/13/mann-aus-auto-geschleudert-sperrung-auf-a6-nach-mannheim-image-group/original__640x360",
-  "kicker": "POLITIK",
-  "meta": "ZEIT · 13.09.2026 · 06:53",
-  "publishedAt": "2026-09-13T06:53:33+00:00",
-  "source": "ZEIT",
-  "teaser": "None",
-  "time": "06:53",
-  "title": "Verkehrsunfall: Mann aus Auto geschleudert: Sperrung auf A6 nach Mannheim",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://zeit.de/news/2026-09/13/mann-aus-auto-geschleudert-sperrung-auf-a6-nach-mannheim"
  },
  {
   "dateShort": "13.09.",
@@ -414,7 +474,7 @@
   "source": "Al Jazeera",
   "teaser": "Search and rescue ongoing after Virgo Transport 8, with 243 people on board, lost contact with its operator.",
   "time": "06:36",
-  "title": "One dead, 102 rescued after Indonesian ferry goes missing in Java Sea",
+  "title": "Rescuers search for 140 people after Indonesian passenger ship sinks",
   "topic": "welt",
   "topicLabel": "Welt",
   "url": "https://aljazeera.com/news/2026/9/13/one-dead-102-rescued-after-indonesian-ferry-goes-missing-in-java-sea?traffic_source=rss"
@@ -733,21 +793,6 @@
   "topic": "politik",
   "topicLabel": "Politik",
   "url": "https://faz.net/aktuell/feuilleton/debatten/moegliche-afd-regierung-in-sachsen-anhalt-was-der-bund-jetzt-tun-kann-accg-201198454.html"
- },
- {
-  "dateShort": "13.09.",
-  "id": "f16c557072a3fdf8e67f377d5a48ae2b",
-  "image": "tiles/f16c557072a3fdf8e67f377d5a48ae2b.svg",
-  "kicker": "POLITIK",
-  "meta": "ZEIT · 13.09.2026 · 05:47",
-  "publishedAt": "2026-09-13T05:47:06+00:00",
-  "source": "ZEIT",
-  "teaser": "Mehr als 7.000 Menschen sind in der DR Kongo nachweislich an Ebola erkrankt. Es gibt aber Anzeichen, dass der Ausbruch seinen Höhepunkt überschritten haben könnte.",
-  "time": "05:47",
-  "title": "Ebolaepidemie im Kongo: Bisher mehr als 7.000 Ebolafälle in DR Kongo",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://zeit.de/gesellschaft/zeitgeschehen/2026-09/ebola-epidemie-kongo-demokratische-republik-bundibugyo-virus-impfstoff"
  },
  {
   "dateShort": "13.09.",
@@ -1363,21 +1408,6 @@
   "topic": "wirtschaft",
   "topicLabel": "Wirtschaft",
   "url": "https://nytimes.com/2026/09/12/world/asia/brics-summit-china-india-russia-iran.html"
- },
- {
-  "dateShort": "13.09.",
-  "id": "aeaf08d2f73ab7a0bcc14d3296d542d0",
-  "image": "https://images.tagesschau.de/image/d36c668b-fa46-4419-88c7-ed957e721900/AAABoJim8Bw/AAABnSSvrFg/16x9-big/sendungsbild-1795486.jpg?width=1920",
-  "kicker": "POLITIK",
-  "meta": "Tagesschau · 13.09.2026 · 02:46",
-  "publishedAt": "2026-09-13T02:46:52+00:00",
-  "source": "Tagesschau",
-  "teaser": "tagesschau in 100 Sekunden",
-  "time": "02:46",
-  "title": "tagesschau in 100 Sekunden",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://tagesschau.de/tagesschau_in_100_sekunden/video-1648112.html"
  },
  {
   "dateShort": "13.09.",
@@ -2567,7 +2597,7 @@
  {
   "dateShort": "12.09.",
   "id": "d2e449e344e2ff83d81d1cb5b1f029f5",
-  "image": "https://www.sueddeutsche.de/2026/09/12/5767ec94-c397-4142-9a09-7453e8088d82.jpg?rect=222%2C0%2C3556%2C2667&width=1000&fm=jpg&q=60",
+  "image": "https://www.sueddeutsche.de/2026/09/12/5767ec94-c397-4142-9a09-7453e8088d82.jpg?rect=1132%2C740%2C2007%2C1505&width=1000&fm=jpg&q=60",
   "kicker": "POLITIK",
   "meta": "SZ · 12.09.2026 · 20:05 · DPA",
   "publishedAt": "2026-09-12T20:05:00+00:00",
@@ -3463,21 +3493,6 @@
   "topic": "wirtschaft",
   "topicLabel": "Wirtschaft",
   "url": "https://cnbc.com/2026/09/12/larry-ellison-nixes-plan-to-offload-up-to-7point5-billion-worth-of-oracle-stock-.html"
- },
- {
-  "dateShort": "12.09.",
-  "id": "ebe7216f0c0c0259b22f97387e40d469",
-  "image": "https://images.tagesschau.de/image/e7904a01-0786-494a-996d-b1dfd43b3049/AAABoJaQ5mk/AAABnSSvrFg/16x9-big/teaserbild-124.jpg?width=1920",
-  "kicker": "POLITIK",
-  "meta": "Tagesschau · 12.09.2026 · 17:11",
-  "publishedAt": "2026-09-12T17:11:32+00:00",
-  "source": "Tagesschau",
-  "teaser": "Sonntag ist es im Süden zunächst gebietsweise noch sonnig. Sonst gibts meist viele Wolken und verbreitet wird es nass. 16 bis 28 Grad.",
-  "time": "17:11",
-  "title": "Wetter Deutschland: Wolken, Temperaturen, Wind und Aussichten",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://tagesschau.de/wetter/deutschland/wettervorhersage-deutschland-100.html"
  },
  {
   "dateShort": "12.09.",
@@ -6061,21 +6076,6 @@
  },
  {
   "dateShort": "12.09.",
-  "id": "c78667465c84c337714e28336972ded0",
-  "image": "https://images.handelsblatt.com/YNAN70Un2jVJ/cover/900/506/0/0/0/0/0.5/0.5/knobbe-martin.jpg",
-  "kicker": "WIRTSCHAFT",
-  "meta": "Handelsblatt · 12.09.2026 · 06:42",
-  "publishedAt": "2026-09-12T06:42:00+00:00",
-  "source": "Handelsblatt",
-  "teaser": "Deutsche Schüler schneiden bei Pisa so schlecht ab wie noch nie und alle zucken mit den Schultern. Dabei ist Bildung für die Zukunft des Landes wichtiger als jede Rentenreform.",
-  "time": "06:42",
-  "title": "Morning Briefing Plus: Wo bleibt der Pisa-Aufschrei?",
-  "topic": "wirtschaft",
-  "topicLabel": "Wirtschaft",
-  "url": "https://handelsblatt.com/meinung/morningbriefing/morning-briefing-plus-wo-bleibt-der-pisa-aufschrei/100253820.html"
- },
- {
-  "dateShort": "12.09.",
   "id": "f70a9926f63147f2fe1ae917865482fb",
   "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/0/3/2/8/overlay-mixer-20260908-120718-4c76fb4dc8b02205.png",
   "kicker": "TECHNOLOGIE",
@@ -7727,7 +7727,7 @@
  {
   "dateShort": "11.09.",
   "id": "a763b574da3eb43b1c0bc9369fd0a8f9",
-  "image": "https://image.cnbcfm.com/api/v1/image/108357880-1788368526390-gettyimages-2292619592-AFP_C76Z6NG.jpeg?v=1788368563&w=1920&h=1080",
+  "image": "tiles/a763b574da3eb43b1c0bc9369fd0a8f9.svg",
   "kicker": "WIRTSCHAFT",
   "meta": "CNBC · 11.09.2026 · 16:59",
   "publishedAt": "2026-09-11T16:59:05+00:00",
@@ -9811,21 +9811,6 @@
  },
  {
   "dateShort": "11.09.",
-  "id": "58add24afafefcca011877ecc848e9cf",
-  "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/3/1/3/4/Screenshot_2026-09-10_at_22-e8d96d157257f2a1.png",
-  "kicker": "TECHNOLOGIE",
-  "meta": "heise · 11.09.2026 · 10:32",
-  "publishedAt": "2026-09-11T10:32:00+00:00",
-  "source": "heise",
-  "teaser": "Apples neue Pro-Modelle scheinen gegenüber dem Duo die langweiligeren Geräte zu sein. Doch die neuen iPhones bringen einige Überraschungen.",
-  "time": "10:32",
-  "title": "iPhone 18 Pro (Max): Weiter kein eSIM-Zwang, Batteriezuwachs, Vapor Chamber 2",
-  "topic": "technologie",
-  "topicLabel": "Technologie",
-  "url": "https://heise.de/news/iPhone-18-Pro-Max-Weiter-kein-eSIM-Zwang-Batteriezuwachs-Vapor-Chamber-2-11449405.html"
- },
- {
-  "dateShort": "11.09.",
   "id": "25c6eecb8531729b017cc01874a7c610",
   "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/3/5/6/7/shutterstock_2795688221-79540e2515992c93.jpeg",
   "kicker": "TECHNOLOGIE",
@@ -9838,6 +9823,21 @@
   "topic": "technologie",
   "topicLabel": "Technologie",
   "url": "https://heise.de/news/ePA-BfDI-erinnert-an-Datenausleitung-ab-Oktober-und-fordert-bessere-Information-11450251.html"
+ },
+ {
+  "dateShort": "11.09.",
+  "id": "58add24afafefcca011877ecc848e9cf",
+  "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/3/1/3/4/Screenshot_2026-09-10_at_22-e8d96d157257f2a1.png",
+  "kicker": "TECHNOLOGIE",
+  "meta": "heise · 11.09.2026 · 10:32",
+  "publishedAt": "2026-09-11T10:32:00+00:00",
+  "source": "heise",
+  "teaser": "Apples neue Pro-Modelle scheinen gegenüber dem Duo die langweiligeren Geräte zu sein. Doch die neuen iPhones bringen einige Überraschungen.",
+  "time": "10:32",
+  "title": "iPhone 18 Pro (Max): Weiter kein eSIM-Zwang, Batteriezuwachs, Vapor Chamber 2",
+  "topic": "technologie",
+  "topicLabel": "Technologie",
+  "url": "https://heise.de/news/iPhone-18-Pro-Max-Weiter-kein-eSIM-Zwang-Batteriezuwachs-Vapor-Chamber-2-11449405.html"
  },
  {
   "dateShort": "11.09.",
@@ -10006,21 +10006,6 @@
  },
  {
   "dateShort": "11.09.",
-  "id": "94985a4c2650b6ae42c9f00b476bdec1",
-  "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/3/5/3/9/sap_patchday-85ee106c486e98a4.jpeg",
-  "kicker": "TECHNOLOGIE",
-  "meta": "heise · 11.09.2026 · 09:44",
-  "publishedAt": "2026-09-11T09:44:00+00:00",
-  "source": "heise",
-  "teaser": "Mehrere kritische Sicherheitslücken gefährden unter anderem SAP Extended Passport und NetWeaver.",
-  "time": "09:44",
-  "title": "Patchday SAP: Präparierte Netzwerkanfrage ebnet Weg für Abstürze",
-  "topic": "technologie",
-  "topicLabel": "Technologie",
-  "url": "https://heise.de/news/Patchday-SAP-Praeparierte-Netzwerkanfrage-ebnet-Weg-fuer-Abstuerze-11450204.html"
- },
- {
-  "dateShort": "11.09.",
   "id": "3b53fb2d38227bbae13f70871ea097c4",
   "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/3/1/5/4/siriai-57ecc09ba9b15a70.jpeg",
   "kicker": "TECHNOLOGIE",
@@ -10033,6 +10018,21 @@
   "topic": "technologie",
   "topicLabel": "Technologie",
   "url": "https://heise.de/news/Dienste-Apple-belaesst-Satellitenfunk-gratis-Siri-AI-koennte-kosten-11449445.html"
+ },
+ {
+  "dateShort": "11.09.",
+  "id": "94985a4c2650b6ae42c9f00b476bdec1",
+  "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/3/5/3/9/sap_patchday-85ee106c486e98a4.jpeg",
+  "kicker": "TECHNOLOGIE",
+  "meta": "heise · 11.09.2026 · 09:44",
+  "publishedAt": "2026-09-11T09:44:00+00:00",
+  "source": "heise",
+  "teaser": "Mehrere kritische Sicherheitslücken gefährden unter anderem SAP Extended Passport und NetWeaver.",
+  "time": "09:44",
+  "title": "Patchday SAP: Präparierte Netzwerkanfrage ebnet Weg für Abstürze",
+  "topic": "technologie",
+  "topicLabel": "Technologie",
+  "url": "https://heise.de/news/Patchday-SAP-Praeparierte-Netzwerkanfrage-ebnet-Weg-fuer-Abstuerze-11450204.html"
  },
  {
   "dateShort": "11.09.",
@@ -14686,21 +14686,6 @@
  },
  {
   "dateShort": "09.09.",
-  "id": "e722626c62dc7661250517e85f828194",
-  "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/1/8/0/0/IVECO_eWay-d4d1a97e03a3f0db.jpeg",
-  "kicker": "TECHNOLOGIE",
-  "meta": "heise · 09.09.2026 · 22:01",
-  "publishedAt": "2026-09-09T22:01:00+00:00",
-  "source": "heise",
-  "teaser": "Chinesische und US-Hersteller könnten bis 2030 ein Viertel des europäischen E-Lkw-Marktes erobern, warnt eine T&E-Analyse. Ihr Preisvorteil ist erheblich.",
-  "time": "22:01",
-  "title": "T&E-Analyse: Neue Wettbewerber bedrohen Europas E-Lkw-Marktführerschaft",
-  "topic": "technologie",
-  "topicLabel": "Technologie",
-  "url": "https://heise.de/news/T-E-Analyse-Neue-Wettbewerber-bedrohen-Europas-E-Lkw-Marktfuehrerschaft-11446766.html"
- },
- {
-  "dateShort": "09.09.",
   "id": "0aaf33d917e1bf3300a0e5ab2ed47537",
   "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/2/1/5/7/e-scooter-unfallforschung_ADAC-26995c0caa30947f.jpeg",
   "kicker": "TECHNOLOGIE",
@@ -14713,6 +14698,21 @@
   "topic": "technologie",
   "topicLabel": "Technologie",
   "url": "https://heise.de/news/ADAC-Studie-E-Scooter-Unfaelle-steigen-stark-junge-Fahrer-besonders-betroffen-11447475.html"
+ },
+ {
+  "dateShort": "09.09.",
+  "id": "e722626c62dc7661250517e85f828194",
+  "image": "https://www.heise.de/scale/geometry/450/q80//imgs/18/5/1/6/1/8/0/0/IVECO_eWay-d4d1a97e03a3f0db.jpeg",
+  "kicker": "TECHNOLOGIE",
+  "meta": "heise · 09.09.2026 · 22:01",
+  "publishedAt": "2026-09-09T22:01:00+00:00",
+  "source": "heise",
+  "teaser": "Chinesische und US-Hersteller könnten bis 2030 ein Viertel des europäischen E-Lkw-Marktes erobern, warnt eine T&E-Analyse. Ihr Preisvorteil ist erheblich.",
+  "time": "22:01",
+  "title": "T&E-Analyse: Neue Wettbewerber bedrohen Europas E-Lkw-Marktführerschaft",
+  "topic": "technologie",
+  "topicLabel": "Technologie",
+  "url": "https://heise.de/news/T-E-Analyse-Neue-Wettbewerber-bedrohen-Europas-E-Lkw-Marktfuehrerschaft-11446766.html"
  },
  {
   "dateShort": "09.09.",
@@ -18688,20 +18688,5 @@
   "topic": "welt",
   "topicLabel": "Welt",
   "url": "https://tagesschau.de/ausland/asien/israel-libanon-angriffe-130.html"
- },
- {
-  "dateShort": "06.09.",
-  "id": "3473daf82f321c3cbec82a2f1c8e1c0d",
-  "image": "https://media0.faz.net/image/0817f20d338e/w5209h2930x0y112/202607/43601.0.2344729180/alte-schule-smartphone-und.webp",
-  "kicker": "POLITIK",
-  "meta": "FAZ · 06.09.2026 · 07:39",
-  "publishedAt": "2026-09-06T07:39:34+00:00",
-  "source": "FAZ",
-  "teaser": "Dirk Roßmann war Pionier im Drogeriegeschäft und ist damit reich geworden. Heute hat er Spaß und Erfolg mit komplizierten Börsengeschäften – besitzt aber nicht einmal ein Smartphone. Ein Gespräch kurz vor seinem 80. Geburtstag.",
-  "time": "07:39",
-  "title": "Dirk Rossmann: „Zocken würde ich das nicht nennen“",
-  "topic": "politik",
-  "topicLabel": "Politik",
-  "url": "https://faz.net/aktuell/wirtschaft/unternehmen/zocken-wuerde-ich-das-nicht-nennen-dirk-rossmann-ueber-seinen-spass-und-erfolg-an-der-boerse-accg-201187920.html"
  }
 ]
