@@ -13,7 +13,7 @@
      "time": "07:00"
     },
     "date": "2026-09-15",
-    "day": "DI",
+    "day": "HEUTE",
     "hi": 25,
     "hot": {
      "temp": 25,
@@ -31,7 +31,7 @@
      {
       "hour": "01:00",
       "icon": "☀︎",
-      "isNow": false,
+      "isNow": true,
       "label": "klar",
       "precip": 0,
       "temp": 15
@@ -659,7 +659,7 @@
      "time": "08:00"
     },
     "date": "2026-09-15",
-    "day": "DI",
+    "day": "HEUTE",
     "hi": 28,
     "hot": {
      "temp": 28,
@@ -677,7 +677,7 @@
      {
       "hour": "01:00",
       "icon": "☀︎",
-      "isNow": false,
+      "isNow": true,
       "label": "leicht bewölkt",
       "precip": 0,
       "temp": 17
