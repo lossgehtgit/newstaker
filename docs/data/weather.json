@@ -151,7 +151,7 @@
      {
       "hour": "16:00",
       "icon": "☁︎",
-      "isNow": true,
+      "isNow": false,
       "label": "bewölkt",
       "precip": 0,
       "temp": 22
@@ -175,7 +175,7 @@
      {
       "hour": "19:00",
       "icon": "☀︎",
-      "isNow": false,
+      "isNow": true,
       "label": "leicht bewölkt",
       "precip": 0,
       "temp": 21
@@ -797,7 +797,7 @@
      {
       "hour": "16:00",
       "icon": "☀︎",
-      "isNow": true,
+      "isNow": false,
       "label": "leicht bewölkt",
       "precip": 0,
       "temp": 24
@@ -821,7 +821,7 @@
      {
       "hour": "19:00",
       "icon": "☀︎",
-      "isNow": false,
+      "isNow": true,
       "label": "leicht bewölkt",
       "precip": 0,
       "temp": 22
