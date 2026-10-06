@@ -1,12 +1,12 @@
 {
- "checkedAt": "2026-10-06T13:50:18+00:00",
+ "checkedAt": "2026-10-06T19:16:46+00:00",
  "etfs": [
   {
-   "changePct": 113.2,
-   "changePctDaily": 1.6,
+   "changePct": 114.6,
+   "changePctDaily": 2.4,
    "currency": "USD",
    "name": "iSh Nasdaq 100 A",
-   "price": 1799.2,
+   "price": 1811.6,
    "spark": [
     844.1,
     905.9,
@@ -31,16 +31,16 @@
     1678.8,
     1711.8,
     1678.0,
-    1799.2
+    1811.6
    ],
    "symbol": "CSNDX.SW"
   },
   {
-   "changePct": 106.9,
-   "changePctDaily": 0.7,
+   "changePct": 107.3,
+   "changePctDaily": 0.9,
    "currency": "EUR",
    "name": "Xtr.(IE) - MSCI World MomentumR",
-   "price": 90.34,
+   "price": 90.49,
    "spark": [
     43.65,
     45.85,
@@ -65,16 +65,16 @@
     80.02,
     87.99,
     84.03,
-    90.34
+    90.49
    ],
    "symbol": "XDEM.DE"
   },
   {
-   "changePct": 88.4,
-   "changePctDaily": 1.2,
+   "changePct": 89.1,
+   "changePctDaily": 1.6,
    "currency": "USD",
    "name": "ISHARES VII ISHRS CORE S&P",
-   "price": 842.84,
+   "price": 845.93,
    "spark": [
     447.46,
     476.9,
@@ -99,16 +99,16 @@
     794.06,
     806.06,
     829.52,
-    842.84
+    845.93
    ],
    "symbol": "CSPX.L"
   },
   {
-   "changePct": 88.3,
-   "changePctDaily": 1.2,
+   "changePct": 89.0,
+   "changePctDaily": 1.6,
    "currency": "USD",
    "name": "VANGUARD FUNDS VANGUARD S&P",
-   "price": 151.15,
+   "price": 151.72,
    "spark": [
     80.27,
     85.59,
@@ -133,16 +133,16 @@
     143.3,
     144.56,
     148.78,
-    151.15
+    151.72
    ],
    "symbol": "VUAA.L"
   },
   {
-   "changePct": 86.8,
-   "changePctDaily": 2.0,
+   "changePct": 86.1,
+   "changePctDaily": 1.6,
    "currency": "EUR",
    "name": "Xtr.(IE)-MSCI Emerging MarketsR",
-   "price": 85.14,
+   "price": 84.82,
    "spark": [
     45.57,
     46.35,
@@ -167,7 +167,7 @@
     76.34,
     82.29,
     78.98,
-    85.14
+    84.82
    ],
    "symbol": "XMME.DE"
   }
@@ -175,11 +175,11 @@
  "lookbackYears": 3,
  "searchIndex": [
   {
-   "changePct": 87.1,
-   "changePctDaily": -0.2,
+   "changePct": 87.7,
+   "changePctDaily": 0.1,
    "currency": "USD",
    "name": "Apple",
-   "price": 332.17,
+   "price": 333.17,
    "spark": [
     177.49,
     191.31,
@@ -204,16 +204,16 @@
     300.23,
     312.66,
     316.83,
-    332.17
+    333.17
    ],
    "symbol": "AAPL"
   },
   {
-   "changePct": -9.2,
-   "changePctDaily": 1.7,
+   "changePct": -8.8,
+   "changePctDaily": 2.0,
    "currency": "EUR",
    "name": "adidas N",
-   "price": 144.65,
+   "price": 145.15,
    "spark": [
     159.24,
     187.36,
@@ -238,16 +238,16 @@
     148.2,
     185.4,
     151.0,
-    144.65
+    145.15
    ],
    "symbol": "ADS.DE"
   },
   {
-   "changePct": 51.1,
-   "changePctDaily": -0.8,
+   "changePct": 51.3,
+   "changePctDaily": -0.7,
    "currency": "EUR",
    "name": "Airbus A",
-   "price": 187.68,
+   "price": 187.9,
    "spark": [
     124.22,
     134.02,
@@ -272,16 +272,16 @@
     173.44,
     209.45,
     204.9,
-    187.68
+    187.9
    ],
    "symbol": "AIR.DE"
   },
   {
-   "changePct": 87.8,
-   "changePctDaily": 0.5,
+   "changePct": 87.6,
+   "changePctDaily": 0.4,
    "currency": "EUR",
    "name": "Allianz v",
-   "price": 421.3,
+   "price": 420.7,
    "spark": [
     224.3,
     231.0,
@@ -306,16 +306,16 @@
     385.7,
     420.2,
     438.3,
-    421.3
+    420.7
    ],
    "symbol": "ALV.DE"
   },
   {
-   "changePct": 97.7,
-   "changePctDaily": 0.6,
+   "changePct": 100.5,
+   "changePctDaily": 2.0,
    "currency": "USD",
    "name": "Amazon.com",
-   "price": 253.01,
+   "price": 256.5,
    "spark": [
     127.96,
     146.71,
@@ -340,16 +340,16 @@
     264.14,
     244.16,
     265.84,
-    253.01
+    256.5
    ],
    "symbol": "AMZN"
   },
   {
-   "changePct": 22.2,
-   "changePctDaily": 1.8,
+   "changePct": 22.1,
+   "changePctDaily": 1.7,
    "currency": "EUR",
    "name": "BASF N",
-   "price": 51.12,
+   "price": 51.08,
    "spark": [
     41.82,
     43.72,
@@ -374,16 +374,16 @@
     51.1,
     47.33,
     51.5,
-    51.12
+    51.08
    ],
    "symbol": "BAS.DE"
   },
   {
-   "changePct": -43.3,
-   "changePctDaily": 0.0,
+   "changePct": -42.9,
+   "changePctDaily": 0.8,
    "currency": "EUR",
    "name": "BAYERISCHE MOTOREN WERKE S",
-   "price": 54.22,
+   "price": 54.64,
    "spark": [
     95.71,
     94.24,
@@ -408,16 +408,16 @@
     74.36,
     60.12,
     57.92,
-    54.22
+    54.64
    ],
    "symbol": "BMW.DE"
   },
   {
-   "changePct": 44.3,
-   "changePctDaily": 0.8,
+   "changePct": 43.8,
+   "changePctDaily": 0.4,
    "currency": "EUR",
    "name": "DHL N",
-   "price": 56.36,
+   "price": 56.16,
    "spark": [
     39.06,
     41.12,
@@ -442,16 +442,16 @@
     48.09,
     55.72,
     55.4,
-    56.36
+    56.16
    ],
    "symbol": "DHL.DE"
   },
   {
-   "changePct": 25.1,
-   "changePctDaily": 0.1,
+   "changePct": 25.3,
+   "changePctDaily": 0.3,
    "currency": "USD",
    "name": "Walt Disney Company (The)",
-   "price": 103.74,
+   "price": 103.95,
    "spark": [
     82.94,
     95.07,
@@ -476,16 +476,16 @@
     102.72,
     97.41,
     106.93,
-    103.74
+    103.95
    ],
    "symbol": "DIS"
   },
   {
-   "changePct": 32.6,
-   "changePctDaily": -0.7,
+   "changePct": 31.5,
+   "changePctDaily": -1.6,
    "currency": "EUR",
    "name": "DEUTSCHE TELEKOM N",
-   "price": 26.63,
+   "price": 26.41,
    "spark": [
     20.09,
     21.74,
@@ -510,16 +510,16 @@
     29.16,
     25.44,
     28.72,
-    26.63
+    26.41
    ],
    "symbol": "DTE.DE"
   },
   {
-   "changePct": 150.8,
-   "changePctDaily": -0.4,
+   "changePct": 152.9,
+   "changePctDaily": 0.4,
    "currency": "USD",
    "name": "Alphabet",
-   "price": 345.03,
+   "price": 348.0,
    "spark": [
     137.58,
     138.49,
@@ -544,16 +544,16 @@
     396.78,
     366.46,
     344.72,
-    345.03
+    348.01
    ],
    "symbol": "GOOGL"
   },
   {
-   "changePct": 93.6,
-   "changePctDaily": -0.3,
+   "changePct": 97.9,
+   "changePctDaily": 1.9,
    "currency": "EUR",
    "name": "INFINEON TECHNOLOGIES N",
-   "price": 63.28,
+   "price": 64.68,
    "spark": [
     32.69,
     33.47,
@@ -578,16 +578,16 @@
     67.94,
     77.21,
     55.41,
-    63.28
+    64.68
    ],
    "symbol": "IFX.DE"
   },
   {
-   "changePct": 129.8,
-   "changePctDaily": 0.3,
+   "changePct": 128.5,
+   "changePctDaily": -0.3,
    "currency": "USD",
    "name": "JP Morgan Chase &",
-   "price": 333.5,
+   "price": 331.5,
    "spark": [
     145.1,
     153.33,
@@ -612,16 +612,16 @@
     297.81,
     337.72,
     357.26,
-    333.5
+    331.5
    ],
    "symbol": "JPM"
   },
   {
-   "changePct": 63.1,
+   "changePct": 63.2,
    "changePctDaily": 0.2,
    "currency": "USD",
    "name": "Coca-Cola Company (The)",
-   "price": 86.67,
+   "price": 86.72,
    "spark": [
     53.14,
     58.42,
@@ -646,16 +646,16 @@
     80.82,
     82.96,
     90.35,
-    86.68
+    86.72
    ],
    "symbol": "KO"
   },
   {
-   "changePct": -36.7,
-   "changePctDaily": 0.5,
+   "changePct": -36.3,
+   "changePctDaily": 1.2,
    "currency": "EUR",
    "name": "Mercedes-Benz Group N",
-   "price": 40.41,
+   "price": 40.7,
    "spark": [
     63.85,
     58.28,
@@ -680,16 +680,16 @@
     50.01,
     45.4,
     44.79,
-    40.4
+    40.7
    ],
    "symbol": "MBG.DE"
   },
   {
-   "changePct": -6.2,
-   "changePctDaily": -0.1,
+   "changePct": -6.5,
+   "changePctDaily": -0.4,
    "currency": "USD",
    "name": "McDonald's",
-   "price": 232.73,
+   "price": 232.15,
    "spark": [
     248.22,
     281.93,
@@ -714,16 +714,16 @@
     276.39,
     279.5,
     267.45,
-    232.73
+    232.15
    ],
    "symbol": "MCD"
   },
   {
-   "changePct": 134.6,
-   "changePctDaily": -0.2,
+   "changePct": 135.8,
+   "changePctDaily": 0.3,
    "currency": "USD",
    "name": "Meta Platforms",
-   "price": 740.15,
+   "price": 743.8,
    "spark": [
     315.43,
     341.49,
@@ -748,16 +748,16 @@
     614.23,
     600.29,
     546.03,
-    740.15
+    743.8
    ],
    "symbol": "META"
   },
   {
-   "changePct": 62.8,
-   "changePctDaily": 1.4,
+   "changePct": 62.3,
+   "changePctDaily": 1.1,
    "currency": "USD",
    "name": "Microsoft",
-   "price": 532.65,
+   "price": 531.05,
    "spark": [
     327.26,
     377.85,
@@ -782,16 +782,16 @@
     421.92,
     386.74,
     484.31,
-    532.65
+    531.05
    ],
    "symbol": "MSFT"
   },
   {
-   "changePct": 35.5,
-   "changePctDaily": -0.3,
+   "changePct": 36.4,
+   "changePctDaily": 0.3,
    "currency": "EUR",
    "name": "MUENCHENER RUECKVERS.-GES. N",
-   "price": 508.8,
+   "price": 512.0,
    "spark": [
     375.5,
     386.6,
@@ -816,16 +816,16 @@
     485.8,
     495.9,
     513.2,
-    508.8
+    512.0
    ],
    "symbol": "MUV2.DE"
   },
   {
-   "changePct": 427.8,
-   "changePctDaily": 1.1,
+   "changePct": 424.2,
+   "changePctDaily": 0.4,
    "currency": "USD",
    "name": "NVIDIA",
-   "price": 241.52,
+   "price": 239.87,
    "spark": [
     45.76,
     48.72,
@@ -850,16 +850,16 @@
     225.32,
     195.55,
     217.56,
-    241.52
+    239.87
    ],
    "symbol": "NVDA"
   },
   {
-   "changePct": 78.2,
-   "changePctDaily": -0.5,
+   "changePct": 78.4,
+   "changePctDaily": -0.4,
    "currency": "EUR",
    "name": "RWE I",
-   "price": 58.32,
+   "price": 58.38,
    "spark": [
     32.73,
     37.96,
@@ -884,16 +884,16 @@
     56.62,
     57.48,
     57.34,
-    58.32
+    58.38
    ],
    "symbol": "RWE.DE"
   },
   {
-   "changePct": 52.5,
-   "changePctDaily": 1.8,
+   "changePct": 52.6,
+   "changePctDaily": 1.9,
    "currency": "EUR",
    "name": "SAP I",
-   "price": 188.42,
+   "price": 188.6,
    "spark": [
     123.56,
     141.16,
@@ -918,16 +918,16 @@
     153.42,
     140.06,
     185.64,
-    188.42
+    188.6
    ],
    "symbol": "SAP.DE"
   },
   {
-   "changePct": 107.0,
-   "changePctDaily": 1.4,
+   "changePct": 107.2,
+   "changePctDaily": 1.5,
    "currency": "EUR",
    "name": "SIEMENS N",
-   "price": 278.8,
+   "price": 279.0,
    "spark": [
     134.66,
     149.66,
@@ -952,16 +952,16 @@
     264.1,
     281.6,
     276.0,
-    278.8
+    279.0
    ],
    "symbol": "SIE.DE"
   },
   {
-   "changePct": 45.8,
-   "changePctDaily": 0.3,
+   "changePct": 45.7,
+   "changePctDaily": 0.2,
    "currency": "USD",
    "name": "Tesla",
-   "price": 379.91,
+   "price": 379.6,
    "spark": [
     260.53,
     234.21,
@@ -986,16 +986,16 @@
     422.24,
     419.77,
     351.12,
-    379.91
+    379.6
    ],
    "symbol": "TSLA"
   },
   {
    "changePct": 57.4,
-   "changePctDaily": 0.1,
+   "changePctDaily": 0.0,
    "currency": "USD",
    "name": "Visa",
-   "price": 370.01,
+   "price": 369.87,
    "spark": [
     235.04,
     253.72,
@@ -1020,16 +1020,16 @@
     325.75,
     357.25,
     365.54,
-    370.01
+    369.87
    ],
    "symbol": "V"
   },
   {
-   "changePct": -36.1,
-   "changePctDaily": -0.4,
+   "changePct": -35.5,
+   "changePctDaily": 0.5,
    "currency": "EUR",
    "name": "VOLKSWAGEN V",
-   "price": 68.24,
+   "price": 68.88,
    "spark": [
     106.78,
     106.8,
@@ -1054,16 +1054,16 @@
     87.92,
     75.5,
     74.44,
-    68.24
+    68.88
    ],
    "symbol": "VOW3.DE"
   },
   {
-   "changePct": 102.3,
-   "changePctDaily": 0.4,
+   "changePct": 105.6,
+   "changePctDaily": 2.0,
    "currency": "USD",
    "name": "Walmart",
-   "price": 105.46,
+   "price": 107.2,
    "spark": [
     52.14,
     51.56,
@@ -1088,18 +1088,18 @@
     131.45,
     110.65,
     114.3,
-    105.46
+    107.21
    ],
    "symbol": "WMT"
   }
  ],
  "stocks": [
   {
-   "changePct": 1067.3,
-   "changePctDaily": 2.4,
+   "changePct": 1060.1,
+   "changePctDaily": 1.7,
    "currency": "USD",
    "name": "Palantir Technologies",
-   "price": 193.89,
+   "price": 192.69,
    "spark": [
     16.61,
     19.69,
@@ -1124,16 +1124,16 @@
     133.99,
     132.54,
     175.19,
-    193.89
+    192.69
    ],
    "symbol": "PLTR"
   },
   {
-   "changePct": 545.1,
-   "changePctDaily": 4.5,
+   "changePct": 531.0,
+   "changePctDaily": 2.2,
    "currency": "USD",
    "name": "CrowdStrike Holdings",
-   "price": 284.95,
+   "price": 278.73,
    "spark": [
     44.17,
     52.4,
@@ -1158,16 +1158,16 @@
     148.52,
     199.38,
     201.63,
-    284.95
+    278.73
    ],
    "symbol": "CRWD"
   },
   {
-   "changePct": 487.4,
-   "changePctDaily": 2.2,
+   "changePct": 469.9,
+   "changePctDaily": -0.8,
    "currency": "USD",
    "name": "Cloudflare",
-   "price": 367.44,
+   "price": 356.46,
    "spark": [
     62.55,
     73.68,
@@ -1192,16 +1192,16 @@
     197.56,
     247.55,
     291.88,
-    367.44
+    356.46
    ],
    "symbol": "NET"
   },
   {
-   "changePct": 208.8,
-   "changePctDaily": 3.5,
+   "changePct": 207.7,
+   "changePctDaily": 3.1,
    "currency": "USD",
    "name": "Shopify",
-   "price": 165.65,
+   "price": 165.08,
    "spark": [
     53.65,
     70.96,
@@ -1226,16 +1226,16 @@
     100.28,
     120.14,
     146.58,
-    165.65
+    165.08
    ],
    "symbol": "SHOP"
   },
   {
-   "changePct": 200.6,
-   "changePctDaily": 2.7,
+   "changePct": 194.6,
+   "changePctDaily": 0.6,
    "currency": "USD",
    "name": "Datadog",
-   "price": 283.82,
+   "price": 278.19,
    "spark": [
     94.43,
     112.13,
@@ -1260,7 +1260,7 @@
     207.98,
     255.37,
     233.52,
-    283.82
+    278.19
    ],
    "symbol": "DDOG"
   }
