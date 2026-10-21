@@ -13,7 +13,7 @@
      "time": "04:00"
     },
     "date": "2026-10-21",
-    "day": "MI",
+    "day": "HEUTE",
     "hi": 12,
     "hot": {
      "temp": 12,
@@ -31,7 +31,7 @@
      {
       "hour": "01:00",
       "icon": "☁︎",
-      "isNow": false,
+      "isNow": true,
       "label": "bewölkt",
       "precip": 0,
       "temp": 8
@@ -659,7 +659,7 @@
      "time": "23:00"
     },
     "date": "2026-10-21",
-    "day": "MI",
+    "day": "HEUTE",
     "hi": 12,
     "hot": {
      "temp": 12,
@@ -677,7 +677,7 @@
      {
       "hour": "01:00",
       "icon": "☁︎",
-      "isNow": false,
+      "isNow": true,
       "label": "bewölkt",
       "precip": 0,
       "temp": 10
